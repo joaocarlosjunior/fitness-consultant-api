@@ -25,5 +25,5 @@ public class MuscleWorkout {
 
     @ManyToOne
     @JoinColumn(name = "MUSCULO_ID", referencedColumnName = "ID", nullable = false)
-    private Muscule muscule;
+    private MuscleGroup muscleGroup;
 }
