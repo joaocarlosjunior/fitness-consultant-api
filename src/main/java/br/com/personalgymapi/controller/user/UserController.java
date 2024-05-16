@@ -2,19 +2,22 @@ package br.com.personalgymapi.controller.user;
 
 import br.com.personalgymapi.dto.user.RecoveryUserDTO;
 import br.com.personalgymapi.dto.user.RegisterUserDTO;
+import br.com.personalgymapi.dto.user.UpdateUserDTO;
 import br.com.personalgymapi.service.user.UserService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
+
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
 
     //TODOS
     @PostMapping("/signup")
@@ -40,8 +43,8 @@ public class UserController {
     //USER e ADMIN
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateById(@PathVariable Long id, @RequestBody RegisterUserDTO registerUserDTO){
-        userService.update(id, registerUserDTO);
+    public RecoveryUserDTO updateById(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO){
+        return userService.update(id, updateUserDTO);
     }
 
     //USER e ADMIN
