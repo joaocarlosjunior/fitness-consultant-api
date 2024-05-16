@@ -1,14 +1,15 @@
 package br.com.personalgymapi.service.user.impl;
 
-import br.com.personalgymapi.dto.user.RecoveryUserDTO;
-import br.com.personalgymapi.dto.user.RegisterUserDTO;
 import br.com.personalgymapi.domain.entities.User;
 import br.com.personalgymapi.domain.enums.Role;
 import br.com.personalgymapi.domain.repository.UserRepository;
+import br.com.personalgymapi.dto.user.RecoveryUserDTO;
+import br.com.personalgymapi.dto.user.RegisterUserDTO;
+import br.com.personalgymapi.dto.user.UpdateUserDTO;
 import br.com.personalgymapi.exception.InfoAlreadyExistsException;
 import br.com.personalgymapi.exception.UserNotFoundException;
+import br.com.personalgymapi.mapper.user.UserMapper;
 import br.com.personalgymapi.service.user.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +18,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     @Transactional
     public RecoveryUserDTO addUser(RegisterUserDTO registerUserDTO) {
@@ -74,13 +80,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void deletedById(Long id){
+    public void deletedById(Long id) {
         userRepository.deleteById(id);
     }
 
     @Transactional
-    public void update(Long id, RegisterUserDTO registerUserDTO) {
+    public RecoveryUserDTO update(Long id, UpdateUserDTO updateUserDTO) {
+        User user =
+                userRepository.findById(id)
+                        .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
+        userMapper.updateDtoFromUser(updateUserDTO, user);
+
+        User updatedUser = userRepository.save(user);
+        return RecoveryUserDTO
+                .builder()
+                .firstName(updatedUser.getFirstName())
+                .lastName(updatedUser.getLastName())
+                .email(updatedUser.getEmail())
+                .phone(updatedUser.getPhone())
+                .build();
     }
 
     @Transactional(readOnly = true)
