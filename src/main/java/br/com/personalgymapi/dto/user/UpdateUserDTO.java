@@ -4,19 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.Optional;
-
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateUserDTO {
-    @JsonProperty("id")
-    private Optional<Long> id;
-
     @JsonProperty("first_name")
-    private Optional<String> firstName;
+    private String firstName;
 
     @JsonProperty("last_name")
-    private Optional<String> lastName;
+    private String lastName;
 
     @JsonProperty("email")
     private String email;
