@@ -1,6 +1,7 @@
 package br.com.personalgymapi.domain.entities;
 
 import br.com.personalgymapi.domain.enums.TrainingType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class Training {
     @Column(name = "TIPO_TREINO")
     @NotBlank(message = "Campo Treino Obrigatório")
     @Enumerated(value = EnumType.STRING)
-    private TrainingType treino;
+    private TrainingType training;
 
     @Column(name = "IS_DONE")
     private boolean isDone = false;
@@ -39,5 +40,15 @@ public class Training {
     private List<Exercise> exercises;
 
     @OneToMany(mappedBy = "training")
-    private List<Heating> heatings;
+    private List<Heating> warmups;
+
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "TREINO_GRUPOMUSCULAR",
+            joinColumns = @JoinColumn(name = "TREINO_ID"),
+            inverseJoinColumns = @JoinColumn(name = "GRUPO_MUSCULAR_ID")
+    )
+    private List<MuscleGroup> muscleGroups;
+
 }
