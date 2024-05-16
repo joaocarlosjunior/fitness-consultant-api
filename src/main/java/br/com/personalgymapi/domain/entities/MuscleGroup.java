@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "TBL_MUSCULE_GROUP")
-public class MusculeGroup {
+public class MuscleGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
@@ -25,7 +23,5 @@ public class MusculeGroup {
     @Column(name = "NOME")
     @NotBlank(message = "Campo Nome Grupo Muscular é obrigatório")
     private String name;
-
-    @OneToMany(mappedBy = "musculeGroup")
-    private List<Muscule> muscules;
 }
+
