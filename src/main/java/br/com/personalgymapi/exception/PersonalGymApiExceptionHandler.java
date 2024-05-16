@@ -1,7 +1,10 @@
 package br.com.personalgymapi.exception;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,7 +25,18 @@ public class PersonalGymApiExceptionHandler {
         List<String> errors = e
                 .getConstraintViolations()
                 .stream()
-                .map(erro -> erro.getMessageTemplate())
+                .map(ConstraintViolation::getMessageTemplate)
+                .toList();
+        return new ApiErrors(errors);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors UserNotFoundException(MethodArgumentNotValidException e) {
+        List<String> errors = e.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
         return new ApiErrors(errors);
     }
