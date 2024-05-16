@@ -1,7 +1,9 @@
 package br.com.personalgymapi.service.user;
 
+import br.com.personalgymapi.domain.entities.User;
 import br.com.personalgymapi.dto.user.RecoveryUserDTO;
 import br.com.personalgymapi.dto.user.RegisterUserDTO;
+import br.com.personalgymapi.dto.user.UpdateUserDTO;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ public interface UserService {
 
     List<RecoveryUserDTO> getAllUsers();
 
-    void update(Long id, RegisterUserDTO registerUserDTO);
+    RecoveryUserDTO update(Long id, UpdateUserDTO updateUserDTO);
 
     void deletedById(Long id);
 }
