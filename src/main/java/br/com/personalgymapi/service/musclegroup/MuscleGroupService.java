@@ -10,5 +10,9 @@ public interface MuscleGroupService {
 
     RecoveryMuscleGroupDTO getMuscleGroupById(Long id);
 
+    void deletedById(Long id);
+
+    RecoveryMuscleGroupDTO update(Long id, RegisterMuscleGroupDTO registerMuscleGroupDTO);
+
     List<RecoveryMuscleGroupDTO> getAllMuscleGroups();
 }
