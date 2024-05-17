@@ -10,12 +10,12 @@ import lombok.Data;
 public class RegisterUserDTO {
     @JsonProperty("first_name")
     @NotBlank(message = "Campo Nome Obrigatório")
-    @Pattern(regexp = "^\\p{L}+$", message = "O campo Nome deve conter apenas letras")
+    @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ]+$", message = "O campo Nome deve conter apenas letras")
     private String firstName;
 
     @JsonProperty("last_name")
     @NotBlank(message = "Campo Sobrenome Obrigatório")
-    @Pattern(regexp = "^\\p{L}+$", message = "O campo Sobrenome deve conter apenas letras")
+    @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ]+$", message = "O campo Sobrenome deve conter apenas letras")
     private String lastName;
 
     @JsonProperty("email")
