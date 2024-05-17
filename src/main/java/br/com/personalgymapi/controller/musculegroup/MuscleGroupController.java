@@ -4,7 +4,6 @@ import br.com.personalgymapi.dto.musuculegroup.RecoveryMuscleGroupDTO;
 import br.com.personalgymapi.dto.musuculegroup.RegisterMuscleGroupDTO;
 import br.com.personalgymapi.service.musclegroup.MuscleGroupService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +25,22 @@ public class MuscleGroupController {
         muscleGroupService.addMuscleGroup(registerMuscleGroupDTO);
     }
 
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        muscleGroupService.deletedById(id);
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public RecoveryMuscleGroupDTO update(@PathVariable Long id, @RequestBody RegisterMuscleGroupDTO registerMuscleGroupDTO){
+        return muscleGroupService.update(id, registerMuscleGroupDTO);
+    }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void getMuscleGroupById(@PathVariable Long id){
-        muscleGroupService.getMuscleGroupById(id);
+    public RecoveryMuscleGroupDTO getMuscleGroupById(@PathVariable Long id){
+        return muscleGroupService.getMuscleGroupById(id);
     }
 
     @GetMapping
