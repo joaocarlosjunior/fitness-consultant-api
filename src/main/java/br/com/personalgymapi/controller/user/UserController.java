@@ -43,7 +43,7 @@ public class UserController {
     //USER e ADMIN
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryUserDTO updateById(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO){
+    public RecoveryUserDTO updateById(@PathVariable Long id, @RequestBody @Valid UpdateUserDTO updateUserDTO){
         return userService.update(id, updateUserDTO);
     }
 
