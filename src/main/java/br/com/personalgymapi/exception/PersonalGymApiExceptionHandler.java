@@ -21,7 +21,7 @@ public class PersonalGymApiExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors UserNotFoundException(ConstraintViolationException e) {
+    public ApiErrors ConstraintViolationException(ConstraintViolationException e) {
         List<String> errors = e
                 .getConstraintViolations()
                 .stream()
@@ -32,7 +32,7 @@ public class PersonalGymApiExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors UserNotFoundException(MethodArgumentNotValidException e) {
+    public ApiErrors MethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<String> errors = e.getBindingResult()
                 .getAllErrors()
                 .stream()
@@ -43,7 +43,13 @@ public class PersonalGymApiExceptionHandler {
 
     @ExceptionHandler(InfoAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors UserNotFoundException(InfoAlreadyExistsException e) {
+    public ApiErrors InfoAlreadyExistsException(InfoAlreadyExistsException e) {
+        return new ApiErrors(e.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors IllegalArgumentException(IllegalArgumentException e) {
         return new ApiErrors(e.getMessage());
     }
 
