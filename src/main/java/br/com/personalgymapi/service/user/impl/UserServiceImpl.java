@@ -69,7 +69,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void deletedById(Long id) {
-        userRepository.deleteById(id);
+        userRepository
+                .findById(id)
+                .map(user -> {
+                            userRepository.delete(user);
+                            return Void.class;
+                        }
+                )
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
     @Transactional
@@ -78,15 +85,15 @@ public class UserServiceImpl implements UserService {
                 userRepository.findById(id)
                         .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        if(updateUserDTO.getEmail() != null){
+        if (updateUserDTO.getEmail() != null) {
             checkEmailAlreadyExists(updateUserDTO.getEmail());
         }
 
-        if(updateUserDTO.getPhone() != null){
+        if (updateUserDTO.getPhone() != null) {
             checkPhoneAlreadyExists(updateUserDTO.getPhone());
         }
 
-        userMapper.toEntity(updateUserDTO,user);
+        userMapper.toEntity(updateUserDTO, user);
 
         User updatedUser = userRepository.save(user);
         return RecoveryUserDTO
@@ -116,13 +123,13 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    private void checkEmailAlreadyExists(String email){
+    private void checkEmailAlreadyExists(String email) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new InfoAlreadyExistsException("Email já cadastrado");
         }
     }
 
-    private void checkPhoneAlreadyExists(String phone){
+    private void checkPhoneAlreadyExists(String phone) {
         if (userRepository.findByPhone(phone).isPresent()) {
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
         }
