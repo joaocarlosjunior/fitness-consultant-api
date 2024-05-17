@@ -27,17 +27,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public RecoveryUserDTO addUser(RegisterUserDTO registerUserDTO) {
 
-        Optional<User> userEmail = userRepository.findByEmail(registerUserDTO.getEmail());
+        checkEmailAlreadyExists(registerUserDTO.getEmail());
 
-        if (userEmail.isPresent()) {
-            throw new InfoAlreadyExistsException("Email já cadastrado");
-        }
-
-        Optional<User> userPhone = userRepository.findByPhone(registerUserDTO.getPhone());
-
-        if (userPhone.isPresent()) {
-            throw new InfoAlreadyExistsException("Telefone já cadastrado");
-        }
+        checkPhoneAlreadyExists(registerUserDTO.getPhone());
 
         User newUser = User
                 .builder()
@@ -87,6 +79,11 @@ public class UserServiceImpl implements UserService {
                 userRepository.findById(id)
                         .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
+        if(updateUserDTO.getEmail() != null || updateUserDTO.getPhone() != null){
+            checkEmailAlreadyExists(updateUserDTO.getEmail());
+            checkPhoneAlreadyExists(updateUserDTO.getPhone());
+        }
+
         userMapper.toEntity(updateUserDTO,user);
 
         User updatedUser = userRepository.save(user);
@@ -115,6 +112,22 @@ public class UserServiceImpl implements UserService {
                             .build();
                 }))
                 .collect(Collectors.toList());
+    }
+
+    private void checkEmailAlreadyExists(String email){
+        Optional<User> userEmail = userRepository.findByEmail(email);
+
+        if (userEmail.isPresent()) {
+            throw new InfoAlreadyExistsException("Email já cadastrado");
+        }
+    }
+
+    private void checkPhoneAlreadyExists(String phone){
+        Optional<User> userPhone = userRepository.findByPhone(phone);
+
+        if (userPhone.isPresent()) {
+            throw new InfoAlreadyExistsException("Telefone já cadastrado");
+        }
     }
 
 }
