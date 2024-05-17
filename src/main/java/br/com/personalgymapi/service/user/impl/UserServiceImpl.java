@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,8 +78,11 @@ public class UserServiceImpl implements UserService {
                 userRepository.findById(id)
                         .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        if(updateUserDTO.getEmail() != null || updateUserDTO.getPhone() != null){
+        if(updateUserDTO.getEmail() != null){
             checkEmailAlreadyExists(updateUserDTO.getEmail());
+        }
+
+        if(updateUserDTO.getPhone() != null){
             checkPhoneAlreadyExists(updateUserDTO.getPhone());
         }
 
@@ -115,17 +117,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkEmailAlreadyExists(String email){
-        Optional<User> userEmail = userRepository.findByEmail(email);
-
-        if (userEmail.isPresent()) {
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new InfoAlreadyExistsException("Email já cadastrado");
         }
     }
 
     private void checkPhoneAlreadyExists(String phone){
-        Optional<User> userPhone = userRepository.findByPhone(phone);
-
-        if (userPhone.isPresent()) {
+        if (userRepository.findByPhone(phone).isPresent()) {
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
         }
     }
