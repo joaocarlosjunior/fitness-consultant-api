@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:15.6
+    container_name: postgres
+    environment:
+      POSTGRES_DB: 'personal_gym_db'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_ROOT_PASSWORD: 'root'
+    ports:
+      - '5432:5432'
