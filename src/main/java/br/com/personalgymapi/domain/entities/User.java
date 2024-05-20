@@ -36,23 +36,23 @@ public class User {
     private String lastName;
 
     @Column(name = "email", length = 50, unique = true, nullable = false)
-    @NotBlank(message = "")
+    @NotBlank(message = "{campo.user.email}")
     private String email;
 
     @Column(name = "password", nullable = false)
-    @NotBlank(message = "")
+    @NotBlank(message = "{campo.user.senha}")
     @JsonIgnore
     private String password;
 
     @Column(name = "phone",length = 20, unique = true)
-    @NotBlank(message = "")
+    @NotBlank(message = "{campo.user.phone}")
     private String phone;
 
     @Column(name = "is_active")
     @ValidIsActive
     private boolean isActive;
 
-    @Column(name = "role_user", length = 20)
+    @Column(name = "role", length = 20)
     @Enumerated(EnumType.ORDINAL)
     @ValidRole
     private Role role;
