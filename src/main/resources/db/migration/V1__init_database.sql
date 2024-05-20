@@ -1,12 +1,12 @@
-CREATE TABLE IF NOT EXISTS tbl_user(
-    id_user bigint NOT NULL GENERATED ALWAYS AS IDENTITY,
+CREATE TABLE IF NOT EXISTS tbl_user (
+    id_user BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     first_name varchar(15) NOT NULL,
     last_name varchar(20) NOT NULL,
     email varchar(50) NOT NULL,
     phone varchar(20) NOT NULL,
     password varchar,
     is_active boolean NOT NULL,
-    role_user(20) varchar NOT NULL,
+    role_user varchar(20) NOT NULL,
     created_at timestamp,
     updated_at timestamp,
     PRIMARY KEY (id_user),
@@ -16,68 +16,68 @@ CREATE TABLE IF NOT EXISTS tbl_user(
 );
 
 CREATE TABLE IF NOT EXISTS tbl_training (
-    id_training bigint NOT NULL GENERATED ALWAYS AS IDENTITY,
+    id_training BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     training_type varchar(8),
     is_done boolean,
     created_at timestamp,
     updated_at timestamp,
-    id_user bigint,
+    id_user BIGINT,
     PRIMARY KEY (id_training),
-    CONSTRAINT training_unique UNIQUE (training),
+    CONSTRAINT training_type_unique UNIQUE (training_type),
     FOREIGN KEY (id_user) REFERENCES tbl_user (id_user)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_training_time (
-    id_training_time bigint NOT NULL GENERATED ALWAYS AS IDENTITY,
+    id_training_time BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     start_time timestamp,
     final_time timestamp,
     training_date date,
-    id_training bigint,
+    id_training BIGINT,
     PRIMARY KEY (id_training_time),
     FOREIGN KEY (id_training) REFERENCES tbl_training (id_training)
-)
+);
 
 CREATE TABLE IF NOT EXISTS tbl_muscle_group (
-    id_muscle_group bigint NOT NULL GENERATED ALWAYS AS IDENTITY,
+    id_muscle_group BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     name_group varchar(50),
     PRIMARY KEY (id_muscle_group)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_musclegroup_training (
-    id_muscle_group bigint,
-    id_training bigint
+    id_muscle_group BIGINT,
+    id_training BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS tbl_exercise_name (
-    id_exercise_name bigint NOT NULL GENERATED ALWAYS AS IDENTITY,
+    id_exercise_name BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     exercise_name varchar(30) NOT NULL,
     CONSTRAINT exercise_name_unique UNIQUE (exercise_name),
     PRIMARY KEY (id_exercise_name)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_heating (
-    id_heating bigint NOT NULL GENERATED ALWAYS AS IDENTITY,
+    id_heating BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     series smallint,
     repetitions varchar(10),
     initial_load smallint,
     final_load smallint,
     method_exercise varchar(30),
-    id_training bigint,
-    id_exercise_name bigint,
+    id_training BIGINT,
+    id_exercise_name BIGINT,
     PRIMARY KEY (id_heating),
     FOREIGN KEY (id_training) REFERENCES tbl_training (id_training),
     FOREIGN KEY (id_exercise_name) REFERENCES tbl_exercise_name (id_exercise_name)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_exercise (
-    id_exercise bigint NOT NULL GENERATED ALWAYS AS IDENTITY,
+    id_exercise BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     series smallint,
     repetitions varchar(10),
     initial_load smallint,
     final_load smallint,
     method_exercise varchar(30),
-    id_training bigint,
-    id_exercise_name bigint,
+    id_training BIGINT,
+    id_exercise_name BIGINT,
     PRIMARY KEY (id_exercise),
     FOREIGN KEY (id_training) REFERENCES tbl_training (id_training),
     FOREIGN KEY (id_exercise_name) REFERENCES tbl_exercise_name (id_exercise_name)
