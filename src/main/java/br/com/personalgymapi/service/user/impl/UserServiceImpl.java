@@ -127,6 +127,8 @@ public class UserServiceImpl implements UserService {
                             .email(user.getEmail())
                             .phone(user.getPhone())
                             .role(user.getRole())
+                            .created_at(user.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
+                            .updated_at(user.getUpdatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
                             .build();
                 }))
                 .collect(Collectors.toList());
