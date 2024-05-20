@@ -12,4 +12,6 @@ public class RecoveryUserDTO {
     private String email;
     private String phone;
     private Role role;
+    private String created_at;
+    private String updated_at;
 }
