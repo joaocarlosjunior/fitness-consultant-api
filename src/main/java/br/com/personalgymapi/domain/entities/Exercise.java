@@ -2,25 +2,45 @@ package br.com.personalgymapi.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 
 @Entity
-@Table(name = "TBL_EXERCISIO")
-public class Exercise extends InfoExercise {
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "NOME_EXERCISIO_ID", referencedColumnName = "ID")
-    private NameExercise nameExercise;
+@Table(name = "tbl_exercise")
+public class Exercise{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_exercise", nullable = false)
+    private Long id;
+
+    @Column(name = "series")
+    private Integer series;
+
+    @Column(name = "repetitions", length = 10)
+    private String repetitions;
+
+    @Column(name = "initial_load")
+    private Integer initialLoad;
+
+    @Column(name = "final_load")
+    private Integer finalLoad;
+
+    @Column(name = "method_exercise")
+    private String method;
 
     @ManyToOne
-    @JoinColumn(name = "TRAINING_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "id_exercise_name", nullable = false)
+    private ExerciseName exerciseName;
+
+    @ManyToOne
+    @JoinColumn(name = "id_training", nullable = false)
     private Training training;
+
+
 }

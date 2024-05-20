@@ -1,13 +1,13 @@
 package br.com.personalgymapi.domain.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -15,18 +15,23 @@ import lombok.NoArgsConstructor;
 @Builder
 
 @Entity
-@Table(name = "TEMPO_TREINO")
+@Table(name = "tbl_training_time")
 public class TimeTraining {
     @Id
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_training_time", nullable = false)
     private Long id;
 
-    @Column(name = "TEMPO_INICIAL")
-    private String startTime;
+    @Column(name = "start_time")
+    private Timestamp startTime;
 
-    @Column(name = "TEMPO_FINAL")
-    private String finalTime;
+    @Column(name = "final_time")
+    private Timestamp finalTime;
 
-    @Column(name = "DATA_TREINO")
-    private String date;
+    @Column(name = "training_date")
+    private LocalDate date;
+
+    @ManyToOne
+    @JoinColumn(name = "id_training")
+    private Training training;
 }

@@ -9,7 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,38 +18,46 @@ import java.util.List;
 @Builder
 
 @Entity
-@Table(name = "TBL_TREINO")
+@Table(name = "tbl_training")
 public class Training {
     @Id
-    @Column(name = "ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_training", nullable = false)
     private Long id;
 
-    @Column(name = "TIPO_TREINO")
-    @NotBlank(message = "Campo Treino Obrigatório")
+    @Column(name = "training_type", length = 8, nullable = false)
+    @NotBlank(message = "Campo Tipo Treino Obrigatório")
     @Enumerated(value = EnumType.STRING)
-    private TrainingType training;
+    private TrainingType trainingType;
 
-    @Column(name = "IS_DONE")
+    @Column(name = "is_done")
     private boolean isDone = false;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_user")
     private User user;
 
-    @OneToMany(mappedBy = "training")
-    private List<Exercise> exercises;
+    @OneToMany(mappedBy = "training", fetch = FetchType.EAGER)
+    private Set<Exercise> exercises;
 
-    @OneToMany(mappedBy = "training")
-    private List<Heating> warmups;
+    @OneToMany(mappedBy = "training", fetch = FetchType.EAGER)
+    private Set<Heating> warmups;
 
     @JsonManagedReference
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "TREINO_GRUPOMUSCULAR",
-            joinColumns = @JoinColumn(name = "TREINO_ID"),
-            inverseJoinColumns = @JoinColumn(name = "GRUPO_MUSCULAR_ID")
+            name = "tbl_musclegroup_training",
+            joinColumns = @JoinColumn(name = "id_training"),
+            inverseJoinColumns = @JoinColumn(name = "id_muscle_group")
     )
-    private List<MuscleGroup> muscleGroups;
+    private Set<MuscleGroup> muscleGroups;
 
+    @OneToMany(mappedBy = "training")
+    private Set<TimeTraining> timeTrainings;
 }

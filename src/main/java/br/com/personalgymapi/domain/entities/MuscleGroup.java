@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @Builder
 
 @Entity
-@Table(name = "TBL_MUSCULE_GROUP")
+@Table(name = "tbl_muscle_group")
 public class MuscleGroup {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_muscle_group",nullable = false)
     private Long id;
 
-    @Column(name = "NOME")
+    @Column(name = "name_group", length = 50, nullable = false)
     @NotBlank(message = "Campo Nome Grupo Muscular é obrigatório")
     private String name;
 }
