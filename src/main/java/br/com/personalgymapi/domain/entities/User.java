@@ -27,11 +27,11 @@ public class User {
     @Column(name = "id_user", nullable = false)
     private Long id;
 
-    @Column(name = "first_name", length = 15, nullable = false)
+    @Column(name = "first_name", length = 50, nullable = false)
     @NotBlank(message = "{campo.user.first-name}")
     private String firstName;
 
-    @Column(name = "last_name", length = 20, nullable = false)
+    @Column(name = "last_name", length = 50, nullable = false)
     @NotBlank(message = "{campo.user.last-name}")
     private String lastName;
 
@@ -53,7 +53,7 @@ public class User {
     private boolean isActive;
 
     @Column(name = "role_user", length = 20)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @ValidRole
     private Role role;
 

@@ -27,7 +27,7 @@ public class Training {
 
     @Column(name = "training_type", length = 8, nullable = false)
     @NotBlank(message = "Campo Tipo Treino Obrigatório")
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(value = EnumType.ORDINAL)
     private TrainingType trainingType;
 
     @Column(name = "is_done")
