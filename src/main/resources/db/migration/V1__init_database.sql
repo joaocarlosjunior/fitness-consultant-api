@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS tbl_user (
     id_user BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    first_name VARCHAR(15) NOT NULL,
-    last_name VARCHAR(20) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     password VARCHAR,
@@ -57,10 +57,10 @@ CREATE TABLE IF NOT EXISTS tbl_exercise_name (
 
 CREATE TABLE IF NOT EXISTS tbl_heating (
     id_heating BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    series SMALLINT,
+    series INTEGER,
     repetitions VARCHAR(10),
-    initial_load SMALLINT,
-    final_load SMALLINT,
+    initial_load INTEGER,
+    final_load INTEGER,
     method_exercise VARCHAR(30),
     id_training BIGINT,
     id_exercise_name BIGINT,
@@ -71,10 +71,10 @@ CREATE TABLE IF NOT EXISTS tbl_heating (
 
 CREATE TABLE IF NOT EXISTS tbl_exercise (
     id_exercise BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    series SMALLINT,
+    series INTEGER,
     repetitions VARCHAR(10),
-    initial_load SMALLINT,
-    final_load SMALLINT,
+    initial_load INTEGER,
+    final_load INTEGER,
     method_exercise VARCHAR(30),
     id_training BIGINT,
     id_exercise_name BIGINT,
