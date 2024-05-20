@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,10 +37,11 @@ public class UserServiceImpl implements UserService {
                 .firstName(registerUserDTO.getFirstName())
                 .lastName(registerUserDTO.getLastName())
                 .email(registerUserDTO.getEmail())
-                .senha(registerUserDTO.getPassword())
+                .password(registerUserDTO.getPassword())
                 .phone(registerUserDTO.getPhone())
                 .isActive(false)
                 .role(Role.ROLE_USER)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         User userCreated = userRepository.save(newUser);
@@ -50,6 +53,7 @@ public class UserServiceImpl implements UserService {
                 .email(userCreated.getEmail())
                 .phone(userCreated.getPhone())
                 .role(userCreated.getRole())
+                .created_at(userCreated.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
                 .build();
     }
 
@@ -95,13 +99,18 @@ public class UserServiceImpl implements UserService {
 
         userMapper.toEntity(updateUserDTO, user);
 
+        user.setUpdatedAt(LocalDateTime.now());
+
         User updatedUser = userRepository.save(user);
+
         return RecoveryUserDTO
                 .builder()
                 .firstName(updatedUser.getFirstName())
                 .lastName(updatedUser.getLastName())
                 .email(updatedUser.getEmail())
                 .phone(updatedUser.getPhone())
+                .created_at(updatedUser.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
+                .updated_at(updatedUser.getUpdatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
                 .build();
     }
 
