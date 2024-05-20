@@ -30,4 +30,7 @@ public class RegisterUserDTO {
     @JsonProperty("password")
     @NotBlank(message = "Campo Sobrenome Obrigatório")
     private String password;
+
+    @JsonProperty("role")
+    private Integer role;
 }
