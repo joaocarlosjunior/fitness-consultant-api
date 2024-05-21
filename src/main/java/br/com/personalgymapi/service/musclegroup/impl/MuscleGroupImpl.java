@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class MuscleGroupImpl implements MuscleGroupService {
 
     private final MuscleGroupRepository muscleGroupRepository;
-    private final MuscleGroupMapper muscleGroupMapper;
 
     @Transactional
     public void addMuscleGroup(RegisterMuscleGroupDTO registerMuscleGroupDTO) {
@@ -64,7 +63,8 @@ public class MuscleGroupImpl implements MuscleGroupService {
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Id grupo muscular inválido"));
 
-        muscleGroupMapper.toEntity(registerMuscleGroupDTO, muscleGroup);
+
+        muscleGroup.setName(registerMuscleGroupDTO.getName());
 
         MuscleGroup updateMuscleGroup = muscleGroupRepository.save(muscleGroup);
 
@@ -86,7 +86,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
     private void checkMuscleGroupAlreadyExists(String nameMuscle) {
         nameMuscle = nameMuscle.trim();
         if (muscleGroupRepository.findByName(nameMuscle).isPresent()) {
-            throw new InfoAlreadyExistsException("Grupo Muscular já existe");
+            throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
         }
     }
 }
