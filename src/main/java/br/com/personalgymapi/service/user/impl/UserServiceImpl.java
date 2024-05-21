@@ -17,13 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Transactional
     public RecoveryUserDTO addUser(RegisterUserDTO registerUserDTO) {
@@ -36,11 +37,11 @@ public class UserServiceImpl implements UserService {
                 .builder()
                 .firstName(registerUserDTO.getFirstName())
                 .lastName(registerUserDTO.getLastName())
-                .email(registerUserDTO.getEmail())
+                .email(registerUserDTO.getEmail().toLowerCase())
                 .password(registerUserDTO.getPassword())
                 .phone(registerUserDTO.getPhone())
                 .isActive(false)
-                .role(Role.ROLE_USER)
+                .role(Role.fromValue(registerUserDTO.getRole()))
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
                 .email(userCreated.getEmail())
                 .phone(userCreated.getPhone())
                 .role(userCreated.getRole())
-                .created_at(userCreated.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
+                .created_at(formatDate(userCreated.getCreatedAt()))
                 .build();
     }
 
@@ -67,6 +68,8 @@ public class UserServiceImpl implements UserService {
                         .phone(user.getPhone())
                         .email(user.getEmail())
                         .role(user.getRole())
+                        .created_at(formatDate(user.getCreatedAt()))
+                        .updated_at(checkUpdateDate(user.getUpdatedAt()))
                         .build())
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
@@ -89,16 +92,18 @@ public class UserServiceImpl implements UserService {
                 userRepository.findById(id)
                         .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        if (updateUserDTO.getEmail() != null) {
+        if (!updateUserDTO.getEmail().toLowerCase().equals(user.getEmail())) {
             checkEmailAlreadyExists(updateUserDTO.getEmail());
         }
 
-        if (updateUserDTO.getPhone() != null) {
+        if (!updateUserDTO.getPhone().equals(user.getPhone())) {
             checkPhoneAlreadyExists(updateUserDTO.getPhone());
         }
 
-        userMapper.toEntity(updateUserDTO, user);
-
+        user.setFirstName(updateUserDTO.getFirstName());
+        user.setLastName(updateUserDTO.getLastName());
+        user.setEmail(updateUserDTO.getEmail());
+        user.setPhone(updateUserDTO.getPhone());
         user.setUpdatedAt(LocalDateTime.now());
 
         User updatedUser = userRepository.save(user);
@@ -109,8 +114,8 @@ public class UserServiceImpl implements UserService {
                 .lastName(updatedUser.getLastName())
                 .email(updatedUser.getEmail())
                 .phone(updatedUser.getPhone())
-                .created_at(updatedUser.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
-                .updated_at(updatedUser.getUpdatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
+                .created_at(formatDate(updatedUser.getCreatedAt()))
+                .updated_at(formatDate(updatedUser.getUpdatedAt()))
                 .build();
     }
 
@@ -122,20 +127,21 @@ public class UserServiceImpl implements UserService {
                 .map((user -> {
                     return RecoveryUserDTO
                             .builder()
+                            .id(user.getId())
                             .firstName(user.getFirstName())
                             .lastName(user.getLastName())
                             .email(user.getEmail())
                             .phone(user.getPhone())
                             .role(user.getRole())
-                            .created_at(user.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
-                            .updated_at(user.getUpdatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mm a")))
+                            .created_at(formatDate(user.getCreatedAt()))
+                            .updated_at(checkUpdateDate(user.getUpdatedAt()))
                             .build();
                 }))
                 .collect(Collectors.toList());
     }
 
     private void checkEmailAlreadyExists(String email) {
-        if (userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(email.toLowerCase()).isPresent()) {
             throw new InfoAlreadyExistsException("Email já cadastrado");
         }
     }
@@ -146,4 +152,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private String checkUpdateDate(LocalDateTime date){
+        return date!= null? formatDate(date): null;
+    }
+
+    private String formatDate(LocalDateTime date){
+        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
 }
