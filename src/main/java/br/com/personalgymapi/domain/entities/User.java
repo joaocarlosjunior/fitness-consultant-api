@@ -28,24 +28,24 @@ public class User {
     private Long id;
 
     @Column(name = "first_name", length = 50, nullable = false)
-    @NotBlank(message = "{campo.user.first-name}")
+    @NotBlank(message = "{field.user.first-name}")
     private String firstName;
 
     @Column(name = "last_name", length = 50, nullable = false)
-    @NotBlank(message = "{campo.user.last-name}")
+    @NotBlank(message = "{field.user.last-name}")
     private String lastName;
 
     @Column(name = "email", length = 50, unique = true, nullable = false)
-    @NotBlank(message = "{campo.user.email}")
+    @NotBlank(message = "{field.user.email}")
     private String email;
 
     @Column(name = "password", nullable = false)
-    @NotBlank(message = "{campo.user.senha}")
+    @NotBlank(message = "{field.user.password}")
     @JsonIgnore
     private String password;
 
     @Column(name = "phone",length = 20, unique = true)
-    @NotBlank(message = "{campo.user.phone}")
+    @NotBlank(message = "{field.user.phone}")
     private String phone;
 
     @Column(name = "is_active")
