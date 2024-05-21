@@ -1,3 +1,4 @@
+![bd](https://github.com/joaocarlosjunior/personal-gym-api/assets/83256465/6fd07072-ae61-467b-8e70-b20da115fa0d)
 
 <h2 id="rotas">API Endpoints</h2>
 Usuário:
