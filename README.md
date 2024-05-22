@@ -65,6 +65,7 @@ Grupo muscular:
 }
 ```
 <h3 id="delete-user">DELETE /api/v1/users/{id}</h3>
+
 **RESPONSE**: 204 NO CONTENT
 
 <h3 id="put-user">PUT /api/v1/users/{id}</h3>
