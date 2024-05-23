@@ -6,25 +6,33 @@ CREATE TABLE IF NOT EXISTS tbl_user (
     phone VARCHAR(20) NOT NULL,
     password VARCHAR,
     is_active BOOLEAN NOT NULL,
-    role_user VARCHAR(20) NOT NULL,
+    role VARCHAR(20) NOT NULL,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     PRIMARY KEY (id_user),
     CONSTRAINT email_unique UNIQUE (email),
-    CONSTRAINT phone_unique UNIQUE (phone),
-    CONSTRAINT role_check CHECK (role_user in ('ROLE_USER','ROLE_ADMIN'))
+    CONSTRAINT phone_unique UNIQUE (phone)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_periodization(
+    id_periodization BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+    name VARCHAR(30),
+    number_weeks INTEGER,
+    start_date TIMESTAMP,
+    id_user BIGINT,
+    PRIMARY KEY(id_periodization),
+    FOREIGN KEY (id_user) REFERENCES tbl_user (id_user)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_training (
     id_training BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    training_type VARCHAR(8),
+    training_type VARCHAR(1),
     is_done BOOLEAN,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
-    id_user BIGINT,
+    id_periodization BIGINT,
     PRIMARY KEY (id_training),
-    CONSTRAINT training_type_unique UNIQUE (training_type),
-    FOREIGN KEY (id_user) REFERENCES tbl_user (id_user)
+    FOREIGN KEY (id_periodization) REFERENCES tbl_periodization (id_periodization)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_training_time (
@@ -43,15 +51,12 @@ CREATE TABLE IF NOT EXISTS tbl_muscle_group (
     PRIMARY KEY (id_muscle_group)
 );
 
-CREATE TABLE IF NOT EXISTS tbl_musclegroup_training (
-    id_muscle_group BIGINT,
-    id_training BIGINT
-);
-
 CREATE TABLE IF NOT EXISTS tbl_exercise_name (
     id_exercise_name BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     exercise_name VARCHAR(30) NOT NULL,
+    id_muscle_group BIGINT,
     CONSTRAINT exercise_name_unique UNIQUE (exercise_name),
+    FOREIGN KEY (id_muscle_group) REFERENCES tbl_muscle_group (id_muscle_group),
     PRIMARY KEY (id_exercise_name)
 );
 
@@ -75,7 +80,7 @@ CREATE TABLE IF NOT EXISTS tbl_exercise (
     repetitions VARCHAR(10),
     initial_load INTEGER,
     final_load INTEGER,
-    method_exercise VARCHAR(30),
+    method_exercise VARCHAR(20),
     id_training BIGINT,
     id_exercise_name BIGINT,
     PRIMARY KEY (id_exercise),
