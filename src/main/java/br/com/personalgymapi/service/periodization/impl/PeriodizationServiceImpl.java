@@ -29,7 +29,8 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                 .findById(registerPeriodization.getUser())
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        Periodization periodization = Periodization.builder()
+        Periodization periodization =
+                Periodization.builder()
                 .name(registerPeriodization.getName())
                 .numberWeeks(registerPeriodization.getNumberWeeks())
                 .user(user)
@@ -39,11 +40,11 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         return RecoveryPeriodizationDTO
                 .builder()
-                .id(periodization.getId())
-                .idUser(periodization.getUser().getId())
-                .name(periodization.getName())
-                .numberWeeks(periodization.getNumberWeeks())
-                .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
+                .id(newPeriodization.getId())
+                .idUser(newPeriodization.getUser().getId())
+                .name(newPeriodization.getName())
+                .numberWeeks(newPeriodization.getNumberWeeks())
+                .startDate(DateUtils.checkUpdateDate(newPeriodization.getStarDate()))
                 .build();
     }
 
@@ -82,11 +83,14 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
     @Transactional
     public void deletePeriodization(Long id) {
-        Periodization periodization = periodizationRepository
+        periodizationRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Periodização não encontrada"));
-
-        periodizationRepository.delete(periodization);
+                .map(training -> {
+                    periodizationRepository.delete(training);
+                            return Void.class;
+                        }
+                )
+                .orElseThrow(() -> new IllegalArgumentException("Periodização não encontrado"));
     }
 
     @Transactional(readOnly = true)
