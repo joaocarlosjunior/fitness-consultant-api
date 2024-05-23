@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -52,8 +52,8 @@ public class User {
     @ValidIsActive
     private boolean isActive;
 
-    @Column(name = "role", length = 20)
-    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     @ValidRole
     private Role role;
 
@@ -63,6 +63,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Training> workouts;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Periodization> periodizations;
 }
