@@ -23,7 +23,7 @@ public class PeriodizationController {
         return periodizationService.createPeriodization(registerPeriodizationDTO);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RecoveryPeriodizationDTO getPeriodizationById(@PathVariable Long id){
         return periodizationService.getPeriodizationById(id);
