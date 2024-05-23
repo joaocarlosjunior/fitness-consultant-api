@@ -1,23 +1,23 @@
 package br.com.personalgymapi.service.user.impl;
 
+import br.com.personalgymapi.domain.entities.Periodization;
 import br.com.personalgymapi.domain.entities.User;
 import br.com.personalgymapi.domain.enums.Role;
 import br.com.personalgymapi.domain.repository.UserRepository;
+import br.com.personalgymapi.dto.periodization.RecoveryPeriodizationDTO;
 import br.com.personalgymapi.dto.user.RecoveryUserDTO;
 import br.com.personalgymapi.dto.user.RegisterUserDTO;
 import br.com.personalgymapi.dto.user.UpdateUserDTO;
 import br.com.personalgymapi.exception.InfoAlreadyExistsException;
 import br.com.personalgymapi.exception.UserNotFoundException;
-import br.com.personalgymapi.mapper.user.UserMapper;
 import br.com.personalgymapi.service.user.UserService;
+import br.com.personalgymapi.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
                 .email(userCreated.getEmail())
                 .phone(userCreated.getPhone())
                 .role(userCreated.getRole())
-                .created_at(formatDate(userCreated.getCreatedAt()))
+                .created_at(DateUtils.formatDate(userCreated.getCreatedAt()))
                 .build();
     }
 
@@ -62,15 +62,20 @@ public class UserServiceImpl implements UserService {
     public RecoveryUserDTO getUserById(Long id) {
         return userRepository
                 .findById(id)
-                .map(user -> RecoveryUserDTO.builder()
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .phone(user.getPhone())
-                        .email(user.getEmail())
-                        .role(user.getRole())
-                        .created_at(formatDate(user.getCreatedAt()))
-                        .updated_at(checkUpdateDate(user.getUpdatedAt()))
-                        .build())
+                .map(user -> {
+                            return RecoveryUserDTO.builder()
+                                    .id(user.getId())
+                                    .firstName(user.getFirstName())
+                                    .lastName(user.getLastName())
+                                    .phone(user.getPhone())
+                                    .email(user.getEmail())
+                                    .role(user.getRole())
+                                    .periodizations(getAllPeriodization(user.getPeriodizations()))
+                                    .created_at(DateUtils.formatDate(user.getCreatedAt()))
+                                    .updated_at(DateUtils.checkUpdateDate(user.getUpdatedAt()))
+                                    .build();
+                        }
+                )
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
@@ -114,8 +119,8 @@ public class UserServiceImpl implements UserService {
                 .lastName(updatedUser.getLastName())
                 .email(updatedUser.getEmail())
                 .phone(updatedUser.getPhone())
-                .created_at(formatDate(updatedUser.getCreatedAt()))
-                .updated_at(formatDate(updatedUser.getUpdatedAt()))
+                .created_at(DateUtils.formatDate(updatedUser.getCreatedAt()))
+                .updated_at(DateUtils.formatDate(updatedUser.getUpdatedAt()))
                 .build();
     }
 
@@ -133,11 +138,29 @@ public class UserServiceImpl implements UserService {
                             .email(user.getEmail())
                             .phone(user.getPhone())
                             .role(user.getRole())
-                            .created_at(formatDate(user.getCreatedAt()))
-                            .updated_at(checkUpdateDate(user.getUpdatedAt()))
+                            .created_at(DateUtils.formatDate(user.getCreatedAt()))
+                            .updated_at(DateUtils.checkUpdateDate(user.getUpdatedAt()))
                             .build();
                 }))
                 .collect(Collectors.toList());
+    }
+
+    private List<RecoveryPeriodizationDTO> getAllPeriodization(List<Periodization> periodizations) {
+        if(periodizations.isEmpty()){
+            return null;
+        }
+
+        return periodizations.stream()
+                .map(periodization -> {
+                    return RecoveryPeriodizationDTO
+                            .builder()
+                            .id(periodization.getId())
+                            .idUser(periodization.getUser().getId())
+                            .name(periodization.getName())
+                            .numberWeeks(periodization.getNumberWeeks())
+                            .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
+                            .build();
+                }).collect(Collectors.toList());
     }
 
     private void checkEmailAlreadyExists(String email) {
@@ -150,13 +173,5 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByPhone(phone).isPresent()) {
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
         }
-    }
-
-    private String checkUpdateDate(LocalDateTime date){
-        return date!= null? formatDate(date): null;
-    }
-
-    private String formatDate(LocalDateTime date){
-        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 }
