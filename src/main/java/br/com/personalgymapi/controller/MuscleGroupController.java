@@ -1,4 +1,4 @@
-package br.com.personalgymapi.controller.musculegroup;
+package br.com.personalgymapi.controller;
 
 import br.com.personalgymapi.dto.musuculegroup.RecoveryMuscleGroupDTO;
 import br.com.personalgymapi.dto.musuculegroup.RegisterMuscleGroupDTO;

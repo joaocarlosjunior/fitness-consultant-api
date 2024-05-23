@@ -1,4 +1,4 @@
-package br.com.personalgymapi.controller.training;
+package br.com.personalgymapi.controller;
 
 import br.com.personalgymapi.dto.training.RecoveryTrainingDTO;
 import br.com.personalgymapi.dto.training.RegisterTrainingDTO;

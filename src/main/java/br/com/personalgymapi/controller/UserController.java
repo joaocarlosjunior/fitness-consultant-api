@@ -1,4 +1,4 @@
-package br.com.personalgymapi.controller.user;
+package br.com.personalgymapi.controller;
 
 import br.com.personalgymapi.dto.user.RecoveryUserDTO;
 import br.com.personalgymapi.dto.user.RegisterUserDTO;
