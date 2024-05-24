@@ -31,7 +31,7 @@ public class Exercise{
     @Column(name = "final_load")
     private Integer finalLoad;
 
-    @Column(name = "method_exercise")
+    @Column(name = "method_exercise", length = 20)
     private String method;
 
     @ManyToOne
