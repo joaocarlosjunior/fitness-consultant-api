@@ -31,10 +31,10 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         Periodization periodization =
                 Periodization.builder()
-                .name(registerPeriodization.getName())
-                .numberWeeks(registerPeriodization.getNumberWeeks())
-                .user(user)
-                .build();
+                        .name(registerPeriodization.getName())
+                        .numberWeeks(registerPeriodization.getNumberWeeks())
+                        .user(user)
+                        .build();
 
         Periodization newPeriodization = periodizationRepository.save(periodization);
 
@@ -86,7 +86,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
         periodizationRepository
                 .findById(id)
                 .map(training -> {
-                    periodizationRepository.delete(training);
+                            periodizationRepository.delete(training);
                             return Void.class;
                         }
                 )
