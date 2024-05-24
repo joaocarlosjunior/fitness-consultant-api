@@ -34,6 +34,9 @@ public class RecoveryUserDTO {
     @JsonProperty("updated_at")
     private String updated_at;
 
+    @JsonProperty("is_active")
+    private boolean isActive;
+
     @JsonProperty("periodizations")
     private List<RecoveryPeriodizationDTO> periodizations;
 }
