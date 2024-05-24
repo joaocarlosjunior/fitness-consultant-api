@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS tbl_periodization(
 
 CREATE TABLE IF NOT EXISTS tbl_training (
     id_training BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    training_type VARCHAR(1),
+    training_type CHAR,
+    training_name VARCHAR(20),
     is_done BOOLEAN,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS tbl_heating (
     repetitions VARCHAR(10),
     initial_load INTEGER,
     final_load INTEGER,
-    method_exercise VARCHAR(30),
+    method_exercise VARCHAR(20),
     id_training BIGINT,
     id_exercise_name BIGINT,
     PRIMARY KEY (id_heating),
@@ -81,7 +82,7 @@ CREATE TABLE IF NOT EXISTS tbl_exercise (
     initial_load INTEGER,
     final_load INTEGER,
     method_exercise VARCHAR(20),
-    id_training BIGINT,
+    id_training BIGINT NULL,
     id_exercise_name BIGINT,
     PRIMARY KEY (id_exercise),
     FOREIGN KEY (id_training) REFERENCES tbl_training (id_training),
