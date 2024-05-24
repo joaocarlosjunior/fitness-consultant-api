@@ -2,7 +2,6 @@ package br.com.personalgymapi.domain.entities;
 
 import br.com.personalgymapi.domain.enums.TrainingType;
 import br.com.personalgymapi.validation.ValidTrainingType;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,10 +24,13 @@ public class Training {
     @Column(name = "id_training", nullable = false)
     private Long id;
 
-    @Column(name = "training_type", length = 8, nullable = false)
-    @Enumerated(value = EnumType.ORDINAL)
+    @Column(name = "training_type", length = 1)
+    @Enumerated(EnumType.STRING)
     @ValidTrainingType
     private TrainingType trainingType;
+
+    @Column(name = "training_name", length = 20)
+    private String trainingName;
 
     @Column(name = "is_done")
     private boolean isDone = false;
@@ -39,25 +41,16 @@ public class Training {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_user")
-    private User user;
+    @OneToMany(mappedBy = "training", fetch = FetchType.EAGER)
+    private List<Exercise> exercises;
 
     @OneToMany(mappedBy = "training", fetch = FetchType.EAGER)
-    private Set<Exercise> exercises;
-
-    @OneToMany(mappedBy = "training", fetch = FetchType.EAGER)
-    private Set<Heating> warmups;
-
-    //@JsonManagedReference
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "tbl_musclegroup_training",
-            joinColumns = @JoinColumn(name = "id_training"),
-            inverseJoinColumns = @JoinColumn(name = "id_muscle_group")
-    )
-    private Set<MuscleGroup> muscleGroups;
+    private List<Heating> warmups;
 
     @OneToMany(mappedBy = "training")
-    private Set<TimeTraining> timeTrainings;
+    private List<TimeTraining> timeTrainings;
+
+    @ManyToOne
+    @JoinColumn(name = "id_periodization")
+    private Periodization periodization;
 }
