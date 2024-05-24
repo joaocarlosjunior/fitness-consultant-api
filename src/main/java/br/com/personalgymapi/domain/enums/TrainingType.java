@@ -18,9 +18,9 @@ public enum TrainingType {
     }
 
     public static TrainingType fromValue(int value) {
-        for (TrainingType role : TrainingType.values()) {
-            if (role.getValue() == value) {
-                return role;
+        for (TrainingType trainingType : TrainingType.values()) {
+            if (trainingType.getValue() == value) {
+                return trainingType;
             }
         }
         throw new IllegalArgumentException("Valor de TrainingType inválido: " + value);
