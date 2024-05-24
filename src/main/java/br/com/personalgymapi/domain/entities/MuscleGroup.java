@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +23,10 @@ public class MuscleGroup {
     private Long id;
 
     @Column(name = "name_group", length = 50, nullable = false)
-    @NotBlank(message = "Campo Nome Grupo Muscular é obrigatório")
+    @NotBlank(message = "{field.groupmuscle.name}")
     private String name;
+
+    @OneToMany(mappedBy = "muscleGroup")
+    private List<ExerciseName> exerciseNames;
 }
 
