@@ -44,7 +44,7 @@ public class UserController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RecoveryUserDTO updateById(@PathVariable Long id, @RequestBody @Valid UpdateUserDTO updateUserDTO){
-        return userService.update(id, updateUserDTO);
+        return userService.updateUser(id, updateUserDTO);
     }
 
     //USER e ADMIN
@@ -52,5 +52,17 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<RecoveryUserDTO> getAllUsers()  {
         return userService.getAllUsers();
+    }
+
+    @PostMapping("/active-user/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void setActiveUser(@PathVariable Long id){
+        userService.setActiveUser(id);
+    }
+
+    @PostMapping("/disable-user/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void setDisableUser(@PathVariable Long id){
+        userService.setDisableUser(id);
     }
 }

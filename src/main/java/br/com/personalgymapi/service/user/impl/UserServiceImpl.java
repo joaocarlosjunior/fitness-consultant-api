@@ -29,9 +29,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public RecoveryUserDTO addUser(RegisterUserDTO registerUserDTO) {
 
-        checkEmailAlreadyExists(registerUserDTO.getEmail());
+        checkEmailExists(registerUserDTO.getEmail());
 
-        checkPhoneAlreadyExists(registerUserDTO.getPhone());
+        checkPhoneExists(registerUserDTO.getPhone());
 
         User newUser = User
                 .builder()
@@ -54,29 +54,26 @@ public class UserServiceImpl implements UserService {
                 .email(userCreated.getEmail())
                 .phone(userCreated.getPhone())
                 .role(userCreated.getRole())
+                .isActive(userCreated.isActive())
                 .created_at(DateUtils.formatDate(userCreated.getCreatedAt()))
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public RecoveryUserDTO getUserById(Long id) {
-        return userRepository
-                .findById(id)
-                .map(user -> {
-                            return RecoveryUserDTO.builder()
-                                    .id(user.getId())
-                                    .firstName(user.getFirstName())
-                                    .lastName(user.getLastName())
-                                    .phone(user.getPhone())
-                                    .email(user.getEmail())
-                                    .role(user.getRole())
-                                    .periodizations(getAllPeriodization(user.getPeriodizations()))
-                                    .created_at(DateUtils.formatDate(user.getCreatedAt()))
-                                    .updated_at(DateUtils.checkUpdateDate(user.getUpdatedAt()))
-                                    .build();
-                        }
-                )
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+        User user = getUser(id);
+
+        return RecoveryUserDTO.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .isActive(user.isActive())
+                .periodizations(getAllPeriodization(user.getPeriodizations()))
+                .created_at(DateUtils.formatDate(user.getCreatedAt()))
+                .updated_at(DateUtils.checkUpdateDate(user.getUpdatedAt()))
+                .build();
     }
 
     @Transactional
@@ -91,18 +88,40 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
-    @Transactional
-    public RecoveryUserDTO update(Long id, UpdateUserDTO updateUserDTO) {
-        User user =
-                userRepository.findById(id)
-                        .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+    public void setActiveUser(Long id) {
+        User user = getUser(id);
 
-        if (!updateUserDTO.getEmail().toLowerCase().equals(user.getEmail())) {
-            checkEmailAlreadyExists(updateUserDTO.getEmail());
+        if(!user.isActive()){
+            user.setActive(true);
+            userRepository.save(user);
+        }
+    }
+
+    public void setDisableUser(Long id) {
+        User user = getUser(id);
+
+        if(user.isActive()){
+            user.setActive(false);
+            userRepository.save(user);
+        }
+    }
+
+    @Transactional
+    public RecoveryUserDTO updateUser(Long id, UpdateUserDTO updateUserDTO) {
+        User user = getUser(id);
+
+        String currentEmail = user.getEmail();
+        String newEmail = updateUserDTO.getEmail();
+
+        if(!newEmail.equals(currentEmail)){
+            checkEmailExists(newEmail);
         }
 
-        if (!updateUserDTO.getPhone().equals(user.getPhone())) {
-            checkPhoneAlreadyExists(updateUserDTO.getPhone());
+        String newPhone = updateUserDTO.getPhone();
+        String currentPhone = user.getPhone();
+
+        if (!newPhone.equals(currentPhone)) {
+            checkPhoneExists(newPhone);
         }
 
         user.setFirstName(updateUserDTO.getFirstName());
@@ -138,6 +157,7 @@ public class UserServiceImpl implements UserService {
                             .email(user.getEmail())
                             .phone(user.getPhone())
                             .role(user.getRole())
+                            .isActive(user.isActive())
                             .created_at(DateUtils.formatDate(user.getCreatedAt()))
                             .updated_at(DateUtils.checkUpdateDate(user.getUpdatedAt()))
                             .build();
@@ -163,15 +183,31 @@ public class UserServiceImpl implements UserService {
                 }).collect(Collectors.toList());
     }
 
-    private void checkEmailAlreadyExists(String email) {
-        if (userRepository.findByEmail(email.toLowerCase()).isPresent()) {
+    @Transactional(readOnly = true)
+    protected User getUser(Long id){
+        return userRepository
+                .findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
+    }
+
+    @Transactional(readOnly = true)
+    protected void checkEmailExists(String email){
+        boolean emailExists = userRepository
+                .existsByEmailIgnoreCase(email);
+
+        if(emailExists){
             throw new InfoAlreadyExistsException("Email já cadastrado");
         }
     }
 
-    private void checkPhoneAlreadyExists(String phone) {
-        if (userRepository.findByPhone(phone).isPresent()) {
+    @Transactional(readOnly = true)
+    protected void checkPhoneExists(String phone){
+        boolean phoneExists = userRepository
+                .existsByPhone(phone);
+
+        if(phoneExists){
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
         }
     }
+
 }
