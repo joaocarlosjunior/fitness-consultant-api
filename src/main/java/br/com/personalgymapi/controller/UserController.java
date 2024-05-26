@@ -54,13 +54,13 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping("/active-user/{id}")
+    @PatchMapping("/active-user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void setActiveUser(@PathVariable Long id){
         userService.setActiveUser(id);
     }
 
-    @PostMapping("/disable-user/{id}")
+    @PatchMapping("/disable-user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void setDisableUser(@PathVariable Long id){
         userService.setDisableUser(id);
