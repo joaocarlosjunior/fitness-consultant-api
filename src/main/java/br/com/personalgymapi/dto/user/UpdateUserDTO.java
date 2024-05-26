@@ -9,18 +9,14 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateUserDTO {
-    @JsonProperty("first_name")
     @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ]+$", message = "O campo Nome deve conter apenas letras")
     private String firstName;
 
-    @JsonProperty("last_name")
     @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ]+$", message = "O campo Sobrenome deve conter apenas letras")
     private String lastName;
 
-    @JsonProperty("email")
     @Email
     private String email;
 
-    @JsonProperty("phone")
     private String phone;
 }
