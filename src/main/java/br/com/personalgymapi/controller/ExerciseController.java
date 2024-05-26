@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/exercise")
+@RequestMapping("/api/v1/exercises")
 @RequiredArgsConstructor
 public class ExerciseController {
     private final ExerciseService exerciseService;
@@ -21,7 +21,7 @@ public class ExerciseController {
         return exerciseService.createExercise(registerExerciseDTO);
     }
 
-    @PutMapping("/training/{id}")
+    @PatchMapping("/training/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void addIdTrainingInExercise(@PathVariable Long id, @RequestBody UpdateIdTrainingExerciseDTO updateIdTrainingExerciseDTO){
         exerciseService.addIdTrainingInExercise(id, updateIdTrainingExerciseDTO);
