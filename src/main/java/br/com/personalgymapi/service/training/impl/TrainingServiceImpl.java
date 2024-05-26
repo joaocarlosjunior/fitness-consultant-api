@@ -44,7 +44,7 @@ public class TrainingServiceImpl implements TrainingService {
                 .id(training.getId())
                 .trainingType(training.getTrainingType().name())
                 .trainingName(training.getTrainingName())
-                .created_at(DateUtils.formatDate(training.getCreatedAt()))
+                .createdAt(DateUtils.formatDate(training.getCreatedAt()))
                 .build();
     }
 
@@ -68,8 +68,8 @@ public class TrainingServiceImpl implements TrainingService {
                 .id(updateTraining.getId())
                 .trainingType(updateTraining.getTrainingType().name())
                 .trainingName(updateTraining.getTrainingName())
-                .created_at(DateUtils.formatDate(updateTraining.getCreatedAt()))
-                .updated_at(DateUtils.formatDate(LocalDateTime.now()))
+                .createdAt(DateUtils.formatDate(updateTraining.getCreatedAt()))
+                .updatedAt(DateUtils.formatDate(LocalDateTime.now()))
                 .build();
     }
 
@@ -96,8 +96,8 @@ public class TrainingServiceImpl implements TrainingService {
                 .id(training.getId())
                 .trainingName(training.getTrainingName())
                 .trainingType(training.getTrainingType().name())
-                .created_at(DateUtils.formatDate(training.getCreatedAt()))
-                .updated_at(DateUtils.checkUpdateDate(training.getUpdatedAt()))
+                .createdAt(DateUtils.formatDate(training.getCreatedAt()))
+                .updatedAt(DateUtils.checkUpdateDate(training.getUpdatedAt()))
                 .build();
     }
 }
