@@ -26,8 +26,8 @@ Grupo muscular:
 **REQUEST**
 ```json
 {
-  "first_name": "João",
-  "last_name": "Carlos",
+  "firstName": "João",
+  "lastName": "Carlos",
   "email": "joaocarlos@email.com",
   "phone": "7799999559",
   "password": "123456",
@@ -44,8 +44,8 @@ Grupo muscular:
   "email": "joaocarlos@email.com",
   "phone": "7799999559",
   "role": "ROLE_USER",
-  "created_at": "21/05/2024 16:09",
-  "updated_at": null
+  "createdAt": "21/05/2024 16:09",
+  "updatedAt": null
 }
 ```
 
@@ -60,8 +60,8 @@ Grupo muscular:
   "email": "joaocarlos@email.com",
   "phone": "7799999559",
   "role": "ROLE_USER",
-  "created_at": "21/05/2024 16:14",
-  "updated_at": null
+  "createdAt": "21/05/2024 16:14",
+  "updatedAt": null
 }
 ```
 <h3 id="delete-user">DELETE /api/v1/users/{id}</h3>
@@ -72,8 +72,8 @@ Grupo muscular:
 **REQUEST**
 ```json
 {
-  "first_name": "João",
-  "last_name": "Carlos Ribas",
+  "firstName": "João",
+  "lastName": "Carlos Ribas",
   "email": "joaocarlos@email.com",
   "phone": "7799999559"
 }
@@ -88,8 +88,8 @@ Grupo muscular:
   "email": "joaocarlos@email.com",
   "phone": "7799999559",
   "role": null,
-  "created_at": "21/05/2024 16:52",
-  "updated_at": "21/05/2024 17:01"
+  "createdAt": "21/05/2024 16:52",
+  "updatedAt": "21/05/2024 17:01"
 }
 ```
 
@@ -105,8 +105,8 @@ Grupo muscular:
     "email": "joaocarlos@email.com",
     "phone": "7799999559",
     "role": "ROLE_USER",
-    "created_at": "21/05/2024 16:52",
-    "updated_at": "21/05/2024 17:01"
+    "createdAt": "21/05/2024 16:52",
+    "updatedAt": "21/05/2024 17:01"
   },
   {
     "id": 2,
@@ -115,8 +115,8 @@ Grupo muscular:
     "email": "joaocarlos01@email.com",
     "phone": "7799999556",
     "role": "ROLE_USER",
-    "created_at": "21/05/2024 16:57",
-    "updated_at": null
+    "createdAt": "21/05/2024 16:57",
+    "updatedAt": null
   }
 ]
 ```
