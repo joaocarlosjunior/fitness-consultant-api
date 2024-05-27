@@ -1,8 +1,10 @@
 package br.com.personalgymapi.dto.exercise;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.Getter;
 
+@Data
 @Getter
 public class RegisterExerciseDTO {
     private Integer series;

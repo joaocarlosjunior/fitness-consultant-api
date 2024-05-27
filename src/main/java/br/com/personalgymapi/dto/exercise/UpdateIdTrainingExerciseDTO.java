@@ -1,9 +1,9 @@
 package br.com.personalgymapi.dto.exercise;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class UpdateIdTrainingExerciseDTO {
     @NotNull(message = "Informe id treino")
     private Long idTraining;

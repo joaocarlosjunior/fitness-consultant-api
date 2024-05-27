@@ -2,9 +2,9 @@ package br.com.personalgymapi.dto.periodization;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class RegisterPeriodizationDTO {
     @NotBlank(message = "Nome da periodização obrigatório")
     private String name;
@@ -12,5 +12,5 @@ public class RegisterPeriodizationDTO {
     private Integer numberWeeks;
 
     @NotNull(message = "Usuário obrigatório")
-    private Long user;
+    private Long idUser;
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class RecoveryUserDTO {
-    private Long id;
+    private Long idUser;
 
     private String firstName;
 

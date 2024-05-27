@@ -1,9 +1,13 @@
 package br.com.personalgymapi.dto.exercise;
 
 import lombok.Builder;
+import lombok.Data;
 
+@Data
 @Builder
 public class RecoveryExerciseDTO {
+    private Long idExercise;
+
     private Integer series;
 
     private String repetitions;

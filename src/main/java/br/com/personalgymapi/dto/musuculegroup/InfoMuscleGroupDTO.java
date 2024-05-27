@@ -1,8 +1,8 @@
 package br.com.personalgymapi.dto.musuculegroup;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class InfoMuscleGroupDTO {
     private Long idMuscleGroup;
 }

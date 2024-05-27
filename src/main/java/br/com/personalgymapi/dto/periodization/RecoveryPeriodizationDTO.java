@@ -1,11 +1,12 @@
 package br.com.personalgymapi.dto.periodization;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
+import lombok.Data;
 
+@Data
 @Builder
 public class RecoveryPeriodizationDTO {
-    private Long id;
+    private Long idPeriodization;
 
     private Long idUser;
 
