@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface MuscleGroupRepository extends JpaRepository<MuscleGroup,Long> {
-    Optional<MuscleGroup> findByName(String name);
+    boolean existsByNameIgnoreCase(String name);
 }
