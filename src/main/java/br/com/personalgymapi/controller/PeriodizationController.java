@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/periodization")
+@RequestMapping("/api/v1/periodizations")
 @RequiredArgsConstructor
 public class PeriodizationController {
     private final PeriodizationService periodizationService;
