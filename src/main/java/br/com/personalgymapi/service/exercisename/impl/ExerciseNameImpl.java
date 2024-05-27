@@ -20,8 +20,12 @@ public class ExerciseNameImpl implements ExerciseNameService {
 
     @Transactional
     public void createExerciseName(RegisterExerciseNameDTO registerExerciseNameDTO) {
+        boolean exerciseNameExists = exerciseNameRepository.
+                existsByExerciseNameIgnoreCase(registerExerciseNameDTO.getExerciseName());
 
-        checkExerciseNameExists(registerExerciseNameDTO.getExerciseName());
+        if (exerciseNameExists) {
+            throw new InfoAlreadyExistsException("Nome Exercício já existente");
+        }
 
         MuscleGroup muscleGroup = muscleGroupRepository
                 .findById(registerExerciseNameDTO.getIdMuscleGroup())
@@ -44,6 +48,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
 
         return RecoveryExerciseNameDTO
                 .builder()
+                .idExerciseName(exerciseName.getId())
                 .exerciseName(exerciseName.getExerciseName())
                 .muscleGroup(exerciseName.getMuscleGroup().getName())
                 .build();
@@ -60,7 +65,12 @@ public class ExerciseNameImpl implements ExerciseNameService {
         String currentExerciseName = exerciseName.getExerciseName();
 
         if (!newExerciseName.equalsIgnoreCase(currentExerciseName)) {
-            checkExerciseNameExists(newExerciseName);
+            boolean exerciseNameExists = exerciseNameRepository.
+                    existsByExerciseNameIgnoreCase(newExerciseName);
+
+            if (exerciseNameExists) {
+                throw new InfoAlreadyExistsException("Nome Exercício já existente");
+            }
         }
 
         MuscleGroup muscleGroup = muscleGroupRepository
@@ -89,15 +99,5 @@ public class ExerciseNameImpl implements ExerciseNameService {
                 })
                 .orElseThrow(() -> new InfoAlreadyExistsException("Id Nome Exercício não existe"));
 
-    }
-
-    @Transactional(readOnly = true)
-    protected void checkExerciseNameExists(String exerciseName){
-        boolean exerciseNameExists = exerciseNameRepository.
-                existsByExerciseNameIgnoreCase(exerciseName);
-
-        if (exerciseNameExists) {
-            throw new InfoAlreadyExistsException("Nome Exercício já existente");
-        }
     }
 }

@@ -202,7 +202,7 @@ public class UserServiceImpl implements UserService {
                 .map(periodization -> {
                     return RecoveryPeriodizationDTO
                             .builder()
-                            .id(periodization.getId())
+                            .idPeriodization(periodization.getId())
                             .idUser(periodization.getUser().getId())
                             .name(periodization.getName())
                             .numberWeeks(periodization.getNumberWeeks())

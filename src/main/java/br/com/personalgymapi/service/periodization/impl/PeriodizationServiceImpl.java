@@ -26,7 +26,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     @Transactional
     public RecoveryPeriodizationDTO createPeriodization(RegisterPeriodizationDTO registerPeriodization) {
         User user = userRepository
-                .findById(registerPeriodization.getUser())
+                .findById(registerPeriodization.getIdUser())
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         Periodization periodization =
@@ -40,7 +40,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         return RecoveryPeriodizationDTO
                 .builder()
-                .id(newPeriodization.getId())
+                .idPeriodization(newPeriodization.getId())
                 .idUser(newPeriodization.getUser().getId())
                 .name(newPeriodization.getName())
                 .numberWeeks(newPeriodization.getNumberWeeks())
@@ -73,7 +73,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         return RecoveryPeriodizationDTO
                 .builder()
-                .id(periodization.getId())
+                .idPeriodization(periodization.getId())
                 .idUser(periodization.getUser().getId())
                 .name(periodization.getName())
                 .numberWeeks(periodization.getNumberWeeks())
@@ -101,7 +101,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                 .map((periodization -> {
                     return RecoveryPeriodizationDTO
                             .builder()
-                            .id(periodization.getId())
+                            .idPeriodization(periodization.getId())
                             .idUser(periodization.getUser().getId())
                             .name(periodization.getName())
                             .numberWeeks(periodization.getNumberWeeks())

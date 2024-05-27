@@ -43,6 +43,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         return RecoveryExerciseDTO
                 .builder()
+                .idExercise(newExercise.getId())
                 .exerciseName(newExercise.getExerciseName().getExerciseName())
                 .finalLoad(newExercise.getFinalLoad())
                 .initialLoad(newExercise.getInitialLoad())
@@ -97,6 +98,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         return RecoveryExerciseDTO
                 .builder()
+                .idExercise(updateExercise.getId())
                 .series(updateExercise.getSeries())
                 .repetitions(updateExercise.getRepetitions())
                 .method(updateExercise.getMethod())

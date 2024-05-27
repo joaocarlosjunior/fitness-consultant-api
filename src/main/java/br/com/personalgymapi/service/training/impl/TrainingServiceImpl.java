@@ -41,7 +41,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         return RecoveryTrainingDTO
                 .builder()
-                .id(training.getId())
+                .idTraining(training.getId())
                 .trainingType(training.getTrainingType().name())
                 .trainingName(training.getTrainingName())
                 .createdAt(DateUtils.formatDate(training.getCreatedAt()))
@@ -65,7 +65,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         return RecoveryTrainingDTO
                 .builder()
-                .id(updateTraining.getId())
+                .idTraining(updateTraining.getId())
                 .trainingType(updateTraining.getTrainingType().name())
                 .trainingName(updateTraining.getTrainingName())
                 .createdAt(DateUtils.formatDate(updateTraining.getCreatedAt()))
@@ -93,7 +93,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         return RecoveryTrainingDTO
                 .builder()
-                .id(training.getId())
+                .idTraining(training.getId())
                 .trainingName(training.getTrainingName())
                 .trainingType(training.getTrainingType().name())
                 .createdAt(DateUtils.formatDate(training.getCreatedAt()))

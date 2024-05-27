@@ -22,7 +22,10 @@ public class MuscleGroupImpl implements MuscleGroupService {
 
     @Transactional
     public void addMuscleGroup(RegisterMuscleGroupDTO registerMuscleGroupDTO) {
-        checkMuscleGroupAlreadyExists(registerMuscleGroupDTO.getName());
+
+        if (muscleGroupRepository.existsByNameIgnoreCase(registerMuscleGroupDTO.getName().trim())) {
+            throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
+        }
 
         MuscleGroup newMuscleGroup = MuscleGroup
                 .builder()
@@ -38,6 +41,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
                 .findById(id)
                 .map(muscleGroup -> RecoveryMuscleGroupDTO
                         .builder()
+                        .idMuscleGroup(muscleGroup.getId())
                         .name(muscleGroup.getName())
                         .build()
                 )
@@ -57,18 +61,20 @@ public class MuscleGroupImpl implements MuscleGroupService {
 
     @Transactional
     public RecoveryMuscleGroupDTO update(Long id, RegisterMuscleGroupDTO registerMuscleGroupDTO) {
-        checkMuscleGroupAlreadyExists(registerMuscleGroupDTO.getName());
+        if (muscleGroupRepository.existsByNameIgnoreCase(registerMuscleGroupDTO.getName())) {
+            throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
+        }
 
         MuscleGroup muscleGroup = muscleGroupRepository
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Id grupo muscular inválido"));
-
 
         muscleGroup.setName(registerMuscleGroupDTO.getName());
 
         MuscleGroup updateMuscleGroup = muscleGroupRepository.save(muscleGroup);
 
         return RecoveryMuscleGroupDTO.builder()
+                .idMuscleGroup(updateMuscleGroup.getId())
                 .name(updateMuscleGroup.getName())
                 .build();
     }
@@ -78,15 +84,9 @@ public class MuscleGroupImpl implements MuscleGroupService {
         return muscleGroupRepository.findAll()
                 .stream().map(muscleGroup -> RecoveryMuscleGroupDTO
                         .builder()
+                        .idMuscleGroup(muscleGroup.getId())
                         .name(muscleGroup.getName())
                         .build()
                 ).collect(Collectors.toList());
-    }
-
-    private void checkMuscleGroupAlreadyExists(String nameMuscle) {
-        nameMuscle = nameMuscle.trim();
-        if (muscleGroupRepository.findByName(nameMuscle).isPresent()) {
-            throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
-        }
     }
 }
