@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS tbl_periodization(
     number_weeks INTEGER,
     start_date TIMESTAMP,
     id_user BIGINT,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     PRIMARY KEY(id_periodization),
     FOREIGN KEY (id_user) REFERENCES tbl_user (id_user)
 );
