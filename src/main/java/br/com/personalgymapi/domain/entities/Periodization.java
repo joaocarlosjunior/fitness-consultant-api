@@ -33,6 +33,12 @@ public class Periodization {
     @Column(name = "start_date")
     private LocalDateTime starDate;
 
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
