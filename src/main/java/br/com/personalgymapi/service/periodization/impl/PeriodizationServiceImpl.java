@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                 Periodization.builder()
                         .name(registerPeriodization.getName())
                         .numberWeeks(registerPeriodization.getNumberWeeks())
+                        .createdAt(LocalDateTime.now())
                         .user(user)
                         .build();
 
@@ -41,9 +43,9 @@ public class PeriodizationServiceImpl implements PeriodizationService {
         return RecoveryPeriodizationDTO
                 .builder()
                 .idPeriodization(newPeriodization.getId())
-                .idUser(newPeriodization.getUser().getId())
                 .name(newPeriodization.getName())
                 .numberWeeks(newPeriodization.getNumberWeeks())
+                .createdAt(DateUtils.formatDate(newPeriodization.getCreatedAt()))
                 .startDate(DateUtils.checkUpdateDate(newPeriodization.getStarDate()))
                 .build();
     }
@@ -56,12 +58,15 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         periodization.setName(updatePeriodizationDTO.getName());
         periodization.setNumberWeeks(updatePeriodizationDTO.getNumberWeeks());
+        periodization.setUpdatedAt(LocalDateTime.now());
 
         Periodization updatePeriodization = periodizationRepository.save(periodization);
 
         return RecoveryPeriodizationDTO.builder()
                 .name(updatePeriodizationDTO.getName())
                 .numberWeeks(updatePeriodization.getNumberWeeks())
+                .createdAt(DateUtils.formatDate(updatePeriodization.getCreatedAt()))
+                .updatedAt(DateUtils.formatDate(periodization.getUpdatedAt()))
                 .build();
     }
 
@@ -74,10 +79,10 @@ public class PeriodizationServiceImpl implements PeriodizationService {
         return RecoveryPeriodizationDTO
                 .builder()
                 .idPeriodization(periodization.getId())
-                .idUser(periodization.getUser().getId())
                 .name(periodization.getName())
                 .numberWeeks(periodization.getNumberWeeks())
                 .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
+                .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
                 .build();
     }
 
@@ -102,12 +107,34 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                     return RecoveryPeriodizationDTO
                             .builder()
                             .idPeriodization(periodization.getId())
-                            .idUser(periodization.getUser().getId())
                             .name(periodization.getName())
                             .numberWeeks(periodization.getNumberWeeks())
                             .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
+                            .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
+                            .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
                             .build();
                 })).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<RecoveryPeriodizationDTO> getAllPeriodizationByUser(Long id) {
+        userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+
+        List<Periodization> periodizations = periodizationRepository
+                .getAllPeriodizationByIdUser(id);
+
+        return periodizations.
+                stream()
+                .map(periodization -> {
+                    return RecoveryPeriodizationDTO
+                            .builder()
+                            .idPeriodization(periodization.getId())
+                            .name(periodization.getName())
+                            .numberWeeks(periodization.getNumberWeeks())
+                            .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
 }

@@ -16,4 +16,6 @@ public interface PeriodizationService {
     void deletePeriodization(Long id);
 
     List<RecoveryPeriodizationDTO> getAllPeriodization();
+
+    List<RecoveryPeriodizationDTO> getAllPeriodizationByUser( Long id);
 }
