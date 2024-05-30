@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/exercises")
 @RequiredArgsConstructor
@@ -37,5 +39,10 @@ public class ExerciseController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteExercise(@PathVariable Long id){
         exerciseService.deleteExercise(id);
+    }
+
+    @GetMapping("/training/{id}")
+    public List<RecoveryExerciseDTO> getAllExercisesByIdTraining(@PathVariable Long id){
+        return exerciseService.getAllExercisesByIdTraining(id);
     }
 }
