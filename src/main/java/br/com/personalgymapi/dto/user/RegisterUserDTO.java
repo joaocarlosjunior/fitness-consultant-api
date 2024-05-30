@@ -20,6 +20,7 @@ public class RegisterUserDTO {
     private String email;
 
     @NotBlank(message = "{field.user.phone}")
+    @Pattern(regexp = "^[0-9]+$", message = "O campo phone deve conter apenas números")
     private String phone;
 
     @NotBlank(message = "{field.user.password}")
