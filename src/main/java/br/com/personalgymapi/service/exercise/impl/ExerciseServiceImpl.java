@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ExerciseServiceImpl implements ExerciseService {
@@ -28,6 +31,10 @@ public class ExerciseServiceImpl implements ExerciseService {
                 .findById(registerExerciseDTO.getExerciseName())
                 .orElseThrow(() -> new IllegalArgumentException("Nome de exercício não encontrado"));
 
+        Training training = trainingRepository
+                .findById(registerExerciseDTO.getIdTraining())
+                .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado"));
+
         Exercise exercise = Exercise
                 .builder()
                 .exerciseName(exerciseName)
@@ -35,7 +42,7 @@ public class ExerciseServiceImpl implements ExerciseService {
                 .initialLoad(registerExerciseDTO.getInitialLoad())
                 .repetitions(registerExerciseDTO.getRepetitions())
                 .series(registerExerciseDTO.getSeries())
-                .training(null)
+                .training(training)
                 .method(registerExerciseDTO.getMethod())
                 .build();
 
@@ -81,12 +88,12 @@ public class ExerciseServiceImpl implements ExerciseService {
             exercise.setExerciseName(exerciseName);
         }
 
-        if (!registerExerciseDTO.getIdTraining().equals(exercise.getTraining().getId())) {
+        /*if (!registerExerciseDTO.getIdTraining().equals(exercise.getTraining().getId())) {
             Training training = trainingRepository
                     .findById(registerExerciseDTO.getIdTraining())
                     .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado"));
             exercise.setTraining(training);
-        }
+        }*/
 
         exercise.setMethod(registerExerciseDTO.getMethod());
         exercise.setSeries(registerExerciseDTO.getSeries());
@@ -117,6 +124,29 @@ public class ExerciseServiceImpl implements ExerciseService {
                     return Void.class;
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Exercicio não encontrado"));
+    }
+
+    public List<RecoveryExerciseDTO> getAllExercisesByIdTraining(Long id) {
+        trainingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Exercicio não encontrado"));
+
+        List<Exercise> exercises = exerciseRepository.getAllExercisesByIdTraining(id);
+
+        return exercises
+                .stream()
+                .map(exercise -> {
+                    return
+                            RecoveryExerciseDTO
+                                    .builder()
+                                    .idExercise(exercise.getId())
+                                    .exerciseName(exercise.getExerciseName().getExerciseName())
+                                    .initialLoad(exercise.getInitialLoad())
+                                    .finalLoad(exercise.getFinalLoad())
+                                    .method(exercise.getMethod())
+                                    .series(exercise.getSeries())
+                                    .build();
+                })
+                .collect(Collectors.toList());
     }
 
 }
