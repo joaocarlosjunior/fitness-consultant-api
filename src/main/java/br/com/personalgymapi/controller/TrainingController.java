@@ -2,10 +2,13 @@ package br.com.personalgymapi.controller;
 
 import br.com.personalgymapi.dto.training.RecoveryTrainingDTO;
 import br.com.personalgymapi.dto.training.RegisterTrainingDTO;
+import br.com.personalgymapi.dto.training.UpdateTrainingDTO;
 import br.com.personalgymapi.service.training.TrainingService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/workouts")
@@ -40,6 +43,12 @@ public class TrainingController {
     @ResponseStatus(HttpStatus.OK)
     public RecoveryTrainingDTO getTrainingById(@PathVariable Long id){
         return trainingService.getTrainingById(id);
+    }
+
+    @GetMapping("/periodization/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RecoveryTrainingDTO> getAllTrainingByIdPeriodization(@PathVariable Long id){
+        return trainingService.getAllTrainingByIdPeriodization(id);
     }
 
 }
