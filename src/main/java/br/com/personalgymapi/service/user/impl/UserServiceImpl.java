@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
 
         return RecoveryUserDTO.builder()
-                .id(user.getId())
+                .idUser(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .phone(user.getPhone())
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
                 .map((user -> {
                     return RecoveryUserDTO
                             .builder()
-                            .id(user.getId())
+                            .idUser(user.getId())
                             .firstName(user.getFirstName())
                             .lastName(user.getLastName())
                             .email(user.getEmail())
@@ -203,10 +203,11 @@ public class UserServiceImpl implements UserService {
                     return RecoveryPeriodizationDTO
                             .builder()
                             .idPeriodization(periodization.getId())
-                            .idUser(periodization.getUser().getId())
                             .name(periodization.getName())
                             .numberWeeks(periodization.getNumberWeeks())
                             .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
+                            .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
+                            .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
                             .build();
                 }).collect(Collectors.toList());
     }
