@@ -46,4 +46,10 @@ public class PeriodizationController {
     public List<RecoveryPeriodizationDTO> getAllPeriodization(){
         return periodizationService.getAllPeriodization();
     }
+
+    @GetMapping("/user/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RecoveryPeriodizationDTO> getAllPeriodizationByIdUser(@PathVariable Long id){
+        return periodizationService.getAllPeriodizationByUser(id);
+    }
 }
