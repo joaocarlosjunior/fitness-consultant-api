@@ -8,11 +8,13 @@ import lombok.Data;
 public class RecoveryPeriodizationDTO {
     private Long idPeriodization;
 
-    private Long idUser;
-
     private String name;
 
     private Integer numberWeeks;
 
     private String startDate;
+
+    private String createdAt;
+
+    private String updatedAt;
 }
