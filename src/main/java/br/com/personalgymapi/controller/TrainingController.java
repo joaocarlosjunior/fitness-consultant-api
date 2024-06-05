@@ -2,7 +2,6 @@ package br.com.personalgymapi.controller;
 
 import br.com.personalgymapi.dto.training.RecoveryTrainingDTO;
 import br.com.personalgymapi.dto.training.RegisterTrainingDTO;
-import br.com.personalgymapi.dto.training.UpdateTrainingDTO;
 import br.com.personalgymapi.service.training.TrainingService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
