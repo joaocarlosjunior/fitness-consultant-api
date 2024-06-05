@@ -1,13 +1,12 @@
 package br.com.personalgymapi.service.training.impl;
 
-import br.com.personalgymapi.domain.entities.*;
+import br.com.personalgymapi.domain.entities.Periodization;
+import br.com.personalgymapi.domain.entities.Training;
 import br.com.personalgymapi.domain.enums.TrainingType;
-import br.com.personalgymapi.domain.repository.*;
-import br.com.personalgymapi.dto.exercise.RegisterExerciseDTO;
+import br.com.personalgymapi.domain.repository.PeriodizationRepository;
+import br.com.personalgymapi.domain.repository.TrainingRepository;
 import br.com.personalgymapi.dto.training.RecoveryTrainingDTO;
 import br.com.personalgymapi.dto.training.RegisterTrainingDTO;
-import br.com.personalgymapi.dto.training.UpdateTrainingDTO;
-import br.com.personalgymapi.exception.UserNotFoundException;
 import br.com.personalgymapi.service.training.TrainingService;
 import br.com.personalgymapi.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +22,6 @@ import java.util.stream.Collectors;
 public class TrainingServiceImpl implements TrainingService {
     private final TrainingRepository trainingRepository;
     private final PeriodizationRepository periodizationRepository;
-    private final ExerciseRepository exerciseRepository;
-    private final ExerciseNameRepository exerciseNameRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public RecoveryTrainingDTO createTraining(RegisterTrainingDTO registerTrainingDTO) {
@@ -33,7 +29,6 @@ public class TrainingServiceImpl implements TrainingService {
         Periodization periodization = periodizationRepository
                 .findById(registerTrainingDTO.getIdPeriodization())
                 .orElseThrow(() -> new IllegalArgumentException("Id periodização inválido"));
-
 
         Training newTraining = Training
                 .builder()
@@ -117,44 +112,12 @@ public class TrainingServiceImpl implements TrainingService {
                     return
                             RecoveryTrainingDTO
                                     .builder()
+                                    .idTraining(training.getId())
                                     .trainingType(training.getTrainingType().name())
                                     .trainingName(training.getTrainingName())
                                     .createdAt(DateUtils.formatDate(training.getCreatedAt()))
                                     .build();
                 })
                 .collect(Collectors.toList());
-    }
-
-    private List<Exercise> convertExercises(Training training, List<RegisterExerciseDTO> exercises) {
-        if (exercises.isEmpty()) {
-            throw new IllegalArgumentException("Não é possivel salvar treino sem exercicio");
-        }
-
-        return exercises
-                .stream()
-                .map(exercise -> {
-                    return Exercise
-                            .builder()
-                            .training(training)
-                            .repetitions(exercise.getRepetitions())
-                            .initialLoad(exercise.getInitialLoad())
-                            .finalLoad(exercise.getFinalLoad())
-                            .exerciseName(findExerciseName(exercise.getExerciseName()))
-                            .series(exercise.getSeries())
-                            .method(exercise.getMethod())
-                            .build();
-                }).collect(Collectors.toList());
-    }
-
-    private ExerciseName findExerciseName(Long id) {
-        return exerciseNameRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Exercicio não encontrado"));
-    }
-
-    private User findUser(Long id) {
-        return userRepository
-                .findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 }
