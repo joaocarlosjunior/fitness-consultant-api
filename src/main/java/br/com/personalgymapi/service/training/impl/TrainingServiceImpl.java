@@ -108,16 +108,13 @@ public class TrainingServiceImpl implements TrainingService {
         List<Training> trainings = trainingRepository.getAllTrainingByIdPeriodization(id);
 
         return trainings.stream()
-                .map(training -> {
-                    return
-                            RecoveryTrainingDTO
-                                    .builder()
-                                    .idTraining(training.getId())
-                                    .trainingType(training.getTrainingType().name())
-                                    .trainingName(training.getTrainingName())
-                                    .createdAt(DateUtils.formatDate(training.getCreatedAt()))
-                                    .build();
-                })
+                .map(training -> RecoveryTrainingDTO
+                        .builder()
+                        .idTraining(training.getId())
+                        .trainingType(training.getTrainingType().name())
+                        .trainingName(training.getTrainingName())
+                        .createdAt(DateUtils.formatDate(training.getCreatedAt()))
+                        .build())
                 .collect(Collectors.toList());
     }
 }
