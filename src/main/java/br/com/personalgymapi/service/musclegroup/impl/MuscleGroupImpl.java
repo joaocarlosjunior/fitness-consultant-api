@@ -2,10 +2,9 @@ package br.com.personalgymapi.service.musclegroup.impl;
 
 import br.com.personalgymapi.domain.entities.MuscleGroup;
 import br.com.personalgymapi.domain.repository.MuscleGroupRepository;
-import br.com.personalgymapi.dto.musuculegroup.RegisterMuscleGroupDTO;
 import br.com.personalgymapi.dto.musuculegroup.RecoveryMuscleGroupDTO;
+import br.com.personalgymapi.dto.musuculegroup.RegisterMuscleGroupDTO;
 import br.com.personalgymapi.exception.InfoAlreadyExistsException;
-import br.com.personalgymapi.mapper.musclegroup.MuscleGroupMapper;
 import br.com.personalgymapi.service.musclegroup.MuscleGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
