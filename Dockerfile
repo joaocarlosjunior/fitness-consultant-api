@@ -1,5 +1,4 @@
-FROM eclipse-temurin:17.0.8.1_1-jdk-jammy
-VOLUME /tmp
+FROM openjdk:17.0.10
 COPY . .
 RUN ./mvnw clean install -DskipTests
 RUN java --version
