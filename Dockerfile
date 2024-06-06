@@ -1,4 +1,4 @@
-FROM openjdk:17.0.10
+FROM openjdk:17-jdk-slim
 COPY . .
 RUN ./mvnw clean install -DskipTests
 RUN java --version
