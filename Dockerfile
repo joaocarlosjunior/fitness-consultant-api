@@ -1,5 +1,17 @@
-FROM openjdk:17-jdk-slim
-COPY . .
-RUN ./mvnw clean install -DskipTests
-RUN java --version
-ENTRYPOINT ["java", "--jar", "personal-gym-api-0.0.1.jar"]
+FROM openjdk:17-jdk AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src src
+
+COPY mvnw .
+COPY .mvn .mvn
+
+RUN chmod +x ./mvnw
+RUN ./mvnw clean package -DskipTests
+
+FROM openjdk:17-jdk
+VOLUME /tmp
+
+COPY --from=build /app/target/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+EXPOSE 8080
