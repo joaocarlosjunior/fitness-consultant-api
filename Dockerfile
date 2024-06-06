@@ -1,14 +1,10 @@
-FROM ubuntu:latest AS build
+FROM maven:3-eclipse-temurin-17 AS build
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
 COPY . .
 
-RUN ./mvnw clean install -DskipTests
+RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
-
-EXPOSE 8080
+FROM eclipse-temurin:17-jdk-jammy
 
 COPY --from=build /target/personal-gym-api-0.0.1.jar app.jar
 
