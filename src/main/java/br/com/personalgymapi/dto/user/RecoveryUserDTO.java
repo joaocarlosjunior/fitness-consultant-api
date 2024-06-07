@@ -5,7 +5,7 @@ import br.com.personalgymapi.dto.periodization.RecoveryPeriodizationDTO;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -28,5 +28,5 @@ public class RecoveryUserDTO {
 
     private boolean isActive;
 
-    private List<RecoveryPeriodizationDTO> periodizations;
+    private Set<RecoveryPeriodizationDTO> periodizations;
 }
