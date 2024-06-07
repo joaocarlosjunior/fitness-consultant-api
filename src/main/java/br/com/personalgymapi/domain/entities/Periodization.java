@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -44,5 +44,5 @@ public class Periodization {
     private User user;
 
     @OneToMany(mappedBy = "periodization")
-    private List<Training> trainings;
+    private Set<Training> trainings;
 }

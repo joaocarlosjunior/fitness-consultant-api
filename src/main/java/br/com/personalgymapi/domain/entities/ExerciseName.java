@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -29,7 +28,7 @@ public class ExerciseName {
     private Set<Exercise> exercises;
 
     @OneToMany(mappedBy = "exerciseName")
-    private List<Heating> heatings;
+    private Set<Heating> heatings;
 
     @ManyToOne
     @JoinColumn(name = "id_muscle_group", nullable = false)
