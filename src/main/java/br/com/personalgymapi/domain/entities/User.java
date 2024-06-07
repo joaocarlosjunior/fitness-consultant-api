@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -63,6 +63,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<Periodization> periodizations;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Periodization> periodizations;
 }

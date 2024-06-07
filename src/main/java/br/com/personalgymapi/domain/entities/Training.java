@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -41,14 +41,14 @@ public class Training {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "training", fetch = FetchType.EAGER)
-    private List<Exercise> exercises;
+    @OneToMany(mappedBy = "training", fetch = FetchType.LAZY)
+    private Set<Exercise> exercises;
 
-    @OneToMany(mappedBy = "training", fetch = FetchType.EAGER)
-    private List<Heating> warmups;
+    @OneToMany(mappedBy = "training", fetch = FetchType.LAZY)
+    private Set<Heating> warmups;
 
     @OneToMany(mappedBy = "training")
-    private List<TimeTraining> timeTrainings;
+    private Set<TimeTraining> timeTrainings;
 
     @ManyToOne
     @JoinColumn(name = "id_periodization")
