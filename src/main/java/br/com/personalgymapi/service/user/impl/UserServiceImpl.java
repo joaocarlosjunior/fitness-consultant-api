@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -193,7 +194,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    private List<RecoveryPeriodizationDTO> getAllPeriodization(List<Periodization> periodizations) {
+    private Set<RecoveryPeriodizationDTO> getAllPeriodization(Set<Periodization> periodizations) {
         if(periodizations.isEmpty()){
             return null;
         }
@@ -209,6 +210,6 @@ public class UserServiceImpl implements UserService {
                             .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
                             .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
                             .build();
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toSet());
     }
 }
