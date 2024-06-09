@@ -1,4 +1,4 @@
-![bd](https://github.com/joaocarlosjunior/personal-gym-api/assets/83256465/001e6225-1216-4971-9b2c-da82a11ee2ca)
+![bd](https://github.com/joaocarlosjunior/fitness-consultant-api/assets/83256465/0b511b8c-c3a1-4b66-98af-de9845ba8a9e)
 
 ## SWAGGER
 Link do swagger:
