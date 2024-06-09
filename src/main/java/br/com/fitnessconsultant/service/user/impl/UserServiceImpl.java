@@ -4,8 +4,8 @@ import br.com.fitnessconsultant.domain.entities.Periodization;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
 import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
-import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
+import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
@@ -13,7 +13,6 @@ import br.com.fitnessconsultant.mappers.UserMapper;
 import br.com.fitnessconsultant.service.user.UserService;
 import br.com.fitnessconsultant.utils.DateUtils;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
         if(emailExists){
             throw new InfoAlreadyExistsException("Email já cadastrado");
-        };
+        }
 
         boolean phoneExists = userRepository
                 .existsByPhone(requestUserDTO.getPhone());
