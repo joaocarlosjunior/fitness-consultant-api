@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository,
+                           UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
@@ -64,9 +65,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void delete(@NotNull @Positive Long id) {
-        userRepository
-                .delete(userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado")));
+        userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+
+        userRepository.deletedById(id);
     }
 
     @Transactional
@@ -135,7 +137,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<ResponseUserDTO> list() {
         return userRepository
-                .findAll()
+                .findAllUserIsActive(true)
                 .stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
