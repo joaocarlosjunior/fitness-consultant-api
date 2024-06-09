@@ -7,6 +7,7 @@ import br.com.fitnessconsultant.domain.repository.UserRepository;
 import br.com.fitnessconsultant.dto.periodization.RecoveryPeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.RegisterPeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
+import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.service.periodization.PeriodizationService;
 import br.com.fitnessconsultant.utils.DateUtils;
@@ -54,7 +55,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     public RecoveryPeriodizationDTO updatePeriodization(Long id, UpdatePeriodizationDTO updatePeriodizationDTO) {
         Periodization periodization = periodizationRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Periodização inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
         periodization.setName(updatePeriodizationDTO.getName());
         periodization.setNumberWeeks(updatePeriodizationDTO.getNumberWeeks());
@@ -74,7 +75,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     public RecoveryPeriodizationDTO getPeriodizationById(Long id) {
         Periodization periodization = periodizationRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Periodização inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
         return RecoveryPeriodizationDTO
                 .builder()
@@ -95,7 +96,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                             return Void.class;
                         }
                 )
-                .orElseThrow(() -> new IllegalArgumentException("Periodização inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
     }
 
     @Transactional(readOnly = true)
@@ -103,17 +104,16 @@ public class PeriodizationServiceImpl implements PeriodizationService {
         return periodizationRepository
                 .findAll()
                 .stream()
-                .map((periodization -> {
-                    return RecoveryPeriodizationDTO
-                            .builder()
-                            .idPeriodization(periodization.getId())
-                            .name(periodization.getName())
-                            .numberWeeks(periodization.getNumberWeeks())
-                            .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
-                            .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
-                            .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
-                            .build();
-                })).collect(Collectors.toList());
+                .map((periodization -> RecoveryPeriodizationDTO
+                        .builder()
+                        .idPeriodization(periodization.getId())
+                        .name(periodization.getName())
+                        .numberWeeks(periodization.getNumberWeeks())
+                        .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
+                        .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
+                        .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
+                        .build()))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -126,15 +126,13 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         return periodizations.
                 stream()
-                .map(periodization -> {
-                    return RecoveryPeriodizationDTO
-                            .builder()
-                            .idPeriodization(periodization.getId())
-                            .name(periodization.getName())
-                            .numberWeeks(periodization.getNumberWeeks())
-                            .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
-                            .build();
-                })
+                .map(periodization -> RecoveryPeriodizationDTO
+                        .builder()
+                        .idPeriodization(periodization.getId())
+                        .name(periodization.getName())
+                        .numberWeeks(periodization.getNumberWeeks())
+                        .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
+                        .build())
                 .collect(Collectors.toList());
     }
 }

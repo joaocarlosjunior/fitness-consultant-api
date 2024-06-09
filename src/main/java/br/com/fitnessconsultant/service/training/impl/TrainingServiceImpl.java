@@ -7,6 +7,7 @@ import br.com.fitnessconsultant.domain.repository.PeriodizationRepository;
 import br.com.fitnessconsultant.domain.repository.TrainingRepository;
 import br.com.fitnessconsultant.dto.training.RecoveryTrainingDTO;
 import br.com.fitnessconsultant.dto.training.RegisterTrainingDTO;
+import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.service.training.TrainingService;
 import br.com.fitnessconsultant.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         Periodization periodization = periodizationRepository
                 .findById(registerTrainingDTO.getIdPeriodization())
-                .orElseThrow(() -> new IllegalArgumentException("Id periodização inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
         Training newTraining = Training
                 .builder()
@@ -53,11 +54,11 @@ public class TrainingServiceImpl implements TrainingService {
     public RecoveryTrainingDTO updateTraining(Long id, RegisterTrainingDTO registerTrainingDTO) {
         Training training = trainingRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado"));
+                .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
 
         Periodization periodization = periodizationRepository
                 .findById(registerTrainingDTO.getIdPeriodization())
-                .orElseThrow(() -> new IllegalArgumentException("Periodização inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
         training.setTrainingName(registerTrainingDTO.getTrainingName());
         training.setTrainingType(TrainingType.fromValue(registerTrainingDTO.getTrainingType()));
@@ -83,14 +84,14 @@ public class TrainingServiceImpl implements TrainingService {
                             return Void.class;
                         }
                 )
-                .orElseThrow(() -> new IllegalArgumentException("Treino inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
     }
 
     @Transactional(readOnly = true)
     public RecoveryTrainingDTO getTrainingById(Long id) {
         Training training = trainingRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Treino inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
 
         return RecoveryTrainingDTO
                 .builder()
@@ -104,7 +105,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Transactional(readOnly = true)
     public List<RecoveryTrainingDTO> getAllTrainingByIdPeriodization(Long id) {
         periodizationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Periodização inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
         List<Training> trainings = trainingRepository.getAllTrainingByIdPeriodization(id);
 

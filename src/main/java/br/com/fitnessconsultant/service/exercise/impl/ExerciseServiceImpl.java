@@ -8,6 +8,7 @@ import br.com.fitnessconsultant.domain.repository.ExerciseRepository;
 import br.com.fitnessconsultant.domain.repository.TrainingRepository;
 import br.com.fitnessconsultant.dto.exercise.RecoveryExerciseDTO;
 import br.com.fitnessconsultant.dto.exercise.RegisterExerciseDTO;
+import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.service.exercise.ExerciseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,11 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(registerExerciseDTO.getExerciseName())
-                .orElseThrow(() -> new IllegalArgumentException("Nome de exercício inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Nome de exercício não encontrado"));
 
         Training training = trainingRepository
                 .findById(registerExerciseDTO.getIdTraining())
-                .orElseThrow(() -> new IllegalArgumentException("Treino inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
 
         Exercise exercise = Exercise
                 .builder()
@@ -63,12 +64,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     public RecoveryExerciseDTO updateExercise(Long id, RegisterExerciseDTO registerExerciseDTO) {
         Exercise exercise = exerciseRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Exercicio inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
 
         if (!registerExerciseDTO.getExerciseName().equals(exercise.getExerciseName().getId())) {
             ExerciseName exerciseName = exerciseNameRepository
                     .findById(registerExerciseDTO.getExerciseName())
-                    .orElseThrow(() -> new IllegalArgumentException("Nome Exercicio inválido ou inexistente"));
+                    .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
             exercise.setExerciseName(exerciseName);
         }
 
@@ -100,29 +101,26 @@ public class ExerciseServiceImpl implements ExerciseService {
                     exerciseRepository.delete(exercise);
                     return Void.class;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Exercicio inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
     }
 
     public List<RecoveryExerciseDTO> getAllExercisesByIdTraining(Long id) {
         trainingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Exercicio inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
 
         List<Exercise> exercises = exerciseRepository.getAllExercisesByIdTraining(id);
 
         return exercises
                 .stream()
-                .map(exercise -> {
-                    return
-                            RecoveryExerciseDTO
-                                    .builder()
-                                    .idExercise(exercise.getId())
-                                    .exerciseName(exercise.getExerciseName().getExerciseName())
-                                    .initialLoad(exercise.getInitialLoad())
-                                    .finalLoad(exercise.getFinalLoad())
-                                    .method(exercise.getMethod())
-                                    .series(exercise.getSeries())
-                                    .build();
-                })
+                .map(exercise -> RecoveryExerciseDTO
+                        .builder()
+                        .idExercise(exercise.getId())
+                        .exerciseName(exercise.getExerciseName().getExerciseName())
+                        .initialLoad(exercise.getInitialLoad())
+                        .finalLoad(exercise.getFinalLoad())
+                        .method(exercise.getMethod())
+                        .series(exercise.getSeries())
+                        .build())
                 .collect(Collectors.toList());
     }
 

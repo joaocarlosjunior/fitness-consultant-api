@@ -7,6 +7,7 @@ import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
 import br.com.fitnessconsultant.dto.exercisename.RecoveryExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.RegisterExerciseNameDTO;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
+import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.service.exercisename.ExerciseNameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
 
         MuscleGroup muscleGroup = muscleGroupRepository
                 .findById(registerExerciseNameDTO.getIdMuscleGroup())
-                .orElseThrow(() -> new IllegalArgumentException("Grupo Muscular inválido"));
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
         ExerciseName exerciseName = ExerciseName
                 .builder()
@@ -47,7 +48,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
     public RecoveryExerciseNameDTO getExerciseNameById(Long id) {
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Nome Exercicio inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Nome Exercicio não encontrado"));
 
         return RecoveryExerciseNameDTO
                 .builder()
@@ -62,7 +63,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
                                                           RegisterExerciseNameDTO registerExerciseNameDTO) {
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Id Nome Exercício inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
 
         String newExerciseName = registerExerciseNameDTO.getExerciseName();
         String currentExerciseName = exerciseName.getExerciseName();
@@ -78,7 +79,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
 
         MuscleGroup muscleGroup = muscleGroupRepository
                 .findById(registerExerciseNameDTO.getIdMuscleGroup())
-                .orElseThrow(() -> new IllegalArgumentException("Id Grupo Muscular inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
         exerciseName.setExerciseName(registerExerciseNameDTO.getExerciseName());
         exerciseName.setMuscleGroup(muscleGroup);
@@ -100,7 +101,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
                     exerciseNameRepository.delete(exerciseName);
                     return Void.class;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Id Nome Exercício inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
 
     }
 

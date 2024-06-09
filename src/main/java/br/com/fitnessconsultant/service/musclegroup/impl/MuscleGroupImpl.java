@@ -5,6 +5,7 @@ import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
 import br.com.fitnessconsultant.dto.musuculegroup.RecoveryMuscleGroupDTO;
 import br.com.fitnessconsultant.dto.musuculegroup.RegisterMuscleGroupDTO;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
+import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.service.musclegroup.MuscleGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
                         .name(muscleGroup.getName())
                         .build()
                 )
-                .orElseThrow(() -> new IllegalArgumentException("Id Grupo Muscular inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
     }
 
     @Transactional
@@ -55,7 +56,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
                     muscleGroupRepository.delete(muscleGroup);
                     return Void.class;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Id Grupo Muscular inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
     }
 
     @Transactional
@@ -66,7 +67,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
 
         MuscleGroup muscleGroup = muscleGroupRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Id grupo muscular inválido ou inexistente"));
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
         muscleGroup.setName(registerMuscleGroupDTO.getName());
 

@@ -47,9 +47,9 @@ public class PersonalGymApiExceptionHandler {
         return new ApiErrors(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(RecordNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors IllegalArgumentException(IllegalArgumentException e) {
+    public ApiErrors IllegalArgumentException(RecordNotFoundException e) {
         return new ApiErrors(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
