@@ -6,12 +6,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
-    <groupId>br.com</groupId>
-    <artifactId>personal-gym-api</artifactId>
+    <groupId>br.com.fitnessconsultant</groupId>
+    <artifactId>fitness-consultant-api</artifactId>
     <version>0.0.1</version>
-    <name>Personal GYM api</name>
+    <name>Fitness Consultant api</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
