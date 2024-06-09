@@ -1,5 +1,11 @@
 ![bd](https://github.com/joaocarlosjunior/personal-gym-api/assets/83256465/001e6225-1216-4971-9b2c-da82a11ee2ca)
 
+## SWAGGER
+Link do swagger:
+```
+http://localhost:8080/fitness-consultant-documentation
+```
+
 <h2 id="rotas">API Endpoints</h2>
 Usuário:
 
