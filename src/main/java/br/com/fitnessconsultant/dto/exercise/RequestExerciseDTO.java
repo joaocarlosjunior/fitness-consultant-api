@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Data
 @Getter
-public class RegisterExerciseDTO {
+public class RequestExerciseDTO {
     @NotNull(message = "Id Treino obrigatório")
     private Long idTraining;
 

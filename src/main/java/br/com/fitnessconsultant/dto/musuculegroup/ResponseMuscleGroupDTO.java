@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RecoveryMuscleGroupDTO {
+public class ResponseMuscleGroupDTO {
     private Long idMuscleGroup;
 
     private String name;

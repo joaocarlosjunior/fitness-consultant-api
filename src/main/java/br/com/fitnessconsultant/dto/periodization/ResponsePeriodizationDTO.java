@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RecoveryPeriodizationDTO {
+public class ResponsePeriodizationDTO {
     private Long idPeriodization;
 
     private String name;

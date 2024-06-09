@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class RegisterTrainingDTO {
+public class RequestTrainingDTO {
     @NotNull(message = "id periodização obrigatório")
     private Long idPeriodization;
 

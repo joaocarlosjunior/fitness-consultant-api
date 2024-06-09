@@ -1,15 +1,12 @@
 package br.com.fitnessconsultant.dto.user;
 
 import br.com.fitnessconsultant.domain.enums.Role;
-import br.com.fitnessconsultant.dto.periodization.RecoveryPeriodizationDTO;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @Builder
-public class RecoveryUserDTO {
+public class ResponseUserDTO {
     private Long idUser;
 
     private String firstName;

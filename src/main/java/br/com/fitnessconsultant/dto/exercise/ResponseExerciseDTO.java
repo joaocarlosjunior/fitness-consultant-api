@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RecoveryExerciseDTO {
+public class ResponseExerciseDTO {
     private Long idExercise;
 
     private Integer series;

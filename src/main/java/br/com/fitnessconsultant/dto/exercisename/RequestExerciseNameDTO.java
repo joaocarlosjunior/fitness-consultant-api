@@ -3,7 +3,7 @@ package br.com.fitnessconsultant.dto.exercisename;
 import lombok.Data;
 
 @Data
-public class RegisterExerciseNameDTO {
+public class RequestExerciseNameDTO {
     private String exerciseName;
 
     private Long idMuscleGroup;

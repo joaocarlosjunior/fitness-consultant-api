@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class RegisterPeriodizationDTO {
+public class RequestPeriodizationDTO {
     @NotBlank(message = "Nome da periodização obrigatório")
     private String name;
 

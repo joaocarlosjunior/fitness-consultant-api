@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RecoveryTrainingDTO {
+public class ResponseTrainingDTO {
     private Long idTraining;
 
     private Long idPeriodization;
