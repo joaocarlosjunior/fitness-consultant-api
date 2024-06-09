@@ -1,4 +1,4 @@
-package br.com.personalgymapi.domain.entities;
+package br.com.fitnessconsultant.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

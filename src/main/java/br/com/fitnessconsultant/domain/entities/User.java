@@ -1,8 +1,8 @@
-package br.com.personalgymapi.domain.entities;
+package br.com.fitnessconsultant.domain.entities;
 
-import br.com.personalgymapi.domain.enums.Role;
-import br.com.personalgymapi.validation.ValidIsActive;
-import br.com.personalgymapi.validation.ValidRole;
+import br.com.fitnessconsultant.domain.enums.Role;
+import br.com.fitnessconsultant.validation.ValidIsActive;
+import br.com.fitnessconsultant.validation.ValidRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -63,6 +64,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<Periodization> periodizations;
+    @OneToMany(mappedBy = "user")
+    private Set<Periodization> periodizations = new HashSet<>();
 }

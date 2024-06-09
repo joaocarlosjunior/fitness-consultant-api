@@ -1,7 +1,8 @@
-package br.com.personalgymapi.domain.entities;
+package br.com.fitnessconsultant.domain.entities;
 
-import br.com.personalgymapi.domain.enums.TrainingType;
-import br.com.personalgymapi.validation.ValidTrainingType;
+import br.com.fitnessconsultant.domain.enums.TrainingType;
+import br.com.fitnessconsultant.validation.ValidTrainingType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,12 +42,15 @@ public class Training {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "training", fetch = FetchType.LAZY)
     private Set<Exercise> exercises;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "training", fetch = FetchType.LAZY)
     private Set<Heating> warmups;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "training")
     private Set<TimeTraining> timeTrainings;
 
