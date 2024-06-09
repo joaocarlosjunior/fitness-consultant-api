@@ -1,8 +1,7 @@
 package br.com.fitnessconsultant.controller;
 
-import br.com.fitnessconsultant.dto.exercise.RecoveryExerciseDTO;
-import br.com.fitnessconsultant.dto.exercise.RegisterExerciseDTO;
-import br.com.fitnessconsultant.dto.exercise.UpdateIdTrainingExerciseDTO;
+import br.com.fitnessconsultant.dto.exercise.ResponseExerciseDTO;
+import br.com.fitnessconsultant.dto.exercise.RequestExerciseDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.exercise.ExerciseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class ExerciseController {
                     "carga inicial, carga final, método e nome do exercício"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Adicionado um novo exercício com sucesso", content = { @Content(schema = @Schema(implementation = RecoveryExerciseDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "201", description = "Adicionado um novo exercício com sucesso", content = { @Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", description = "Id Nome de Exercício ou Treino inválido ou inexistente",
                     content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
@@ -42,8 +43,8 @@ public class ExerciseController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RecoveryExerciseDTO createExercise(@RequestBody @Valid RegisterExerciseDTO registerExerciseDTO){
-        return exerciseService.createExercise(registerExerciseDTO);
+    public ResponseExerciseDTO create(@RequestBody @Valid @NotNull RequestExerciseDTO requestExerciseDTO){
+        return exerciseService.create(requestExerciseDTO);
     }
 
     @Operation(
@@ -53,7 +54,7 @@ public class ExerciseController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Atualizado exercício com sucesso",
-                    content = { @Content(schema = @Schema(implementation = RecoveryExerciseDTO.class), mediaType = "application/json") }),
+                    content = { @Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", description = "Id Exercício, Nome de Exercício ou Treino inválido ou inexistente",
                     content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
@@ -61,8 +62,8 @@ public class ExerciseController {
     })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryExerciseDTO updateExercise(@PathVariable Long id, @RequestBody RegisterExerciseDTO registerExerciseDTO){
-        return exerciseService.updateExercise(id, registerExerciseDTO);
+    public ResponseExerciseDTO update(@PathVariable @Positive @NotNull Long id, @RequestBody @Valid @NotNull RequestExerciseDTO requestExerciseDTO){
+        return exerciseService.update(id, requestExerciseDTO);
     }
 
     @Operation(
@@ -79,8 +80,8 @@ public class ExerciseController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteExercise(@PathVariable Long id){
-        exerciseService.deleteExercise(id);
+    public void delete(@PathVariable @Positive @NotNull Long id){
+        exerciseService.delete(id);
     }
 
     @Operation(
@@ -90,14 +91,14 @@ public class ExerciseController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Retornado com sucesso todos exercícios pelo id de treino"
-                    , content = { @Content(schema = @Schema(implementation = RecoveryExerciseDTO.class), mediaType = "application/json") }),
+                    , content = { @Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", description = "Id treino inválido ou inexistente",
                     content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @GetMapping("/training/{id}")
-    public List<RecoveryExerciseDTO> getAllExercisesByIdTraining(@PathVariable Long id){
+    public List<ResponseExerciseDTO> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id){
         return exerciseService.getAllExercisesByIdTraining(id);
     }
 }

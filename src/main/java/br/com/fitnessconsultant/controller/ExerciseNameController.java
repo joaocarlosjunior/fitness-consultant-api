@@ -1,7 +1,7 @@
 package br.com.fitnessconsultant.controller;
 
-import br.com.fitnessconsultant.dto.exercisename.RecoveryExerciseNameDTO;
-import br.com.fitnessconsultant.dto.exercisename.RegisterExerciseNameDTO;
+import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
+import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.exercisename.ExerciseNameService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,8 +41,8 @@ public class ExerciseNameController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createExerciseName(@RequestBody @Valid RegisterExerciseNameDTO registerExerciseNameDTO) {
-        exerciseNameService.createExerciseName(registerExerciseNameDTO);
+    public void create(@RequestBody @Valid @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
+        exerciseNameService.create(requestExerciseNameDTO);
     }
 
     @Operation(
@@ -49,15 +51,15 @@ public class ExerciseNameController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Criado um novo nome de exercício",
-                    content = {@Content(schema = @Schema(implementation = RecoveryExerciseNameDTO.class), mediaType = "application/json")}),
+                    content = {@Content(schema = @Schema(implementation = ResponseExerciseNameDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id Nome Exercício inválido ou inexistente", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryExerciseNameDTO getExerciseNameById(@PathVariable Long id) {
-        return exerciseNameService.getExerciseNameById(id);
+    public ResponseExerciseNameDTO findById(@PathVariable @Positive @NotNull Long id) {
+        return exerciseNameService.findById(id);
     }
 
     @Operation(
@@ -66,16 +68,16 @@ public class ExerciseNameController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Atualizado nome de exercício com sucesso",
-                    content = {@Content(schema = @Schema(implementation = RecoveryExerciseNameDTO.class), mediaType = "application/json")}),
+                    content = {@Content(schema = @Schema(implementation = ResponseExerciseNameDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id Nome Exercício ou Grupo Muscular inválido ou inexistente", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @PutMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryExerciseNameDTO updateExerciseNameById(@PathVariable Long id,
-                                                          @RequestBody @Valid RegisterExerciseNameDTO registerExerciseNameDTO) {
-        return exerciseNameService.updateExerciseNameById(id, registerExerciseNameDTO);
+    public ResponseExerciseNameDTO update(@PathVariable @Positive @NotNull Long id,
+                                          @RequestBody @Valid @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
+        return exerciseNameService.update(id, requestExerciseNameDTO);
     }
 
     @Operation(
@@ -90,8 +92,8 @@ public class ExerciseNameController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTrainingById(@PathVariable Long id) {
-        exerciseNameService.deleteExerciseNameById(id);
+    public void delete(@PathVariable @Positive @NotNull Long id) {
+        exerciseNameService.delete(id);
     }
 
     @Operation(
@@ -100,14 +102,14 @@ public class ExerciseNameController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Retornado todos nomes de exercício com sucesso",
-                    content = {@Content(schema = @Schema(implementation = RecoveryExerciseNameDTO.class), mediaType = "application/json")}),
+                    content = {@Content(schema = @Schema(implementation = ResponseExerciseNameDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<RecoveryExerciseNameDTO> getAllExerciseName() {
-        return exerciseNameService.getAllExerciseName();
+    public List<ResponseExerciseNameDTO> list() {
+        return exerciseNameService.list();
     }
 
 }

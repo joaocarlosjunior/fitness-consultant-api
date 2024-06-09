@@ -1,7 +1,7 @@
 package br.com.fitnessconsultant.controller;
 
-import br.com.fitnessconsultant.dto.training.RecoveryTrainingDTO;
-import br.com.fitnessconsultant.dto.training.RegisterTrainingDTO;
+import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
+import br.com.fitnessconsultant.dto.training.RequestTrainingDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.training.TrainingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +38,15 @@ public class TrainingController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Criado um novo treino", content = { @Content(schema = @Schema(implementation = RecoveryTrainingDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "201", description = "Criado um novo treino", content = { @Content(schema = @Schema(implementation = ResponseTrainingDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RecoveryTrainingDTO createTraining(@RequestBody @Valid RegisterTrainingDTO registerTrainingDTO) {
-        return trainingService.createTraining(registerTrainingDTO);
+    public ResponseTrainingDTO create(@RequestBody @Valid @NotNull RequestTrainingDTO requestTrainingDTO) {
+        return trainingService.create(requestTrainingDTO);
     }
 
     @Operation(
@@ -54,16 +56,16 @@ public class TrainingController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = RecoveryTrainingDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ResponseTrainingDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PutMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryTrainingDTO updateTraining(@PathVariable Long id,
-                                              @RequestBody @Valid RegisterTrainingDTO registerTrainingDTO) {
-        return trainingService.updateTraining(id, registerTrainingDTO);
+    public ResponseTrainingDTO update(@PathVariable @Positive @NotNull Long id,
+                                      @RequestBody @Valid @NotNull RequestTrainingDTO requestTrainingDTO) {
+        return trainingService.update(id, requestTrainingDTO);
     }
 
     @Operation(
@@ -78,8 +80,8 @@ public class TrainingController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTraining(@PathVariable Long id){
-        trainingService.deleteTraining(id);
+    public void delete(@PathVariable @Positive @NotNull Long id){
+        trainingService.delete(id);
     }
 
     @Operation(
@@ -89,15 +91,15 @@ public class TrainingController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = RecoveryTrainingDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ResponseTrainingDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryTrainingDTO getTrainingById(@PathVariable Long id){
-        return trainingService.getTrainingById(id);
+    public ResponseTrainingDTO findById(@PathVariable @Positive @NotNull Long id){
+        return trainingService.findById(id);
     }
 
     @Operation(
@@ -107,7 +109,7 @@ public class TrainingController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = RecoveryTrainingDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ResponseTrainingDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
@@ -117,7 +119,7 @@ public class TrainingController {
     })
     @GetMapping("/periodization/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<RecoveryTrainingDTO> getAllTrainingByIdPeriodization(@PathVariable Long id){
+    public List<ResponseTrainingDTO> getAllTrainingByIdPeriodization(@PathVariable @Positive @NotNull Long id){
         return trainingService.getAllTrainingByIdPeriodization(id);
     }
 

@@ -1,7 +1,7 @@
 package br.com.fitnessconsultant.controller;
 
-import br.com.fitnessconsultant.dto.user.RecoveryUserDTO;
-import br.com.fitnessconsultant.dto.user.RegisterUserDTO;
+import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
+import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.user.UserService;
@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,14 +36,14 @@ public class UserController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Criado um novo usuário", content = { @Content(schema = @Schema(implementation = RecoveryUserDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "201", description = "Criado um novo usuário", content = { @Content(schema = @Schema(implementation = ResponseUserDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public RecoveryUserDTO createUser(@RequestBody @Valid RegisterUserDTO registerUserDTO){
-        return userService.addUser(registerUserDTO);
+    public ResponseUserDTO create(@RequestBody @Valid @NotNull RequestUserDTO requestUserDTO){
+        return userService.create(requestUserDTO);
     }
 
     @Operation(
@@ -51,15 +53,15 @@ public class UserController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = RecoveryUserDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ResponseUserDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryUserDTO getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseUserDTO findById(@PathVariable @Positive @NotNull Long id) {
+        return userService.findById(id);
     }
 
     @Operation(
@@ -74,8 +76,8 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletedById(@PathVariable Long id){
-        userService.deletedById(id);
+    public void delete(@PathVariable @Positive @NotNull Long id){
+        userService.delete(id);
     }
 
     @Operation(
@@ -85,15 +87,15 @@ public class UserController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = RecoveryUserDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ResponseUserDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryUserDTO updateById(@PathVariable Long id, @RequestBody @Valid UpdateUserDTO updateUserDTO){
-        return userService.updateUser(id, updateUserDTO);
+    public ResponseUserDTO update(@PathVariable @Positive @NotNull Long id, @RequestBody @Valid @NotNull UpdateUserDTO updateUserDTO){
+        return userService.update(id, updateUserDTO);
     }
 
     @Operation(
@@ -103,14 +105,14 @@ public class UserController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = RecoveryUserDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ResponseUserDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<RecoveryUserDTO> getAllUsers()  {
-        return userService.getAllUsers();
+    public List<ResponseUserDTO> list()  {
+        return userService.list();
     }
 
     @Operation(
@@ -125,7 +127,7 @@ public class UserController {
     })
     @PatchMapping("/active-user/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void setActiveUser(@PathVariable Long id){
+    public void setActiveUser(@PathVariable @Positive @NotNull Long id){
         userService.setActiveUser(id);
     }
 
@@ -141,7 +143,7 @@ public class UserController {
     })
     @PatchMapping("/disable-user/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void setDisableUser(@PathVariable Long id){
+    public void setDisableUser(@PathVariable @Positive @NotNull Long id){
         userService.setDisableUser(id);
     }
 }

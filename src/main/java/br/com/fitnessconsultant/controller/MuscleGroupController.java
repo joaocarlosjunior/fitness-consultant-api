@@ -1,7 +1,7 @@
 package br.com.fitnessconsultant.controller;
 
-import br.com.fitnessconsultant.dto.musuculegroup.RecoveryMuscleGroupDTO;
-import br.com.fitnessconsultant.dto.musuculegroup.RegisterMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.RequestMuscleGroupDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.musclegroup.MuscleGroupService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +39,8 @@ public class MuscleGroupController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createMuscleGroup(@RequestBody @Valid RegisterMuscleGroupDTO registerMuscleGroupDTO) {
-        muscleGroupService.addMuscleGroup(registerMuscleGroupDTO);
+    public void create(@RequestBody @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+        muscleGroupService.create(requestMuscleGroupDTO);
     }
 
     @Operation(
@@ -53,8 +55,8 @@ public class MuscleGroupController {
     })
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        muscleGroupService.deletedById(id);
+    public void delete(@PathVariable @Positive @NotNull Long id) {
+        muscleGroupService.delete(id);
     }
 
     @Operation(
@@ -63,7 +65,7 @@ public class MuscleGroupController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Grupo muscular atualizado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = RecoveryMuscleGroupDTO.class), mediaType = "application/json")}),
+                    content = {@Content(schema = @Schema(implementation = ResponseMuscleGroupDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id grupo muscular inválido ou não existe", content = {@Content(schema = @Schema(implementation = ApiErrors.class)
                             , mediaType = "application/json")}),
@@ -71,8 +73,8 @@ public class MuscleGroupController {
     })
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryMuscleGroupDTO update(@PathVariable Long id, @RequestBody RegisterMuscleGroupDTO registerMuscleGroupDTO) {
-        return muscleGroupService.update(id, registerMuscleGroupDTO);
+    public ResponseMuscleGroupDTO update(@PathVariable @Positive @NotNull Long id, @RequestBody @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+        return muscleGroupService.update(id, requestMuscleGroupDTO);
     }
 
     @Operation(
@@ -81,7 +83,7 @@ public class MuscleGroupController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Retornado grupo muscular com sucesso",
-                    content = {@Content(schema = @Schema(implementation = RecoveryMuscleGroupDTO.class), mediaType = "application/json")}),
+                    content = {@Content(schema = @Schema(implementation = ResponseMuscleGroupDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id grupo muscular inválido ou não existe", content = {@Content(schema = @Schema(implementation = ApiErrors.class)
                     , mediaType = "application/json")}),
@@ -89,8 +91,8 @@ public class MuscleGroupController {
     })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RecoveryMuscleGroupDTO getMuscleGroupById(@PathVariable Long id) {
-        return muscleGroupService.getMuscleGroupById(id);
+    public ResponseMuscleGroupDTO findById(@PathVariable @Positive @NotNull Long id) {
+        return muscleGroupService.findById(id);
     }
 
     @Operation(
@@ -99,15 +101,15 @@ public class MuscleGroupController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Retornado todos Grupos Musculares com sucesso",
-                    content = {@Content(schema = @Schema(implementation = RecoveryMuscleGroupDTO.class), mediaType = "application/json")}),
+                    content = {@Content(schema = @Schema(implementation = ResponseMuscleGroupDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<RecoveryMuscleGroupDTO> getAllMuscleGroup() {
-        return muscleGroupService.getAllMuscleGroups();
+    public List<ResponseMuscleGroupDTO> list() {
+        return muscleGroupService.list();
     }
 
 
