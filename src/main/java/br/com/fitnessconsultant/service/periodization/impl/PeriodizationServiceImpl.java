@@ -4,14 +4,16 @@ import br.com.fitnessconsultant.domain.entities.Periodization;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.repository.PeriodizationRepository;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
-import br.com.fitnessconsultant.dto.periodization.RecoveryPeriodizationDTO;
-import br.com.fitnessconsultant.dto.periodization.RegisterPeriodizationDTO;
+import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
+import br.com.fitnessconsultant.dto.periodization.RequestPeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
+import br.com.fitnessconsultant.mappers.PeriodizationMapper;
 import br.com.fitnessconsultant.service.periodization.PeriodizationService;
-import br.com.fitnessconsultant.utils.DateUtils;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,39 +22,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class PeriodizationServiceImpl implements PeriodizationService {
     private final PeriodizationRepository periodizationRepository;
     private final UserRepository userRepository;
+    private final PeriodizationMapper periodizationMapper;
+
+    public PeriodizationServiceImpl(PeriodizationRepository periodizationRepository,
+                                    UserRepository userRepository,
+                                    PeriodizationMapper periodizationMapper) {
+        this.periodizationRepository = periodizationRepository;
+        this.userRepository = userRepository;
+        this.periodizationMapper = periodizationMapper;
+    }
 
     @Transactional
-    public RecoveryPeriodizationDTO createPeriodization(RegisterPeriodizationDTO registerPeriodization) {
+    public ResponsePeriodizationDTO create(@NotNull @Valid RequestPeriodizationDTO registerPeriodization) {
         User user = userRepository
                 .findById(registerPeriodization.getIdUser())
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        Periodization periodization =
-                Periodization.builder()
-                        .name(registerPeriodization.getName())
-                        .numberWeeks(registerPeriodization.getNumberWeeks())
-                        .createdAt(LocalDateTime.now())
-                        .user(user)
-                        .build();
-
-        Periodization newPeriodization = periodizationRepository.save(periodization);
-
-        return RecoveryPeriodizationDTO
-                .builder()
-                .idPeriodization(newPeriodization.getId())
-                .name(newPeriodization.getName())
-                .numberWeeks(newPeriodization.getNumberWeeks())
-                .createdAt(DateUtils.formatDate(newPeriodization.getCreatedAt()))
-                .startDate(DateUtils.checkUpdateDate(newPeriodization.getStarDate()))
-                .build();
+        return periodizationMapper.toDto(periodizationRepository.save(periodizationMapper.toEntity(registerPeriodization, user)));
     }
 
     @Transactional
-    public RecoveryPeriodizationDTO updatePeriodization(Long id, UpdatePeriodizationDTO updatePeriodizationDTO) {
+    public ResponsePeriodizationDTO update(@NotNull @Positive Long id, @NotNull @Valid UpdatePeriodizationDTO updatePeriodizationDTO) {
         Periodization periodization = periodizationRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
@@ -61,63 +54,36 @@ public class PeriodizationServiceImpl implements PeriodizationService {
         periodization.setNumberWeeks(updatePeriodizationDTO.getNumberWeeks());
         periodization.setUpdatedAt(LocalDateTime.now());
 
-        Periodization updatePeriodization = periodizationRepository.save(periodization);
-
-        return RecoveryPeriodizationDTO.builder()
-                .name(updatePeriodizationDTO.getName())
-                .numberWeeks(updatePeriodization.getNumberWeeks())
-                .createdAt(DateUtils.formatDate(updatePeriodization.getCreatedAt()))
-                .updatedAt(DateUtils.formatDate(periodization.getUpdatedAt()))
-                .build();
+        return periodizationMapper.toDto(periodizationRepository.save(periodization));
     }
 
     @Transactional(readOnly = true)
-    public RecoveryPeriodizationDTO getPeriodizationById(Long id) {
+    public ResponsePeriodizationDTO findById(@NotNull @Positive Long id) {
         Periodization periodization = periodizationRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
-        return RecoveryPeriodizationDTO
-                .builder()
-                .idPeriodization(periodization.getId())
-                .name(periodization.getName())
-                .numberWeeks(periodization.getNumberWeeks())
-                .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
-                .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
-                .build();
+        return periodizationMapper.toDto(periodization);
     }
 
     @Transactional
-    public void deletePeriodization(Long id) {
-        periodizationRepository
+    public void delete(@NotNull @Positive Long id) {
+        periodizationRepository.delete(periodizationRepository
                 .findById(id)
-                .map(training -> {
-                            periodizationRepository.delete(training);
-                            return Void.class;
-                        }
-                )
-                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado")));
     }
 
     @Transactional(readOnly = true)
-    public List<RecoveryPeriodizationDTO> getAllPeriodization() {
+    public List<ResponsePeriodizationDTO> list() {
         return periodizationRepository
                 .findAll()
                 .stream()
-                .map((periodization -> RecoveryPeriodizationDTO
-                        .builder()
-                        .idPeriodization(periodization.getId())
-                        .name(periodization.getName())
-                        .numberWeeks(periodization.getNumberWeeks())
-                        .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
-                        .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
-                        .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
-                        .build()))
+                .map((periodizationMapper::toDto))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<RecoveryPeriodizationDTO> getAllPeriodizationByUser(Long id) {
+    public List<ResponsePeriodizationDTO> getAllPeriodizationByUser(@NotNull @Positive Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
@@ -126,13 +92,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         return periodizations.
                 stream()
-                .map(periodization -> RecoveryPeriodizationDTO
-                        .builder()
-                        .idPeriodization(periodization.getId())
-                        .name(periodization.getName())
-                        .numberWeeks(periodization.getNumberWeeks())
-                        .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
-                        .build())
+                .map(periodizationMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

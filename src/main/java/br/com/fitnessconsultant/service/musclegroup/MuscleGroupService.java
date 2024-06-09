@@ -1,18 +1,18 @@
 package br.com.fitnessconsultant.service.musclegroup;
 
-import br.com.fitnessconsultant.dto.musuculegroup.RegisterMuscleGroupDTO;
-import br.com.fitnessconsultant.dto.musuculegroup.RecoveryMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.RequestMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
 
 import java.util.List;
 
 public interface MuscleGroupService {
-    void addMuscleGroup(RegisterMuscleGroupDTO registerMuscleGroupDTO);
+    void create(RequestMuscleGroupDTO requestMuscleGroupDTO);
 
-    RecoveryMuscleGroupDTO getMuscleGroupById(Long id);
+    ResponseMuscleGroupDTO findById(Long id);
 
-    void deletedById(Long id);
+    void delete(Long id);
 
-    RecoveryMuscleGroupDTO update(Long id, RegisterMuscleGroupDTO registerMuscleGroupDTO);
+    ResponseMuscleGroupDTO update(Long id, RequestMuscleGroupDTO requestMuscleGroupDTO);
 
-    List<RecoveryMuscleGroupDTO> getAllMuscleGroups();
+    List<ResponseMuscleGroupDTO> list();
 }

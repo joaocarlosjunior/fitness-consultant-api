@@ -1,16 +1,16 @@
 package br.com.fitnessconsultant.service.exercise;
 
-import br.com.fitnessconsultant.dto.exercise.RecoveryExerciseDTO;
-import br.com.fitnessconsultant.dto.exercise.RegisterExerciseDTO;
+import br.com.fitnessconsultant.dto.exercise.ResponseExerciseDTO;
+import br.com.fitnessconsultant.dto.exercise.RequestExerciseDTO;
 
 import java.util.List;
 
 public interface ExerciseService {
-    RecoveryExerciseDTO createExercise(RegisterExerciseDTO registerExerciseDTO);
+    ResponseExerciseDTO create(RequestExerciseDTO requestExerciseDTO);
 
-    RecoveryExerciseDTO updateExercise(Long id, RegisterExerciseDTO registerExerciseDTO);
+    ResponseExerciseDTO update(Long id, RequestExerciseDTO requestExerciseDTO);
 
-    void deleteExercise(Long id);
+    void delete(Long id);
 
-    List<RecoveryExerciseDTO> getAllExercisesByIdTraining(Long id);
+    List<ResponseExerciseDTO> getAllExercisesByIdTraining(Long id);
 }

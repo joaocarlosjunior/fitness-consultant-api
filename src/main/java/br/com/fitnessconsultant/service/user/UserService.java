@@ -1,21 +1,21 @@
 package br.com.fitnessconsultant.service.user;
 
-import br.com.fitnessconsultant.dto.user.RecoveryUserDTO;
-import br.com.fitnessconsultant.dto.user.RegisterUserDTO;
+import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
+import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 
 import java.util.List;
 
 public interface UserService {
-    RecoveryUserDTO addUser(RegisterUserDTO registerUserDTO);
+    ResponseUserDTO create(RequestUserDTO requestUserDTO);
 
-    RecoveryUserDTO getUserById(Long id);
+    ResponseUserDTO findById(Long id);
 
-    List<RecoveryUserDTO> getAllUsers();
+    List<ResponseUserDTO> list();
 
-    RecoveryUserDTO updateUser(Long id, UpdateUserDTO updateUserDTO);
+    ResponseUserDTO update(Long id, UpdateUserDTO updateUserDTO);
 
-    void deletedById(Long id);
+    void delete(Long id);
 
     void setActiveUser(Long id);
 

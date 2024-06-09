@@ -1,18 +1,18 @@
 package br.com.fitnessconsultant.service.training;
 
-import br.com.fitnessconsultant.dto.training.RecoveryTrainingDTO;
-import br.com.fitnessconsultant.dto.training.RegisterTrainingDTO;
+import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
+import br.com.fitnessconsultant.dto.training.RequestTrainingDTO;
 
 import java.util.List;
 
 public interface TrainingService {
-    RecoveryTrainingDTO createTraining(RegisterTrainingDTO registerTrainingDTO);
+    ResponseTrainingDTO create(RequestTrainingDTO requestTrainingDTO);
 
-    RecoveryTrainingDTO updateTraining(Long id, RegisterTrainingDTO registerTrainingDTO);
+    ResponseTrainingDTO update(Long id, RequestTrainingDTO requestTrainingDTO);
 
-    void deleteTraining(Long id);
+    void delete(Long id);
 
-    RecoveryTrainingDTO getTrainingById(Long id);
+    ResponseTrainingDTO findById(Long id);
 
-    List<RecoveryTrainingDTO> getAllTrainingByIdPeriodization(Long id);
+    List<ResponseTrainingDTO> getAllTrainingByIdPeriodization(Long id);
 }

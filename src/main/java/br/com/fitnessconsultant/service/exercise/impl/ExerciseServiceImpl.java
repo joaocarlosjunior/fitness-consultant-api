@@ -6,11 +6,14 @@ import br.com.fitnessconsultant.domain.entities.Training;
 import br.com.fitnessconsultant.domain.repository.ExerciseNameRepository;
 import br.com.fitnessconsultant.domain.repository.ExerciseRepository;
 import br.com.fitnessconsultant.domain.repository.TrainingRepository;
-import br.com.fitnessconsultant.dto.exercise.RecoveryExerciseDTO;
-import br.com.fitnessconsultant.dto.exercise.RegisterExerciseDTO;
+import br.com.fitnessconsultant.dto.exercise.ResponseExerciseDTO;
+import br.com.fitnessconsultant.dto.exercise.RequestExerciseDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.mappers.ExerciseMapper;
 import br.com.fitnessconsultant.service.exercise.ExerciseService;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,93 +21,68 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ExerciseServiceImpl implements ExerciseService {
+
     private final ExerciseRepository exerciseRepository;
     private final ExerciseNameRepository exerciseNameRepository;
     private final TrainingRepository trainingRepository;
+    private final ExerciseMapper exerciseMapper;
 
-    @Transactional
-    public RecoveryExerciseDTO createExercise(RegisterExerciseDTO registerExerciseDTO) {
-
-        ExerciseName exerciseName = exerciseNameRepository
-                .findById(registerExerciseDTO.getExerciseName())
-                .orElseThrow(() -> new RecordNotFoundException("Nome de exercício não encontrado"));
-
-        Training training = trainingRepository
-                .findById(registerExerciseDTO.getIdTraining())
-                .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
-
-        Exercise exercise = Exercise
-                .builder()
-                .exerciseName(exerciseName)
-                .finalLoad(registerExerciseDTO.getFinalLoad())
-                .initialLoad(registerExerciseDTO.getInitialLoad())
-                .repetitions(registerExerciseDTO.getRepetitions())
-                .series(registerExerciseDTO.getSeries())
-                .training(training)
-                .method(registerExerciseDTO.getMethod())
-                .build();
-
-        Exercise newExercise = exerciseRepository.save(exercise);
-
-        return RecoveryExerciseDTO
-                .builder()
-                .idExercise(newExercise.getId())
-                .exerciseName(newExercise.getExerciseName().getExerciseName())
-                .finalLoad(newExercise.getFinalLoad())
-                .initialLoad(newExercise.getInitialLoad())
-                .method(newExercise.getMethod())
-                .repetitions(newExercise.getRepetitions())
-                .series(newExercise.getSeries())
-                .build();
+    public ExerciseServiceImpl(ExerciseRepository exerciseRepository,
+                               ExerciseNameRepository exerciseNameRepository,
+                               TrainingRepository trainingRepository,
+                               ExerciseMapper exerciseMapper) {
+        this.exerciseRepository = exerciseRepository;
+        this.exerciseNameRepository = exerciseNameRepository;
+        this.trainingRepository = trainingRepository;
+        this.exerciseMapper = exerciseMapper;
     }
 
     @Transactional
-    public RecoveryExerciseDTO updateExercise(Long id, RegisterExerciseDTO registerExerciseDTO) {
+    public ResponseExerciseDTO create(@Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
+
+        ExerciseName exerciseName = exerciseNameRepository
+                .findById(requestExerciseDTO.getExerciseName())
+                .orElseThrow(() -> new RecordNotFoundException("Nome de exercício não encontrado"));
+
+        Training training = trainingRepository
+                .findById(requestExerciseDTO.getIdTraining())
+                .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
+
+        return exerciseMapper.toDto(exerciseRepository.save(exerciseMapper.toEntity(requestExerciseDTO, exerciseName, training)));
+    }
+
+    @Transactional
+    public ResponseExerciseDTO update(@NotNull @Positive Long id, @Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
         Exercise exercise = exerciseRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
 
-        if (!registerExerciseDTO.getExerciseName().equals(exercise.getExerciseName().getId())) {
+        if (!requestExerciseDTO.getExerciseName().equals(exercise.getExerciseName().getId())) {
             ExerciseName exerciseName = exerciseNameRepository
-                    .findById(registerExerciseDTO.getExerciseName())
+                    .findById(requestExerciseDTO.getExerciseName())
                     .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
             exercise.setExerciseName(exerciseName);
         }
 
-        exercise.setMethod(registerExerciseDTO.getMethod());
-        exercise.setSeries(registerExerciseDTO.getSeries());
-        exercise.setFinalLoad(registerExerciseDTO.getFinalLoad());
-        exercise.setInitialLoad(registerExerciseDTO.getInitialLoad());
-        exercise.setRepetitions(registerExerciseDTO.getRepetitions());
+        exercise.setMethod(requestExerciseDTO.getMethod());
+        exercise.setSeries(requestExerciseDTO.getSeries());
+        exercise.setFinalLoad(requestExerciseDTO.getFinalLoad());
+        exercise.setInitialLoad(requestExerciseDTO.getInitialLoad());
+        exercise.setRepetitions(requestExerciseDTO.getRepetitions());
 
-        Exercise updateExercise = exerciseRepository.save(exercise);
-
-        return RecoveryExerciseDTO
-                .builder()
-                .idExercise(updateExercise.getId())
-                .series(updateExercise.getSeries())
-                .repetitions(updateExercise.getRepetitions())
-                .method(updateExercise.getMethod())
-                .exerciseName(updateExercise.getExerciseName().getExerciseName())
-                .initialLoad(updateExercise.getInitialLoad())
-                .finalLoad(updateExercise.getFinalLoad())
-                .build();
+        return exerciseMapper.toDto(exerciseRepository.save(exercise));
     }
 
     @Transactional
-    public void deleteExercise(Long id) {
-        exerciseRepository
+    public void delete(@NotNull @Positive Long id) {
+        exerciseRepository.delete(exerciseRepository
                 .findById(id)
-                .map(exercise -> {
-                    exerciseRepository.delete(exercise);
-                    return Void.class;
-                })
-                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
+                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado")));
     }
 
-    public List<RecoveryExerciseDTO> getAllExercisesByIdTraining(Long id) {
+    @Transactional(readOnly = true)
+    public List<ResponseExerciseDTO> getAllExercisesByIdTraining(@NotNull @Positive Long id) {
         trainingRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
 
@@ -112,15 +90,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         return exercises
                 .stream()
-                .map(exercise -> RecoveryExerciseDTO
-                        .builder()
-                        .idExercise(exercise.getId())
-                        .exerciseName(exercise.getExerciseName().getExerciseName())
-                        .initialLoad(exercise.getInitialLoad())
-                        .finalLoad(exercise.getFinalLoad())
-                        .method(exercise.getMethod())
-                        .series(exercise.getSeries())
-                        .build())
+                .map(exerciseMapper::toDto)
                 .collect(Collectors.toList());
     }
 

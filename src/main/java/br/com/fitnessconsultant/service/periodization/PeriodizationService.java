@@ -1,21 +1,21 @@
 package br.com.fitnessconsultant.service.periodization;
 
-import br.com.fitnessconsultant.dto.periodization.RecoveryPeriodizationDTO;
-import br.com.fitnessconsultant.dto.periodization.RegisterPeriodizationDTO;
+import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
+import br.com.fitnessconsultant.dto.periodization.RequestPeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
 
 import java.util.List;
 
 public interface PeriodizationService {
-    RecoveryPeriodizationDTO createPeriodization(RegisterPeriodizationDTO registerPeriodization);
+    ResponsePeriodizationDTO create(RequestPeriodizationDTO registerPeriodization);
 
-    RecoveryPeriodizationDTO updatePeriodization(Long id, UpdatePeriodizationDTO registerPeriodization);
+    ResponsePeriodizationDTO update(Long id, UpdatePeriodizationDTO registerPeriodization);
 
-    RecoveryPeriodizationDTO getPeriodizationById(Long id);
+    ResponsePeriodizationDTO findById(Long id);
 
-    void deletePeriodization(Long id);
+    void delete(Long id);
 
-    List<RecoveryPeriodizationDTO> getAllPeriodization();
+    List<ResponsePeriodizationDTO> list();
 
-    List<RecoveryPeriodizationDTO> getAllPeriodizationByUser( Long id);
+    List<ResponsePeriodizationDTO> getAllPeriodizationByUser(Long id);
 }

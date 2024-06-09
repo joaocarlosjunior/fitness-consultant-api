@@ -2,12 +2,15 @@ package br.com.fitnessconsultant.service.musclegroup.impl;
 
 import br.com.fitnessconsultant.domain.entities.MuscleGroup;
 import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
-import br.com.fitnessconsultant.dto.musuculegroup.RecoveryMuscleGroupDTO;
-import br.com.fitnessconsultant.dto.musuculegroup.RegisterMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.RequestMuscleGroupDTO;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.mappers.MuscleGroupMapper;
 import br.com.fitnessconsultant.service.musclegroup.MuscleGroupService;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,53 +18,46 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class MuscleGroupImpl implements MuscleGroupService {
 
     private final MuscleGroupRepository muscleGroupRepository;
+    private final MuscleGroupMapper muscleGroupMapper;
+
+    public MuscleGroupImpl(MuscleGroupRepository muscleGroupRepository,
+                           MuscleGroupMapper muscleGroupMapper) {
+        this.muscleGroupRepository = muscleGroupRepository;
+        this.muscleGroupMapper = muscleGroupMapper;
+    }
 
     @Transactional
-    public void addMuscleGroup(RegisterMuscleGroupDTO registerMuscleGroupDTO) {
+    public void create(@Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
 
-        if (muscleGroupRepository.existsByNameIgnoreCase(registerMuscleGroupDTO.getName().trim())) {
+        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.getName().trim())) {
             throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
         }
 
-        MuscleGroup newMuscleGroup = MuscleGroup
-                .builder()
-                .name(registerMuscleGroupDTO.getName().trim())
-                .build();
-
-        muscleGroupRepository.save(newMuscleGroup);
+        muscleGroupRepository.save(muscleGroupMapper.toEntity(requestMuscleGroupDTO));
     }
 
     @Transactional(readOnly = true)
-    public RecoveryMuscleGroupDTO getMuscleGroupById(Long id) {
+    public ResponseMuscleGroupDTO findById(@NotNull @Positive Long id) {
         return muscleGroupRepository
                 .findById(id)
-                .map(muscleGroup -> RecoveryMuscleGroupDTO
-                        .builder()
-                        .idMuscleGroup(muscleGroup.getId())
-                        .name(muscleGroup.getName())
-                        .build()
+                .map(muscleGroupMapper::toDto
                 )
                 .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
     }
 
     @Transactional
-    public void deletedById(Long id) {
-        muscleGroupRepository
-                .findById(id)
-                .map(muscleGroup -> {
-                    muscleGroupRepository.delete(muscleGroup);
-                    return Void.class;
-                })
-                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
+    public void delete(@NotNull @Positive Long id) {
+        muscleGroupRepository.delete(muscleGroupRepository
+                        .findById(id)
+                        .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado")));
     }
 
     @Transactional
-    public RecoveryMuscleGroupDTO update(Long id, RegisterMuscleGroupDTO registerMuscleGroupDTO) {
-        if (muscleGroupRepository.existsByNameIgnoreCase(registerMuscleGroupDTO.getName())) {
+    public ResponseMuscleGroupDTO update(@NotNull @Positive Long id, @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.getName())) {
             throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
         }
 
@@ -69,24 +65,15 @@ public class MuscleGroupImpl implements MuscleGroupService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
-        muscleGroup.setName(registerMuscleGroupDTO.getName());
+        muscleGroup.setName(requestMuscleGroupDTO.getName());
 
-        MuscleGroup updateMuscleGroup = muscleGroupRepository.save(muscleGroup);
-
-        return RecoveryMuscleGroupDTO.builder()
-                .idMuscleGroup(updateMuscleGroup.getId())
-                .name(updateMuscleGroup.getName())
-                .build();
+        return muscleGroupMapper.toDto(muscleGroupRepository.save(muscleGroup));
     }
 
     @Transactional(readOnly = true)
-    public List<RecoveryMuscleGroupDTO> getAllMuscleGroups() {
+    public List<ResponseMuscleGroupDTO> list() {
         return muscleGroupRepository.findAll()
-                .stream().map(muscleGroup -> RecoveryMuscleGroupDTO
-                        .builder()
-                        .idMuscleGroup(muscleGroup.getId())
-                        .name(muscleGroup.getName())
-                        .build()
-                ).collect(Collectors.toList());
+                .stream().map(muscleGroupMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

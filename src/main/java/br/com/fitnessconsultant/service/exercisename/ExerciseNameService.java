@@ -1,20 +1,20 @@
 package br.com.fitnessconsultant.service.exercisename;
 
-import br.com.fitnessconsultant.dto.exercisename.RecoveryExerciseNameDTO;
-import br.com.fitnessconsultant.dto.exercisename.RegisterExerciseNameDTO;
+import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
+import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 public interface ExerciseNameService {
-    void createExerciseName(RegisterExerciseNameDTO registerExerciseNameDTO);
+    void create(RequestExerciseNameDTO requestExerciseNameDTO);
 
-    RecoveryExerciseNameDTO getExerciseNameById(Long id);
+    ResponseExerciseNameDTO findById(Long id);
 
-    RecoveryExerciseNameDTO updateExerciseNameById(Long id,
-                                                   RegisterExerciseNameDTO registerExerciseNameDTO);
+    ResponseExerciseNameDTO update(Long id,
+                                   RequestExerciseNameDTO requestExerciseNameDTO);
 
-    void deleteExerciseNameById(@PathVariable Long id);
+    void delete(@PathVariable Long id);
 
-    List<RecoveryExerciseNameDTO> getAllExerciseName();
+    List<ResponseExerciseNameDTO> list();
 }

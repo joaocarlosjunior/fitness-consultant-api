@@ -2,17 +2,20 @@ package br.com.fitnessconsultant.service.user.impl;
 
 import br.com.fitnessconsultant.domain.entities.Periodization;
 import br.com.fitnessconsultant.domain.entities.User;
-import br.com.fitnessconsultant.domain.enums.Role;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
-import br.com.fitnessconsultant.dto.periodization.RecoveryPeriodizationDTO;
-import br.com.fitnessconsultant.dto.user.RecoveryUserDTO;
-import br.com.fitnessconsultant.dto.user.RegisterUserDTO;
+import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
+import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
+import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
+import br.com.fitnessconsultant.mappers.UserMapper;
 import br.com.fitnessconsultant.service.user.UserService;
 import br.com.fitnessconsultant.utils.DateUtils;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,85 +25,53 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     @Transactional
-    public RecoveryUserDTO addUser(RegisterUserDTO registerUserDTO) {
+    public ResponseUserDTO create(@Valid @NotNull RequestUserDTO requestUserDTO) {
 
         boolean emailExists = userRepository
-                .existsByEmailIgnoreCase(registerUserDTO.getEmail());
+                .existsByEmailIgnoreCase(requestUserDTO.getEmail());
 
         if(emailExists){
             throw new InfoAlreadyExistsException("Email já cadastrado");
         };
 
         boolean phoneExists = userRepository
-                .existsByPhone(registerUserDTO.getPhone());
+                .existsByPhone(requestUserDTO.getPhone());
 
         if(phoneExists){
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
         }
 
-        User newUser = User
-                .builder()
-                .firstName(registerUserDTO.getFirstName())
-                .lastName(registerUserDTO.getLastName())
-                .email(registerUserDTO.getEmail().toLowerCase())
-                .password(registerUserDTO.getPassword())
-                .phone(registerUserDTO.getPhone())
-                .isActive(false)
-                .role(Role.fromValue(registerUserDTO.getRole()))
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        User userCreated = userRepository.save(newUser);
-
-        return RecoveryUserDTO
-                .builder()
-                .firstName(userCreated.getFirstName())
-                .lastName(userCreated.getLastName())
-                .email(userCreated.getEmail())
-                .phone(userCreated.getPhone())
-                .role(userCreated.getRole())
-                .isActive(userCreated.isActive())
-                .createdAt(DateUtils.formatDate(userCreated.getCreatedAt()))
-                .build();
+        return userMapper.toDto(userRepository.save(userMapper.toEntity(requestUserDTO)));
     }
 
-    public RecoveryUserDTO getUserById(Long id) {
+    public ResponseUserDTO findById(@NotNull @Positive Long id) {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
 
-        return RecoveryUserDTO.builder()
-                .idUser(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .phone(user.getPhone())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .isActive(user.isActive())
-                .createdAt(DateUtils.formatDate(user.getCreatedAt()))
-                .updatedAt(DateUtils.checkUpdateDate(user.getUpdatedAt()))
-                .build();
+        return userMapper.toDto(user);
     }
 
     @Transactional
-    public void deletedById(Long id) {
+    public void delete(@NotNull @Positive Long id) {
         userRepository
-                .findById(id)
-                .map(user -> {
-                            userRepository.delete(user);
-                            return Void.class;
-                        }
-                )
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+                .delete(userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado")));
     }
 
-    public void setActiveUser(Long id) {
+    @Transactional
+    public void setActiveUser(@NotNull @Positive Long id) {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
@@ -111,7 +82,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void setDisableUser(Long id) {
+    @Transactional
+    public void setDisableUser(@NotNull @Positive Long id) {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
@@ -123,7 +95,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public RecoveryUserDTO updateUser(Long id, UpdateUserDTO updateUserDTO) {
+    public ResponseUserDTO update(@NotNull @Positive Long id, @NotNull @Valid UpdateUserDTO updateUserDTO) {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
@@ -158,42 +130,19 @@ public class UserServiceImpl implements UserService {
         user.setPhone(updateUserDTO.getPhone());
         user.setUpdatedAt(LocalDateTime.now());
 
-        User updatedUser = userRepository.save(user);
-
-        return RecoveryUserDTO
-                .builder()
-                .firstName(updatedUser.getFirstName())
-                .lastName(updatedUser.getLastName())
-                .email(updatedUser.getEmail())
-                .phone(updatedUser.getPhone())
-                .createdAt(DateUtils.formatDate(updatedUser.getCreatedAt()))
-                .updatedAt(DateUtils.formatDate(updatedUser.getUpdatedAt()))
-                .build();
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Transactional(readOnly = true)
-    public List<RecoveryUserDTO> getAllUsers() {
+    public List<ResponseUserDTO> list() {
         return userRepository
                 .findAll()
                 .stream()
-                .map((user -> {
-                    return RecoveryUserDTO
-                            .builder()
-                            .idUser(user.getId())
-                            .firstName(user.getFirstName())
-                            .lastName(user.getLastName())
-                            .email(user.getEmail())
-                            .phone(user.getPhone())
-                            .role(user.getRole())
-                            .isActive(user.isActive())
-                            .createdAt(DateUtils.formatDate(user.getCreatedAt()))
-                            .updatedAt(DateUtils.checkUpdateDate(user.getUpdatedAt()))
-                            .build();
-                }))
+                .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    private List<RecoveryPeriodizationDTO> getAllPeriodization(Set<Periodization> periodizations) {
+    private List<ResponsePeriodizationDTO> getAllPeriodization(Set<Periodization> periodizations) {
         if(periodizations.isEmpty()){
             System.out.println("Teste");
             return null;
@@ -201,7 +150,7 @@ public class UserServiceImpl implements UserService {
 
         return periodizations
                 .stream()
-                .map(periodization -> RecoveryPeriodizationDTO
+                .map(periodization -> ResponsePeriodizationDTO
                         .builder()
                         .idPeriodization(periodization.getId())
                         .name(periodization.getName())
