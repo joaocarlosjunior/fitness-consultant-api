@@ -99,8 +99,8 @@ public class UserController {
     }
 
     @Operation(
-            summary = "Retorna todos os usuários",
-            description = "Obtem todos os usuários cadastrados na base de dados. A resposta é um array de objeto User com id, nome, sobrenome," +
+            summary = "Retorna todos os usuários ativos",
+            description = "Obtem todos os usuários ativos . A resposta é um array de objeto User com id, nome, sobrenome," +
                     "  email, telefone, role, " +
                     "data de criação e atualização."
     )
