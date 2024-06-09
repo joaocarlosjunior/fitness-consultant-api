@@ -41,7 +41,7 @@ public class UserMapper {
                 .email(dto.getEmail().toLowerCase())
                 .password(dto.getPassword())
                 .phone(dto.getPhone())
-                .isActive(false)
+                .isActive(true)
                 .role(Role.fromValue(dto.getRole()))
                 .createdAt(LocalDateTime.now())
                 .build();
