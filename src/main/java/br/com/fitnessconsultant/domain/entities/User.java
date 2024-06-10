@@ -63,7 +63,4 @@ public class User {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "user")
-    private Set<Periodization> periodizations = new HashSet<>();
 }

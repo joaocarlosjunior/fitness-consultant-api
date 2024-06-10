@@ -24,12 +24,6 @@ public class ExerciseName {
     @Column(name = "exercise_name", unique = true, length = 30)
     private String exerciseName;
 
-    @OneToMany(mappedBy = "exerciseName")
-    private Set<Exercise> exercises;
-
-    @OneToMany(mappedBy = "exerciseName")
-    private Set<Heating> heatings;
-
     @ManyToOne
     @JoinColumn(name = "id_muscle_group", nullable = false)
     private MuscleGroup muscleGroup;

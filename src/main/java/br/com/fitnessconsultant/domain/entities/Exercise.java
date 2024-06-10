@@ -38,9 +38,8 @@ public class Exercise{
     @JoinColumn(name = "id_exercise_name", nullable = false)
     private ExerciseName exerciseName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_training", nullable = false)
     private Training training;
-
 
 }

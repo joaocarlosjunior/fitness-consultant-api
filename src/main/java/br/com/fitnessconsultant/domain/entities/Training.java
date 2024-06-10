@@ -42,19 +42,7 @@ public class Training {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "training", fetch = FetchType.LAZY)
-    private Set<Exercise> exercises;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "training", fetch = FetchType.LAZY)
-    private Set<Heating> warmups;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "training")
-    private Set<TimeTraining> timeTrainings;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_periodization")
     private Periodization periodization;
 }

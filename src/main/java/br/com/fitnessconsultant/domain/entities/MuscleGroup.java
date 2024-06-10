@@ -26,7 +26,7 @@ public class MuscleGroup {
     @NotBlank(message = "{field.groupmuscle.name}")
     private String name;
 
-    @OneToMany(mappedBy = "muscleGroup")
+    @OneToMany(mappedBy = "muscleGroup", fetch = FetchType.LAZY)
     private Set<ExerciseName> exerciseNames;
 }
 

@@ -31,7 +31,7 @@ public class TimeTraining {
     @Column(name = "training_date")
     private LocalDate date;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_training")
     private Training training;
 }

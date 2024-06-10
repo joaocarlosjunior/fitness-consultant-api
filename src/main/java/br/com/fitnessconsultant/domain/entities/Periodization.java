@@ -39,10 +39,7 @@ public class Periodization {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
-
-    @OneToMany(mappedBy = "periodization")
-    private Set<Training> trainings;
 }
