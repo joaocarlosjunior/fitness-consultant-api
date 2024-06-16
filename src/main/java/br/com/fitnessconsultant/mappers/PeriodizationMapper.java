@@ -2,12 +2,10 @@ package br.com.fitnessconsultant.mappers;
 
 import br.com.fitnessconsultant.domain.entities.Periodization;
 import br.com.fitnessconsultant.domain.entities.User;
-import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.RequestPeriodizationDTO;
+import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.utils.DateUtils;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 public class PeriodizationMapper {
@@ -22,6 +20,7 @@ public class PeriodizationMapper {
                 .name(periodization.getName())
                 .numberWeeks(periodization.getNumberWeeks())
                 .createdAt(DateUtils.formatDate(periodization.getCreatedAt()))
+                .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
                 .startDate(DateUtils.checkUpdateDate(periodization.getStarDate()))
                 .build();
     }
@@ -33,7 +32,6 @@ public class PeriodizationMapper {
         return Periodization.builder()
                 .name(dto.getName())
                 .numberWeeks(dto.getNumberWeeks())
-                .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();
     }
