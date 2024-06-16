@@ -4,8 +4,8 @@ import br.com.fitnessconsultant.domain.entities.Periodization;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.repository.PeriodizationRepository;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
-import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.RequestPeriodizationDTO;
+import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
@@ -17,7 +17,6 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +51,6 @@ public class PeriodizationServiceImpl implements PeriodizationService {
 
         periodization.setName(updatePeriodizationDTO.getName());
         periodization.setNumberWeeks(updatePeriodizationDTO.getNumberWeeks());
-        periodization.setUpdatedAt(LocalDateTime.now());
 
         return periodizationMapper.toDto(periodizationRepository.save(periodization));
     }
