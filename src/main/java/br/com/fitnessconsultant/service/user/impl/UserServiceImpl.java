@@ -18,7 +18,6 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -129,7 +128,6 @@ public class UserServiceImpl implements UserService {
         user.setLastName(updateUserDTO.getLastName());
         user.setEmail(updateUserDTO.getEmail());
         user.setPhone(updateUserDTO.getPhone());
-        user.setUpdatedAt(LocalDateTime.now());
 
         return userMapper.toDto(userRepository.save(user));
     }
