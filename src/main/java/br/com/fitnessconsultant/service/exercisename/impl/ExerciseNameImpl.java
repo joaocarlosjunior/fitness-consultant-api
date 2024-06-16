@@ -36,14 +36,14 @@ public class ExerciseNameImpl implements ExerciseNameService {
     @Transactional
     public void create(@Valid @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
         boolean exerciseNameExists = exerciseNameRepository.
-                existsByExerciseNameIgnoreCase(requestExerciseNameDTO.getExerciseName());
+                existsByExerciseNameIgnoreCase(requestExerciseNameDTO.exerciseName());
 
         if (exerciseNameExists) {
             throw new InfoAlreadyExistsException("Nome Exercício já existente");
         }
 
         MuscleGroup muscleGroup = muscleGroupRepository
-                .findById(requestExerciseNameDTO.getIdMuscleGroup())
+                .findById(requestExerciseNameDTO.idMuscleGroup())
                 .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
         exerciseNameRepository.save(exerciseNameMapper.toEntity(requestExerciseNameDTO, muscleGroup));
@@ -65,7 +65,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
 
-        String newExerciseName = requestExerciseNameDTO.getExerciseName();
+        String newExerciseName = requestExerciseNameDTO.exerciseName();
         String currentExerciseName = exerciseName.getExerciseName();
 
         if (!newExerciseName.equalsIgnoreCase(currentExerciseName)) {
@@ -78,10 +78,10 @@ public class ExerciseNameImpl implements ExerciseNameService {
         }
 
         MuscleGroup muscleGroup = muscleGroupRepository
-                .findById(requestExerciseNameDTO.getIdMuscleGroup())
+                .findById(requestExerciseNameDTO.idMuscleGroup())
                 .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
-        exerciseName.setExerciseName(requestExerciseNameDTO.getExerciseName());
+        exerciseName.setExerciseName(requestExerciseNameDTO.exerciseName());
         exerciseName.setMuscleGroup(muscleGroup);
 
         return exerciseNameMapper.toDto(exerciseNameRepository.save(exerciseName));

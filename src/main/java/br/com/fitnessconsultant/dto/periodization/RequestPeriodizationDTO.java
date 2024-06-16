@@ -2,15 +2,13 @@ package br.com.fitnessconsultant.dto.periodization;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 
-@Data
-public class RequestPeriodizationDTO {
+public record RequestPeriodizationDTO (
     @NotBlank(message = "Nome da periodização obrigatório")
-    private String name;
+    String name,
 
-    private Integer numberWeeks;
+    Integer numberWeeks,
 
     @NotNull(message = "Usuário obrigatório")
-    private Long idUser;
-}
+    Long idUser
+){}

@@ -37,7 +37,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     @Transactional
     public ResponsePeriodizationDTO create(@NotNull @Valid RequestPeriodizationDTO registerPeriodization) {
         User user = userRepository
-                .findById(registerPeriodization.getIdUser())
+                .findById(registerPeriodization.idUser())
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         return periodizationMapper.toDto(periodizationRepository.save(periodizationMapper.toEntity(registerPeriodization, user)));
@@ -49,8 +49,8 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
-        periodization.setName(updatePeriodizationDTO.getName());
-        periodization.setNumberWeeks(updatePeriodizationDTO.getNumberWeeks());
+        periodization.setName(updatePeriodizationDTO.name());
+        periodization.setNumberWeeks(updatePeriodizationDTO.numberWeeks());
 
         return periodizationMapper.toDto(periodizationRepository.save(periodization));
     }

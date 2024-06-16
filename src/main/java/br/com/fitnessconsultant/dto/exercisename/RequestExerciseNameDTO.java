@@ -1,10 +1,7 @@
 package br.com.fitnessconsultant.dto.exercisename;
 
-import lombok.Data;
+public record RequestExerciseNameDTO (
+    String exerciseName,
 
-@Data
-public class RequestExerciseNameDTO {
-    private String exerciseName;
-
-    private Long idMuscleGroup;
-}
+    Long idMuscleGroup
+){}

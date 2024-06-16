@@ -32,7 +32,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
     @Transactional
     public void create(@Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
 
-        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.getName().trim())) {
+        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.name().trim())) {
             throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
         }
 
@@ -57,7 +57,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
 
     @Transactional
     public ResponseMuscleGroupDTO update(@NotNull @Positive Long id, @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
-        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.getName())) {
+        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.name())) {
             throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
         }
 
@@ -65,7 +65,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
-        muscleGroup.setName(requestMuscleGroupDTO.getName());
+        muscleGroup.setName(requestMuscleGroupDTO.name());
 
         return muscleGroupMapper.toDto(muscleGroupRepository.save(muscleGroup));
     }

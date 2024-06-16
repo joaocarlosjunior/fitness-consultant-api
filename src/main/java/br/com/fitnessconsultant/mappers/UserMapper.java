@@ -34,13 +34,13 @@ public class UserMapper {
         }
         return User
                 .builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .email(dto.getEmail().toLowerCase())
-                .password(dto.getPassword())
-                .phone(dto.getPhone())
+                .firstName(dto.firstName())
+                .lastName(dto.lastName())
+                .email(dto.email().toLowerCase())
+                .password(dto.password())
+                .phone(dto.phone())
                 .isActive(true)
-                .role(Role.fromValue(dto.getRole()))
+                .role(Role.fromValue(dto.role()))
                 .build();
     }
 }

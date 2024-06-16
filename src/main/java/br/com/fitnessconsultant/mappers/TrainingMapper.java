@@ -31,8 +31,8 @@ public class TrainingMapper {
         }
         return Training
                 .builder()
-                .trainingName(dto.getTrainingName())
-                .trainingType(TrainingType.fromValue(dto.getTrainingType()))
+                .trainingName(dto.trainingName())
+                .trainingType(TrainingType.fromValue(dto.trainingType()))
                 .periodization(periodization)
                 .isDone(false)
                 .build();

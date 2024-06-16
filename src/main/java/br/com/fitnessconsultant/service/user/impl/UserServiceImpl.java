@@ -1,9 +1,7 @@
 package br.com.fitnessconsultant.service.user.impl;
 
-import br.com.fitnessconsultant.domain.entities.Periodization;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
-import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
@@ -11,7 +9,6 @@ import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.mappers.UserMapper;
 import br.com.fitnessconsultant.service.user.UserService;
-import br.com.fitnessconsultant.utils.DateUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,14 +34,14 @@ public class UserServiceImpl implements UserService {
     public ResponseUserDTO create(@Valid @NotNull RequestUserDTO requestUserDTO) {
 
         boolean emailExists = userRepository
-                .existsByEmailIgnoreCase(requestUserDTO.getEmail());
+                .existsByEmailIgnoreCase(requestUserDTO.email());
 
         if(emailExists){
             throw new InfoAlreadyExistsException("Email já cadastrado");
         }
 
         boolean phoneExists = userRepository
-                .existsByPhone(requestUserDTO.getPhone());
+                .existsByPhone(requestUserDTO.phone());
 
         if(phoneExists){
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
@@ -101,7 +97,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
 
         String currentEmail = user.getEmail();
-        String newEmail = updateUserDTO.getEmail();
+        String newEmail = updateUserDTO.email();
 
         if(!newEmail.equals(currentEmail)){
             boolean emailExists = userRepository
@@ -112,7 +108,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        String newPhone = updateUserDTO.getPhone();
+        String newPhone = updateUserDTO.phone();
         String currentPhone = user.getPhone();
 
         if (!newPhone.equals(currentPhone)) {
@@ -124,10 +120,10 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        user.setFirstName(updateUserDTO.getFirstName());
-        user.setLastName(updateUserDTO.getLastName());
-        user.setEmail(updateUserDTO.getEmail());
-        user.setPhone(updateUserDTO.getPhone());
+        user.setFirstName(updateUserDTO.firstName());
+        user.setLastName(updateUserDTO.lastName());
+        user.setEmail(updateUserDTO.email());
+        user.setPhone(updateUserDTO.phone());
 
         return userMapper.toDto(userRepository.save(user));
     }
@@ -141,7 +137,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    private List<ResponsePeriodizationDTO> getAllPeriodization(Set<Periodization> periodizations) {
+    /*private List<ResponsePeriodizationDTO> getAllPeriodization(Set<Periodization> periodizations) {
         if(periodizations.isEmpty()){
             System.out.println("Teste");
             return null;
@@ -159,5 +155,5 @@ public class UserServiceImpl implements UserService {
                         .updatedAt(DateUtils.checkUpdateDate(periodization.getUpdatedAt()))
                         .build())
                 .collect(Collectors.toList());
-    }
+    }*/
 }

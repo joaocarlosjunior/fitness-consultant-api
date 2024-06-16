@@ -1,25 +1,21 @@
 package br.com.fitnessconsultant.dto.exercise;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.Getter;
 
-@Data
-@Getter
-public class RequestExerciseDTO {
+public record RequestExerciseDTO (
     @NotNull(message = "Id Treino obrigatório")
-    private Long idTraining;
+    Long idTraining,
 
-    private Integer series;
+    Integer series,
 
-    private String repetitions;
+    String repetitions,
 
-    private Integer initialLoad;
+    Integer initialLoad,
 
-    private Integer finalLoad;
+    Integer finalLoad,
 
-    private String method;
+    String method,
 
     @NotNull(message = "Id Nome do Exercício obrigatório")
-    private Long exerciseName;
-}
+    Long exerciseName
+){}

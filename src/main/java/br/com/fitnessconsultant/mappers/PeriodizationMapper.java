@@ -30,8 +30,8 @@ public class PeriodizationMapper {
             return null;
         }
         return Periodization.builder()
-                .name(dto.getName())
-                .numberWeeks(dto.getNumberWeeks())
+                .name(dto.name())
+                .numberWeeks(dto.numberWeeks())
                 .user(user)
                 .build();
     }

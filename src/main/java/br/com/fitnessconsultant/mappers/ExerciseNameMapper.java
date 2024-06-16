@@ -27,7 +27,7 @@ public class ExerciseNameMapper {
         }
         return ExerciseName
                 .builder()
-                .exerciseName(dto.getExerciseName())
+                .exerciseName(dto.exerciseName())
                 .muscleGroup(muscleGroup)
                 .build();
     }

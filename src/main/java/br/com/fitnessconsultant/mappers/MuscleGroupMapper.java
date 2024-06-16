@@ -25,7 +25,7 @@ public class MuscleGroupMapper {
         }
         return MuscleGroup
                 .builder()
-                .name(dto.getName().trim())
+                .name(dto.name().trim())
                 .build();
     }
 }

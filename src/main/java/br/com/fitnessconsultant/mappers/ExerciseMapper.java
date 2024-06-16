@@ -33,12 +33,12 @@ public class ExerciseMapper {
         return Exercise
                 .builder()
                 .exerciseName(exerciseName)
-                .finalLoad(dto.getFinalLoad())
-                .initialLoad(dto.getInitialLoad())
-                .repetitions(dto.getRepetitions())
-                .series(dto.getSeries())
+                .finalLoad(dto.finalLoad())
+                .initialLoad(dto.initialLoad())
+                .repetitions(dto.repetitions())
+                .series(dto.series())
                 .training(training)
-                .method(dto.getMethod())
+                .method(dto.method())
                 .build();
     }
 }

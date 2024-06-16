@@ -42,11 +42,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     public ResponseExerciseDTO create(@Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
 
         ExerciseName exerciseName = exerciseNameRepository
-                .findById(requestExerciseDTO.getExerciseName())
+                .findById(requestExerciseDTO.exerciseName())
                 .orElseThrow(() -> new RecordNotFoundException("Nome de exercício não encontrado"));
 
         Training training = trainingRepository
-                .findById(requestExerciseDTO.getIdTraining())
+                .findById(requestExerciseDTO.idTraining())
                 .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
 
         return exerciseMapper.toDto(exerciseRepository.save(exerciseMapper.toEntity(requestExerciseDTO, exerciseName, training)));
@@ -58,18 +58,18 @@ public class ExerciseServiceImpl implements ExerciseService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
 
-        if (!requestExerciseDTO.getExerciseName().equals(exercise.getExerciseName().getId())) {
+        if (!requestExerciseDTO.exerciseName().equals(exercise.getExerciseName().getId())) {
             ExerciseName exerciseName = exerciseNameRepository
-                    .findById(requestExerciseDTO.getExerciseName())
+                    .findById(requestExerciseDTO.idTraining())
                     .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
             exercise.setExerciseName(exerciseName);
         }
 
-        exercise.setMethod(requestExerciseDTO.getMethod());
-        exercise.setSeries(requestExerciseDTO.getSeries());
-        exercise.setFinalLoad(requestExerciseDTO.getFinalLoad());
-        exercise.setInitialLoad(requestExerciseDTO.getInitialLoad());
-        exercise.setRepetitions(requestExerciseDTO.getRepetitions());
+        exercise.setMethod(requestExerciseDTO.method());
+        exercise.setSeries(requestExerciseDTO.series());
+        exercise.setFinalLoad(requestExerciseDTO.finalLoad());
+        exercise.setInitialLoad(requestExerciseDTO.initialLoad());
+        exercise.setRepetitions(requestExerciseDTO.repetitions());
 
         return exerciseMapper.toDto(exerciseRepository.save(exercise));
     }
