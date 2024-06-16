@@ -2,15 +2,15 @@ package br.com.fitnessconsultant.domain.entities;
 
 import br.com.fitnessconsultant.domain.enums.TrainingType;
 import br.com.fitnessconsultant.validation.ValidTrainingType;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -36,9 +36,11 @@ public class Training {
     @Column(name = "is_done")
     private boolean isDone = false;
 
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
