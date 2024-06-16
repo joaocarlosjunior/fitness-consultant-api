@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS tbl_periodization(
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     PRIMARY KEY(id_periodization),
-    FOREIGN KEY (id_user) REFERENCES tbl_user (id_user)
+    FOREIGN KEY (id_user) REFERENCES tbl_user (id_user) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tbl_training (
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS tbl_training (
     updated_at TIMESTAMP,
     id_periodization BIGINT,
     PRIMARY KEY (id_training),
-    FOREIGN KEY (id_periodization) REFERENCES tbl_periodization (id_periodization)
+    FOREIGN KEY (id_periodization) REFERENCES tbl_periodization (id_periodization) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tbl_training_time (
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS tbl_training_time (
     training_date date,
     id_training BIGINT,
     PRIMARY KEY (id_training_time),
-    FOREIGN KEY (id_training) REFERENCES tbl_training (id_training)
+    FOREIGN KEY (id_training) REFERENCES tbl_training (id_training) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tbl_muscle_group (
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS tbl_exercise_name (
     exercise_name VARCHAR(30) NOT NULL,
     id_muscle_group BIGINT,
     CONSTRAINT exercise_name_unique UNIQUE (exercise_name),
-    FOREIGN KEY (id_muscle_group) REFERENCES tbl_muscle_group (id_muscle_group),
+    FOREIGN KEY (id_muscle_group) REFERENCES tbl_muscle_group (id_muscle_group) ON DELETE CASCADE,
     PRIMARY KEY (id_exercise_name)
 );
 
@@ -73,8 +73,8 @@ CREATE TABLE IF NOT EXISTS tbl_heating (
     id_training BIGINT,
     id_exercise_name BIGINT,
     PRIMARY KEY (id_heating),
-    FOREIGN KEY (id_training) REFERENCES tbl_training (id_training),
-    FOREIGN KEY (id_exercise_name) REFERENCES tbl_exercise_name (id_exercise_name)
+    FOREIGN KEY (id_training) REFERENCES tbl_training (id_training) ON DELETE CASCADE,
+    FOREIGN KEY (id_exercise_name) REFERENCES tbl_exercise_name (id_exercise_name) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tbl_exercise (
@@ -87,6 +87,6 @@ CREATE TABLE IF NOT EXISTS tbl_exercise (
     id_training BIGINT NULL,
     id_exercise_name BIGINT,
     PRIMARY KEY (id_exercise),
-    FOREIGN KEY (id_training) REFERENCES tbl_training (id_training),
-    FOREIGN KEY (id_exercise_name) REFERENCES tbl_exercise_name (id_exercise_name)
+    FOREIGN KEY (id_training) REFERENCES tbl_training (id_training) ON DELETE CASCADE ,
+    FOREIGN KEY (id_exercise_name) REFERENCES tbl_exercise_name (id_exercise_name) ON DELETE CASCADE
 );
