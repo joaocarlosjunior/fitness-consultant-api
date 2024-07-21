@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class TrainingController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseTrainingDTO create(@RequestBody @Valid @NotNull RequestTrainingDTO requestTrainingDTO) {
         return trainingService.create(requestTrainingDTO);
     }
@@ -63,6 +65,7 @@ public class TrainingController {
     })
     @PutMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseTrainingDTO update(@PathVariable @Positive @NotNull Long id,
                                       @RequestBody @Valid @NotNull RequestTrainingDTO requestTrainingDTO) {
         return trainingService.update(id, requestTrainingDTO);
@@ -80,6 +83,7 @@ public class TrainingController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable @Positive @NotNull Long id){
         trainingService.delete(id);
     }
@@ -98,6 +102,7 @@ public class TrainingController {
     })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseTrainingDTO findById(@PathVariable @Positive @NotNull Long id){
         return trainingService.findById(id);
     }
@@ -119,6 +124,7 @@ public class TrainingController {
     })
     @GetMapping("/periodization/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ResponseTrainingDTO> getAllTrainingByIdPeriodization(@PathVariable @Positive @NotNull Long id){
         return trainingService.getAllTrainingByIdPeriodization(id);
     }

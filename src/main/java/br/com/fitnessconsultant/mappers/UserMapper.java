@@ -5,10 +5,17 @@ import br.com.fitnessconsultant.domain.enums.Role;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.utils.DateUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
+
+    private final PasswordEncoder passwordEncoder;
+
+    public UserMapper(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public ResponseUserDTO toDto(User user) {
         if(user == null){
@@ -37,7 +44,7 @@ public class UserMapper {
                 .firstName(dto.firstName())
                 .lastName(dto.lastName())
                 .email(dto.email().toLowerCase())
-                .password(dto.password())
+                .password(passwordEncoder.encode(dto.password()))
                 .phone(dto.phone())
                 .isActive(true)
                 .role(Role.fromValue(dto.role()))

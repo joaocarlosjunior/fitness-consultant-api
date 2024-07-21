@@ -1,7 +1,6 @@
 package br.com.fitnessconsultant.controller;
 
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
-import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.user.UserService;
@@ -15,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,23 +27,6 @@ public class UserController {
 
     public UserController(UserService userService){
         this.userService = userService;
-    }
-
-    @Operation(
-            summary = "Cria usuário",
-            description = "Cria um usuário. A resposta é um objeto User com id, nome, sobrenome," +
-                    "  email, telefone, role, " +
-                    "data de criação e atualização."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Criado um novo usuário", content = { @Content(schema = @Schema(implementation = ResponseUserDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
-    })
-    @PostMapping("/signup")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseUserDTO create(@RequestBody @Valid @NotNull RequestUserDTO requestUserDTO){
-        return userService.create(requestUserDTO);
     }
 
     @Operation(
@@ -60,6 +43,7 @@ public class UserController {
     })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseUserDTO findById(@PathVariable @Positive @NotNull Long id) {
         return userService.findById(id);
     }
@@ -76,6 +60,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public void delete(@PathVariable @Positive @NotNull Long id){
         userService.delete(id);
     }
@@ -94,6 +79,7 @@ public class UserController {
     })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseUserDTO update(@PathVariable @Positive @NotNull Long id, @RequestBody @Valid @NotNull UpdateUserDTO updateUserDTO){
         return userService.update(id, updateUserDTO);
     }
@@ -111,6 +97,7 @@ public class UserController {
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ResponseUserDTO> list()  {
         return userService.list();
     }
@@ -127,6 +114,7 @@ public class UserController {
     })
     @PatchMapping("/active-user/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public void setActiveUser(@PathVariable @Positive @NotNull Long id){
         userService.setActiveUser(id);
     }
@@ -143,6 +131,7 @@ public class UserController {
     })
     @PatchMapping("/disable-user/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public void setDisableUser(@PathVariable @Positive @NotNull Long id){
         userService.setDisableUser(id);
     }
