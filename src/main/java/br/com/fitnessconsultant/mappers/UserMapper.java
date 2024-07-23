@@ -29,7 +29,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .role(user.getRole())
-                .isActive(user.isActive())
+                .isActive(user.isEnabled())
                 .createdAt(DateUtils.formatDate(user.getCreatedAt()))
                 .updatedAt(DateUtils.checkUpdateDate(user.getUpdatedAt()))
                 .build();
@@ -46,7 +46,6 @@ public class UserMapper {
                 .email(dto.email().toLowerCase())
                 .password(passwordEncoder.encode(dto.password()))
                 .phone(dto.phone())
-                .isActive(true)
                 .role(Role.fromValue(dto.role()))
                 .build();
     }
