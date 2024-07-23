@@ -2,7 +2,7 @@ package br.com.fitnessconsultant.security;
 
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
-import br.com.fitnessconsultant.service.security.JwtService;
+import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,14 +21,14 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserRepository userRepository;
-    private final JwtService jwtService;
+    private final JwtTokenUtils jwtTokenUtils;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     public JwtAuthenticationFilter(UserRepository userRepository,
-                                   JwtService jwtService,
+                                   JwtTokenUtils jwtTokenUtils,
                                    HandlerExceptionResolver handlerExceptionResolver) {
         this.userRepository = userRepository;
-        this.jwtService = jwtService;
+        this.jwtTokenUtils = jwtTokenUtils;
         this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            String subject = jwtService.getSubjectFromToken(token);
+            String subject = jwtTokenUtils.getSubjectFromToken(token);
             User user = userRepository.findByEmail(subject).get();
 
             Authentication authentication =
