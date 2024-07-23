@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.security.SignatureException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
@@ -27,14 +29,14 @@ public class PersonalGymApiExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors ConstraintViolationException(ConstraintViolationException e) {
-        List<String> errors = e
-                .getConstraintViolations()
-                .stream()
-                .map(ConstraintViolation::getMessageTemplate)
-                .toList();
-        return new ApiErrors(errors, HttpStatus.BAD_REQUEST.value());
+    public ResponseEntity<List<ValidationError>> ConstraintViolationException(ConstraintViolationException e) {
+        List<ValidationError> errors = new ArrayList<>();
+        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+            String field = violation.getPropertyPath().toString();
+            String message = violation.getMessage();
+            errors.add(new ValidationError(field, message));
+        }
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
