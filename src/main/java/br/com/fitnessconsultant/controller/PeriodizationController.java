@@ -1,36 +1,27 @@
 package br.com.fitnessconsultant.controller;
 
-import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.RequestPeriodizationDTO;
+import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
 import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
-import br.com.fitnessconsultant.service.periodization.PeriodizationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 @Tag(name = "Periodização", description = "APIs de Gerenciamento de Periodização")
-@RestController
-@RequestMapping("/api/v1/periodizations")
-public class PeriodizationController {
-
-    private final PeriodizationService periodizationService;
-
-    public PeriodizationController(PeriodizationService periodizationService){
-        this.periodizationService = periodizationService;
-    }
+public interface PeriodizationController {
 
     @Operation(
             summary = "Cria periodização",
@@ -44,12 +35,7 @@ public class PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponsePeriodizationDTO create(@RequestBody @Valid @NotNull RequestPeriodizationDTO requestPeriodizationDTO) {
-        return periodizationService.create(requestPeriodizationDTO);
-    }
+    ResponsePeriodizationDTO create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO);
 
     @Operation(
             summary = "Retorna periodização pelo Id",
@@ -63,12 +49,10 @@ public class PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponsePeriodizationDTO findById(@PathVariable @Positive @NotNull Long id){
-        return periodizationService.findById(id);
-    }
+    @Parameters({
+            @Parameter(name = "id", description = "Retorna Periodização pelo Id")
+    })
+    ResponsePeriodizationDTO findById(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Atualiza periodização pelo Id",
@@ -82,12 +66,11 @@ public class PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponsePeriodizationDTO update(@PathVariable @Positive @NotNull Long id, @RequestBody @Valid @NotNull UpdatePeriodizationDTO updatePeriodizationDTO){
-        return periodizationService.update(id, updatePeriodizationDTO);
-    }
+    @Parameters({
+            @Parameter(name = "id", description = "Atualiza Periodização pelo Id")
+    })
+    ResponsePeriodizationDTO update(@PathVariable @Positive @NotNull Long id,
+                                    @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO);
 
     @Operation(
             summary = "Deleta periodização pelo Id",
@@ -99,12 +82,10 @@ public class PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ADMIN')")
-    public void delete(@PathVariable @Positive @NotNull Long id){
-        periodizationService.delete(id);
-    }
+    @Parameters({
+            @Parameter(name = "id", description = "Deleta Periodização pelo Id")
+    })
+    void delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Retorna todas as periodizações",
@@ -117,12 +98,7 @@ public class PeriodizationController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<ResponsePeriodizationDTO> list(){
-        return periodizationService.list();
-    }
+    List<ResponsePeriodizationDTO> list();
 
     @Operation(
             summary = "Retorna todas as periodizações pelo Id do usuário",
@@ -136,10 +112,8 @@ public class PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @GetMapping("/user/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<ResponsePeriodizationDTO> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id){
-        return periodizationService.getAllPeriodizationByUser(id);
-    }
+    @Parameters({
+            @Parameter(name = "id", description = "Retorna todos os Periodização pelo Id do Usuário")
+    })
+    List<ResponsePeriodizationDTO> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id);
 }

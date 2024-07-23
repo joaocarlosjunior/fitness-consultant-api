@@ -3,7 +3,6 @@ package br.com.fitnessconsultant.controller;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
-import br.com.fitnessconsultant.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,21 +12,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 @Tag(name = "Usuário", description = "APIs de Gerenciamento de Usuários")
-@RestController
-@RequestMapping("/api/v1/users")
-public class UserController {
-    private final UserService userService;
-
-    public UserController(UserService userService){
-        this.userService = userService;
-    }
+public interface UserController {
 
     @Operation(
             summary = "Recupera um usuário pelo Id",
@@ -41,12 +32,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseUserDTO findById(@PathVariable @Positive @NotNull Long id) {
-        return userService.findById(id);
-    }
+    ResponseUserDTO findById(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Deleta um usuário pelo Id",
@@ -58,18 +44,14 @@ public class UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public void delete(@PathVariable @Positive @NotNull Long id){
-        userService.delete(id);
-    }
+    void delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Atualiza um usuário pelo Id",
             description = "Atualiza um usuário pelo seu Id . A resposta é um objeto User com id, nome, sobrenome," +
                     "  email, telefone, role, " +
                     "data de criação e atualização."
+
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ResponseUserDTO.class), mediaType = "application/json") }),
@@ -77,12 +59,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseUserDTO update(@PathVariable @Positive @NotNull Long id, @RequestBody @Valid @NotNull UpdateUserDTO updateUserDTO){
-        return userService.update(id, updateUserDTO);
-    }
+    ResponseUserDTO update(@PathVariable @Positive @NotNull Long id,
+                           @RequestBody @Valid @NotNull UpdateUserDTO updateUserDTO);
 
     @Operation(
             summary = "Retorna todos os usuários ativos",
@@ -95,12 +73,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<ResponseUserDTO> list()  {
-        return userService.list();
-    }
+    List<ResponseUserDTO> list();
 
     @Operation(
             summary = "Ativa usuário pelo Id",
@@ -112,12 +85,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @PatchMapping("/active-user/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public void setActiveUser(@PathVariable @Positive @NotNull Long id){
-        userService.setActiveUser(id);
-    }
+    void setActiveUser(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Desabilita usuário pelo Id",
@@ -129,10 +97,6 @@ public class UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @PatchMapping("/disable-user/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public void setDisableUser(@PathVariable @Positive @NotNull Long id){
-        userService.setDisableUser(id);
-    }
+    void setDisableUser(@PathVariable @Positive @NotNull Long id);
+
 }
