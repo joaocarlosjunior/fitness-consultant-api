@@ -1,6 +1,7 @@
 package br.com.fitnessconsultant.domain.repository;
 
 import br.com.fitnessconsultant.domain.entities.User;
+import br.com.fitnessconsultant.domain.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomizedUse
 
     boolean existsByPhone(String phone);
 
-    @Query("select u from User u where u.isActive=:isActive")
-    List<User> findAllUserIsActive(@Param("isActive") boolean isActive);
+    @Query("select u from User u where u.role=:roleUser")
+    List<User> findAllUserRoleUser(@Param("roleUser") Role roleUser);
 
 }
