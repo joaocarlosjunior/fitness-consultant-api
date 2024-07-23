@@ -2,6 +2,7 @@ package br.com.fitnessconsultant.service.user.impl;
 
 import br.com.fitnessconsultant.domain.entities.ConfirmationToken;
 import br.com.fitnessconsultant.domain.entities.User;
+import br.com.fitnessconsultant.domain.enums.Role;
 import br.com.fitnessconsultant.domain.repository.ConfirmationTokenRepository;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
 import br.com.fitnessconsultant.dto.auth.LoginUserDTO;
@@ -15,8 +16,8 @@ import br.com.fitnessconsultant.exception.InvalidTokenException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.mappers.UserMapper;
 import br.com.fitnessconsultant.service.email.EmailService;
-import br.com.fitnessconsultant.service.security.JwtService;
 import br.com.fitnessconsultant.service.user.UserService;
+import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -39,21 +40,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final JwtTokenUtils jwtTokenUtils;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
 
     public UserServiceImpl(UserRepository userRepository,
                            UserMapper userMapper,
                            AuthenticationManager authenticationManager,
-                           JwtService jwtService,
+                           JwtTokenUtils jwtTokenUtils,
                            ConfirmationTokenRepository confirmationTokenRepository,
                            EmailService emailService
     ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
+        this.jwtTokenUtils = jwtTokenUtils;
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.emailService = emailService;
     }
@@ -113,8 +114,8 @@ public class UserServiceImpl implements UserService {
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
 
-        if (!user.isActive()) {
-            user.setActive(true);
+        if (!user.isEnabled()) {
+            user.setEnabled(true);
             userRepository.save(user);
         }
     }
@@ -125,8 +126,8 @@ public class UserServiceImpl implements UserService {
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
 
-        if (user.isActive()) {
-            user.setActive(false);
+        if (user.isEnabled()) {
+            user.setEnabled(false);
             userRepository.save(user);
         }
     }
@@ -179,14 +180,14 @@ public class UserServiceImpl implements UserService {
 
         return ResponseJwtTokenDTO
                 .builder()
-                .token(jwtService.generateToken(user))
+                .token(jwtTokenUtils.generateToken(user))
                 .build();
     }
 
     @Transactional(readOnly = true)
     public List<ResponseUserDTO> list() {
         return userRepository
-                .findAllUserIsActive(true)
+                .findAllUserRoleUser(Role.ROLE_USER)
                 .stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
