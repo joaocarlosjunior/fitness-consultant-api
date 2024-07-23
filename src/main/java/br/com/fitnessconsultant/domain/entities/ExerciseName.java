@@ -1,12 +1,11 @@
 package br.com.fitnessconsultant.domain.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +21,7 @@ public class ExerciseName {
     private Long id;
 
     @Column(name = "exercise_name", unique = true, length = 30)
+    @NotBlank(message = "Campo Nome Exercício obrigatório")
     private String exerciseName;
 
     @ManyToOne

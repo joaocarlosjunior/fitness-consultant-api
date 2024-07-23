@@ -23,7 +23,7 @@ public class MuscleGroup {
     private Long id;
 
     @Column(name = "name_group", length = 50, nullable = false)
-    @NotBlank(message = "{field.groupmuscle.name}")
+    @NotBlank(message = "Campo Nome Grupo Muscular obrigatório")
     private String name;
 
     @OneToMany(mappedBy = "muscleGroup", fetch = FetchType.LAZY)

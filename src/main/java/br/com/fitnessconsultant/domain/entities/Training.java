@@ -3,6 +3,8 @@ package br.com.fitnessconsultant.domain.entities;
 import br.com.fitnessconsultant.domain.enums.TrainingType;
 import br.com.fitnessconsultant.validation.ValidTrainingType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,9 +30,11 @@ public class Training {
     @Column(name = "training_type", length = 1)
     @Enumerated(EnumType.STRING)
     @ValidTrainingType
+    @NotNull(message = "Campo Tipo Treino é obrigatório")
     private TrainingType trainingType;
 
     @Column(name = "training_name", length = 20)
+    @NotBlank(message = "Campo Nome Treino é obrigatório")
     private String trainingName;
 
     @Column(name = "is_done")

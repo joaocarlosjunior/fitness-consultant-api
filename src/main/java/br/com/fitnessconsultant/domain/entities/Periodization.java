@@ -21,11 +21,11 @@ import java.time.LocalDateTime;
 public class Periodization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_periodization",nullable = false)
+    @Column(name = "id_periodization", nullable = false)
     private Long id;
 
     @Column(name = "name")
-    @NotBlank(message = "Nome da periodização obrigatorio")
+    @NotBlank(message = "Nome da Periodização obrigatório")
     private String name;
 
     @Column(name = "number_weeks")

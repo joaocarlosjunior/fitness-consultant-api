@@ -1,11 +1,11 @@
 package br.com.fitnessconsultant.domain.entities;
 
 import br.com.fitnessconsultant.domain.enums.Role;
-import br.com.fitnessconsultant.validation.ValidIsActive;
 import br.com.fitnessconsultant.validation.ValidRole;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,29 +34,28 @@ public class User implements UserDetails{
     private Long id;
 
     @Column(name = "first_name", length = 50, nullable = false)
-    @NotBlank(message = "{field.user.first-name}")
+    //@NotBlank(message = "Campo Nome é obrigatório")
+    @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ]+$", message = "O campo Nome deve conter apenas letras")
     private String firstName;
 
     @Column(name = "last_name", length = 50, nullable = false)
-    @NotBlank(message = "{field.user.last-name}")
+    @NotBlank(message = "Campo Sobrenome é obrigatório")
+    @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ]+$", message = "O campo Sobrenome deve conter apenas letras")
     private String lastName;
 
     @Column(name = "email", length = 50, unique = true, nullable = false)
-    @NotBlank(message = "{field.user.email}")
+    @NotBlank(message = "Campo Email é obrigatório")
+    @Email
     private String email;
 
     @Column(name = "password", nullable = false)
-    @NotBlank(message = "{field.user.password}")
-    @JsonIgnore
+    @NotBlank(message = "Campo Senha é obrigatório")
     private String password;
 
     @Column(name = "phone",length = 20, unique = true)
-    @NotBlank(message = "{field.user.phone}")
+    @NotBlank(message = "Campo Telefone é obrigatório")
+    @Pattern(regexp = "^[0-9]+$", message = "O campo Telefone deve conter apenas números")
     private String phone;
-
-    @Column(name = "is_active")
-    @ValidIsActive
-    private boolean isActive;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
