@@ -22,6 +22,14 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui",
+            "/fitness-consultant-documentation",
+            "/fitness-consultant-apidocs/**"
+    };
+
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
@@ -35,6 +43,7 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
+                                .requestMatchers(AUTH_WHITELIST).permitAll()
                                 .requestMatchers("/api/v1/users/**").authenticated()
                                 .requestMatchers("/api/v1/periodizations").authenticated()
                                 .requestMatchers("/api/v1/workouts").authenticated()
