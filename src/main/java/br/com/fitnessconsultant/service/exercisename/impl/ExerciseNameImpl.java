@@ -13,6 +13,7 @@ import br.com.fitnessconsultant.service.exercisename.ExerciseNameService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,24 +44,23 @@ public class ExerciseNameImpl implements ExerciseNameService {
         }
 
         MuscleGroup muscleGroup = muscleGroupRepository
-                .findById(requestExerciseNameDTO.idMuscleGroup())
-                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
+                .getReferenceById(requestExerciseNameDTO.idMuscleGroup());
 
         exerciseNameRepository.save(exerciseNameMapper.toEntity(requestExerciseNameDTO, muscleGroup));
     }
 
     @Transactional(readOnly = true)
-    public ResponseExerciseNameDTO findById(@Positive @NotNull Long id) {
+    public ResponseEntity<ResponseExerciseNameDTO> findById(@Positive @NotNull Long id) {
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Nome Exercicio não encontrado"));
 
-        return exerciseNameMapper.toDto(exerciseName);
+        return ResponseEntity.ok(exerciseNameMapper.toDto(exerciseName));
     }
 
     @Transactional
-    public ResponseExerciseNameDTO update(@Positive @NotNull Long id,
-                                          @Valid @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
+    public ResponseEntity<ResponseExerciseNameDTO> update(@Positive @NotNull Long id,
+                                                          @Valid @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
@@ -84,7 +84,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
         exerciseName.setExerciseName(requestExerciseNameDTO.exerciseName());
         exerciseName.setMuscleGroup(muscleGroup);
 
-        return exerciseNameMapper.toDto(exerciseNameRepository.save(exerciseName));
+        return ResponseEntity.ok(exerciseNameMapper.toDto(exerciseNameRepository.save(exerciseName)));
     }
 
     public void delete(@Positive @NotNull Long id) {
@@ -94,13 +94,12 @@ public class ExerciseNameImpl implements ExerciseNameService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseExerciseNameDTO> list() {
+    public ResponseEntity<List<ResponseExerciseNameDTO>> list() {
         List<ExerciseName> exerciseNames = exerciseNameRepository.findAll();
 
-        return exerciseNames
+        return ResponseEntity.ok(exerciseNames
                 .stream()
-                .map(exerciseNameMapper::toDto
-                )
-                .collect(Collectors.toList());
+                .map(exerciseNameMapper::toDto)
+                .collect(Collectors.toList()));
     }
 }

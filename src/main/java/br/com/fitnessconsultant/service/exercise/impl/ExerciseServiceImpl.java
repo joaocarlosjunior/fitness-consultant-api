@@ -14,6 +14,8 @@ import br.com.fitnessconsultant.service.exercise.ExerciseService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,29 +41,28 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Transactional
-    public ResponseExerciseDTO create(@Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
+    public ResponseEntity<ResponseExerciseDTO> create(@Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
 
         ExerciseName exerciseName = exerciseNameRepository
-                .findById(requestExerciseDTO.exerciseName())
-                .orElseThrow(() -> new RecordNotFoundException("Nome de exercício não encontrado"));
+                .getReferenceById(requestExerciseDTO.exerciseName());
 
         Training training = trainingRepository
-                .findById(requestExerciseDTO.idTraining())
-                .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
+                .getReferenceById(requestExerciseDTO.idTraining());
 
-        return exerciseMapper.toDto(exerciseRepository.save(exerciseMapper.toEntity(requestExerciseDTO, exerciseName, training)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                exerciseMapper
+                        .toDto(exerciseRepository.save(exerciseMapper.toEntity(requestExerciseDTO, exerciseName, training))));
     }
 
     @Transactional
-    public ResponseExerciseDTO update(@NotNull @Positive Long id, @Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
+    public ResponseEntity<ResponseExerciseDTO> update(@NotNull @Positive Long id, @Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
         Exercise exercise = exerciseRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
 
         if (!requestExerciseDTO.exerciseName().equals(exercise.getExerciseName().getId())) {
             ExerciseName exerciseName = exerciseNameRepository
-                    .findById(requestExerciseDTO.idTraining())
-                    .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
+                    .getReferenceById(requestExerciseDTO.idTraining());
             exercise.setExerciseName(exerciseName);
         }
 
@@ -71,27 +72,30 @@ public class ExerciseServiceImpl implements ExerciseService {
         exercise.setInitialLoad(requestExerciseDTO.initialLoad());
         exercise.setRepetitions(requestExerciseDTO.repetitions());
 
-        return exerciseMapper.toDto(exerciseRepository.save(exercise));
+        return ResponseEntity.ok(exerciseMapper.toDto(exerciseRepository.save(exercise)));
     }
 
     @Transactional
     public void delete(@NotNull @Positive Long id) {
         exerciseRepository.delete(exerciseRepository
-                .findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado")));
+                .getReferenceById(id)
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseExerciseDTO> getAllExercisesByIdTraining(@NotNull @Positive Long id) {
-        trainingRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
+    public ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@NotNull @Positive Long id) {
+        if(!trainingRepository.existsTrainingsById(id)){
+            throw new RecordNotFoundException("Exercício não encontrado");
+        }
 
         List<Exercise> exercises = exerciseRepository.getAllExercisesByIdTraining(id);
 
-        return exercises
+        return ResponseEntity.ok(
+                exercises
                 .stream()
                 .map(exerciseMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
     }
 
 }

@@ -11,6 +11,7 @@ import br.com.fitnessconsultant.service.musclegroup.MuscleGroupService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,23 +41,23 @@ public class MuscleGroupImpl implements MuscleGroupService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseMuscleGroupDTO findById(@NotNull @Positive Long id) {
-        return muscleGroupRepository
+    public ResponseEntity<ResponseMuscleGroupDTO> findById(@NotNull @Positive Long id) {
+        return ResponseEntity.ok(muscleGroupRepository
                 .findById(id)
                 .map(muscleGroupMapper::toDto
                 )
-                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado")));
     }
 
     @Transactional
     public void delete(@NotNull @Positive Long id) {
         muscleGroupRepository.delete(muscleGroupRepository
-                        .findById(id)
-                        .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado")));
+                .findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado")));
     }
 
     @Transactional
-    public ResponseMuscleGroupDTO update(@NotNull @Positive Long id, @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+    public ResponseEntity<ResponseMuscleGroupDTO> update(@NotNull @Positive Long id, @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
         if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.name())) {
             throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
         }
@@ -67,13 +68,14 @@ public class MuscleGroupImpl implements MuscleGroupService {
 
         muscleGroup.setName(requestMuscleGroupDTO.name());
 
-        return muscleGroupMapper.toDto(muscleGroupRepository.save(muscleGroup));
+        return ResponseEntity.ok(muscleGroupMapper.toDto(muscleGroupRepository.save(muscleGroup)));
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseMuscleGroupDTO> list() {
-        return muscleGroupRepository.findAll()
+    public ResponseEntity<List<ResponseMuscleGroupDTO>> list() {
+        return ResponseEntity.ok(muscleGroupRepository
+                .findAll()
                 .stream().map(muscleGroupMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }

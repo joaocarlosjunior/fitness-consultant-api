@@ -14,6 +14,8 @@ import br.com.fitnessconsultant.service.periodization.PeriodizationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,16 +37,18 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     }
 
     @Transactional
-    public ResponsePeriodizationDTO create(@NotNull @Valid RequestPeriodizationDTO registerPeriodization) {
+    public ResponseEntity<ResponsePeriodizationDTO> create(@NotNull @Valid RequestPeriodizationDTO registerPeriodization) {
         User user = userRepository
-                .findById(registerPeriodization.idUser())
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+                .getReferenceById(registerPeriodization.idUser());
 
-        return periodizationMapper.toDto(periodizationRepository.save(periodizationMapper.toEntity(registerPeriodization, user)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        periodizationMapper.toDto(periodizationRepository.save(periodizationMapper.toEntity(registerPeriodization, user)))
+                );
     }
 
     @Transactional
-    public ResponsePeriodizationDTO update(@NotNull @Positive Long id, @NotNull @Valid UpdatePeriodizationDTO updatePeriodizationDTO) {
+    public ResponseEntity<ResponsePeriodizationDTO> update(@NotNull @Positive Long id, @NotNull @Valid UpdatePeriodizationDTO updatePeriodizationDTO) {
         Periodization periodization = periodizationRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
@@ -52,16 +56,16 @@ public class PeriodizationServiceImpl implements PeriodizationService {
         periodization.setName(updatePeriodizationDTO.name());
         periodization.setNumberWeeks(updatePeriodizationDTO.numberWeeks());
 
-        return periodizationMapper.toDto(periodizationRepository.save(periodization));
+        return ResponseEntity.ok(periodizationMapper.toDto(periodizationRepository.save(periodization)));
     }
 
     @Transactional(readOnly = true)
-    public ResponsePeriodizationDTO findById(@NotNull @Positive Long id) {
+    public ResponseEntity<ResponsePeriodizationDTO> findById(@NotNull @Positive Long id) {
         Periodization periodization = periodizationRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
-        return periodizationMapper.toDto(periodization);
+        return ResponseEntity.ok(periodizationMapper.toDto(periodizationRepository.save(periodization)));
     }
 
     @Transactional
@@ -72,25 +76,25 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponsePeriodizationDTO> list() {
-        return periodizationRepository
+    public ResponseEntity<List<ResponsePeriodizationDTO>> list() {
+        return ResponseEntity.ok(periodizationRepository
                 .findAll()
                 .stream()
                 .map((periodizationMapper::toDto))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)
-    public List<ResponsePeriodizationDTO> getAllPeriodizationByUser(@NotNull @Positive Long id) {
+    public ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByUser(@NotNull @Positive Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         List<Periodization> periodizations = periodizationRepository
                 .getAllPeriodizationByIdUser(id);
 
-        return periodizations.
+        return ResponseEntity.ok(periodizations.
                 stream()
                 .map(periodizationMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }
