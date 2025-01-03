@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -30,7 +31,7 @@ public interface MuscleGroupController {
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
-    void create(@RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO);
+    ResponseEntity<Void> create(@RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO);
 
     @Operation(
             summary = "Deleta um grupo muscular pelo Id",
@@ -45,7 +46,7 @@ public interface MuscleGroupController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Grupo Muscular pelo Id")
     })
-    void delete(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Atualiza grupo muscular pelo Id",
@@ -62,7 +63,7 @@ public interface MuscleGroupController {
     @Parameters({
             @Parameter(name = "id", description = "Atualiza Grupo Muscular pelo Id")
     })
-    ResponseMuscleGroupDTO update(@PathVariable @Positive @NotNull Long id,
+    ResponseEntity<ResponseMuscleGroupDTO> update(@PathVariable @Positive @NotNull Long id,
                                   @RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO);
 
     @Operation(
@@ -80,7 +81,7 @@ public interface MuscleGroupController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna Grupo Muscular pelo Id")
     })
-    ResponseMuscleGroupDTO findById(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<ResponseMuscleGroupDTO> findById(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Recupera todos os grupo musculares",
@@ -93,5 +94,5 @@ public interface MuscleGroupController {
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
-    List<ResponseMuscleGroupDTO> list();
+    ResponseEntity<List<ResponseMuscleGroupDTO>> list();
 }

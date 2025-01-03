@@ -7,6 +7,7 @@ import br.com.fitnessconsultant.service.musclegroup.MuscleGroupService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,34 +22,36 @@ public class MuscleGroupControllerImpl implements MuscleGroupController {
         this.muscleGroupService = muscleGroupService;
     }
 
+    @Override
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+    public ResponseEntity<Void> create(@RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
         muscleGroupService.create(requestMuscleGroupDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive @NotNull Long id) {
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id) {
         muscleGroupService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseMuscleGroupDTO update(@PathVariable @Positive @NotNull Long id,
+    @Override
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseMuscleGroupDTO> update(@PathVariable @Positive @NotNull Long id,
                                          @RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
         return muscleGroupService.update(id, requestMuscleGroupDTO);
     }
 
+    @Override
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseMuscleGroupDTO findById(@PathVariable @Positive @NotNull Long id) {
+    public ResponseEntity<ResponseMuscleGroupDTO> findById(@PathVariable @Positive @NotNull Long id) {
         return muscleGroupService.findById(id);
     }
 
+    @Override
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<ResponseMuscleGroupDTO> list() {
+    public ResponseEntity<List<ResponseMuscleGroupDTO>> list() {
         return muscleGroupService.list();
     }
 

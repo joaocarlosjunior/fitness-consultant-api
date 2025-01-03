@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -35,7 +36,7 @@ public interface PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponsePeriodizationDTO create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO);
+    ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO);
 
     @Operation(
             summary = "Retorna periodização pelo Id",
@@ -52,7 +53,7 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna Periodização pelo Id")
     })
-    ResponsePeriodizationDTO findById(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<ResponsePeriodizationDTO> findById(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Atualiza periodização pelo Id",
@@ -69,7 +70,7 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Atualiza Periodização pelo Id")
     })
-    ResponsePeriodizationDTO update(@PathVariable @Positive @NotNull Long id,
+    ResponseEntity<ResponsePeriodizationDTO> update(@PathVariable @Positive @NotNull Long id,
                                     @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO);
 
     @Operation(
@@ -85,7 +86,7 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Periodização pelo Id")
     })
-    void delete(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Retorna todas as periodizações",
@@ -98,7 +99,7 @@ public interface PeriodizationController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    List<ResponsePeriodizationDTO> list();
+    ResponseEntity<List<ResponsePeriodizationDTO>> list();
 
     @Operation(
             summary = "Retorna todas as periodizações pelo Id do usuário",
@@ -115,5 +116,5 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os Periodização pelo Id do Usuário")
     })
-    List<ResponsePeriodizationDTO> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id);
 }

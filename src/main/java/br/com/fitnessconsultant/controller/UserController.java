@@ -2,6 +2,7 @@ package br.com.fitnessconsultant.controller;
 
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
+import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,10 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Usuário", description = "APIs de Gerenciamento de Usuários")
 public interface UserController {
@@ -32,7 +35,7 @@ public interface UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseUserDTO findById(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<ResponseUserDTO> findById(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Deleta um usuário pelo Id",
@@ -44,7 +47,7 @@ public interface UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    void delete(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Atualiza um usuário pelo Id",
@@ -59,7 +62,7 @@ public interface UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseUserDTO update(@PathVariable @Positive @NotNull Long id,
+    ResponseEntity<ResponseUserDTO> update(@PathVariable @Positive @NotNull Long id,
                            @RequestBody @Valid @NotNull UpdateUserDTO updateUserDTO);
 
     @Operation(
@@ -73,7 +76,7 @@ public interface UserController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    List<ResponseUserDTO> list();
+    ResponseEntity<List<ResponseUserDTO>> list();
 
     @Operation(
             summary = "Ativa usuário pelo Id",
@@ -83,9 +86,10 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "Usuário ativado com sucesso"),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    void setActiveUser(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Map<String, String>>  setActiveUser(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Desabilita usuário pelo Id",
@@ -95,8 +99,11 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "Usuário desabilitado com sucesso"),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    void setDisableUser(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Map<String, String>> setDisableUser(@PathVariable @Positive @NotNull Long id);
+
+    ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTrainingInfo(@PathVariable Long id);
 
 }

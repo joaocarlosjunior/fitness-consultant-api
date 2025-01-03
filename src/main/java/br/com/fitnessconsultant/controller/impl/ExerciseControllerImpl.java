@@ -7,6 +7,7 @@ import br.com.fitnessconsultant.service.exercise.ExerciseService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,26 +22,28 @@ public class ExerciseControllerImpl implements ExerciseController {
         this.exerciseService = exerciseService;
     }
 
+    @Override
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseExerciseDTO create(@RequestBody @NotNull RequestExerciseDTO requestExerciseDTO){
+    public ResponseEntity<ResponseExerciseDTO> create(@RequestBody @NotNull RequestExerciseDTO requestExerciseDTO){
         return exerciseService.create(requestExerciseDTO);
     }
 
+    @Override
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseExerciseDTO update(@PathVariable @Positive @NotNull Long id, @RequestBody @NotNull RequestExerciseDTO requestExerciseDTO){
+    public ResponseEntity<ResponseExerciseDTO> update(@PathVariable @Positive @NotNull Long id, @RequestBody @NotNull RequestExerciseDTO requestExerciseDTO){
         return exerciseService.update(id, requestExerciseDTO);
     }
 
+    @Override
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive @NotNull Long id){
+    public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id){
         exerciseService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
+    @Override
     @GetMapping("/training/{id}")
-    public List<ResponseExerciseDTO> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id){
+    public ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id){
         return exerciseService.getAllExercisesByIdTraining(id);
     }
 }

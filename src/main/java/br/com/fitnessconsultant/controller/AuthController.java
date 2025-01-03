@@ -18,6 +18,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Map;
+
 @Tag(name = "Autenticação", description = "APIs de Autenticação de Usuário")
 public interface AuthController {
 
@@ -30,7 +32,7 @@ public interface AuthController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    void create(@RequestBody @NotNull RequestUserDTO requestUser, HttpServletRequest request);
+    ResponseEntity<Map<String, String>> create(@RequestBody @NotNull RequestUserDTO requestUser, HttpServletRequest request);
 
     @Operation(
             summary = "Autentica usuário",
@@ -42,7 +44,7 @@ public interface AuthController {
             @ApiResponse(responseCode = "403", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseJwtTokenDTO authenticate(@RequestBody @NotNull LoginUserDTO loginUserDTO);
+    ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull LoginUserDTO loginUserDTO);
 
     @Operation(
             summary = "Verifica Email Usuário",
@@ -52,11 +54,12 @@ public interface AuthController {
             @ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso"),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "403", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @Parameters({
             @Parameter(name = "token", description = "Token para verificação do email")
     })
-    ResponseEntity<?> verify(@Param("token") @NotNull String token);
+    ResponseEntity<Map<String, String>> verify(@Param("token") @NotNull String token);
 
 }

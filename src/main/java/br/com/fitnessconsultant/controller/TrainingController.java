@@ -13,10 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Treino", description = "APIs de Gerenciamento de Treinos")
 public interface TrainingController {
@@ -32,7 +34,7 @@ public interface TrainingController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseTrainingDTO create(@RequestBody @NotNull RequestTrainingDTO requestTrainingDTO);
+    ResponseEntity<ResponseTrainingDTO> create(@RequestBody @NotNull RequestTrainingDTO requestTrainingDTO);
 
     @Operation(
             summary = "Atualiza treino pelo Id",
@@ -49,7 +51,7 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Atualiza treino pelo Id")
     })
-    ResponseTrainingDTO update(@PathVariable @Positive @NotNull Long id,
+    ResponseEntity<ResponseTrainingDTO> update(@PathVariable @Positive @NotNull Long id,
                                @RequestBody @NotNull RequestTrainingDTO requestTrainingDTO);
 
     @Operation(
@@ -65,7 +67,7 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta treino pelo Id")
     })
-    void delete(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Recupera treino pelo Id",
@@ -82,7 +84,7 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna treino pelo Id")
     })
-    ResponseTrainingDTO findById(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<ResponseTrainingDTO> findById(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Recupera todos os treinos pelo Id da periodização",
@@ -99,5 +101,5 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os treinos pelo Id de Periodização")
     })
-    List<ResponseTrainingDTO> getAllTrainingByIdPeriodization(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<List<ResponseTrainingDTO>> getAllTrainingByIdPeriodization(@PathVariable @Positive @NotNull Long id);
 }

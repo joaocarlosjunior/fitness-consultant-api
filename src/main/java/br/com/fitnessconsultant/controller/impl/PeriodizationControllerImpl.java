@@ -7,7 +7,7 @@ import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
 import br.com.fitnessconsultant.service.periodization.PeriodizationService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,46 +23,47 @@ public class PeriodizationControllerImpl implements PeriodizationController {
         this.periodizationService = periodizationService;
     }
 
+    @Override
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponsePeriodizationDTO create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO) {
+    public ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO) {
         return periodizationService.create(requestPeriodizationDTO);
     }
 
+    @Override
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponsePeriodizationDTO findById(@PathVariable @Positive @NotNull Long id){
+    public ResponseEntity<ResponsePeriodizationDTO> findById(@PathVariable @Positive @NotNull Long id){
         return periodizationService.findById(id);
     }
 
+    @Override
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponsePeriodizationDTO update(@PathVariable @Positive @NotNull Long id,
+    public ResponseEntity<ResponsePeriodizationDTO> update(@PathVariable @Positive @NotNull Long id,
                                            @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO){
         return periodizationService.update(id, updatePeriodizationDTO);
     }
 
+    @Override
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
-    public void delete(@PathVariable @Positive @NotNull Long id){
+    public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id){
         periodizationService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
+    @Override
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public List<ResponsePeriodizationDTO> list(){
+    public ResponseEntity<List<ResponsePeriodizationDTO>> list(){
         return periodizationService.list();
     }
 
+    @Override
     @GetMapping("/user/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public List<ResponsePeriodizationDTO> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id){
+    public ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id){
         return periodizationService.getAllPeriodizationByUser(id);
     }
 }

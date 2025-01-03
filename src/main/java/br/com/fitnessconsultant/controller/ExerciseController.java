@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,7 +34,7 @@ public interface ExerciseController {
                     content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseExerciseDTO create(@RequestBody @NotNull RequestExerciseDTO requestExerciseDTO);
+    ResponseEntity<ResponseExerciseDTO> create(@RequestBody @NotNull RequestExerciseDTO requestExerciseDTO);
 
     @Operation(
             summary = "Atualiza exercício pelo Id",
@@ -51,7 +52,7 @@ public interface ExerciseController {
     @Parameters({
             @Parameter(name = "id", description = "Atualiza Exercício pelo Id")
     })
-    ResponseExerciseDTO update(@PathVariable @Positive @NotNull Long id,@RequestBody @NotNull RequestExerciseDTO requestExerciseDTO);
+    ResponseEntity<ResponseExerciseDTO> update(@PathVariable @Positive @NotNull Long id,@RequestBody @NotNull RequestExerciseDTO requestExerciseDTO);
 
     @Operation(
             summary = "Deletado exercício pelo Id",
@@ -68,7 +69,7 @@ public interface ExerciseController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Exercício pelo Id")
     })
-    void delete(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Recupera todos exercícios pelo Id de treino",
@@ -86,6 +87,6 @@ public interface ExerciseController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os Exercícios pelo Id do Treino")
     })
-    List<ResponseExerciseDTO> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id);
 
 }

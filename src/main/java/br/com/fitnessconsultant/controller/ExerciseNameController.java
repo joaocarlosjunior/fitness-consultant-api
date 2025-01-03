@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,7 +32,7 @@ public interface ExerciseNameController {
             @ApiResponse(responseCode = "404", description = "Id do Grupo Muscular inválido ou inexistente", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
-    void create(@RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO);
+    ResponseEntity<Void> create(@RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO);
 
     @Operation(
             summary = "Recupera nome de exercício pelo Id",
@@ -47,7 +48,7 @@ public interface ExerciseNameController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna Nome Exercício pelo Id")
     })
-    ResponseExerciseNameDTO findById(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<ResponseExerciseNameDTO> findById(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Atualiza nome de exercício pelo Id",
@@ -63,7 +64,7 @@ public interface ExerciseNameController {
     @Parameters({
             @Parameter(name = "id", description = "Altera Nome Exercício pelo Id")
     })
-    ResponseExerciseNameDTO update(@PathVariable @Positive @NotNull Long id,
+    ResponseEntity<ResponseExerciseNameDTO> update(@PathVariable @Positive @NotNull Long id,
                                    @RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO);
 
     @Operation(
@@ -79,7 +80,7 @@ public interface ExerciseNameController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Nome Exercício pelo Id")
     })
-    void delete(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
 
     @Operation(
             summary = "Recuperar todos os nomes de exercícios",
@@ -91,5 +92,5 @@ public interface ExerciseNameController {
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
-    List<ResponseExerciseNameDTO> list();
+    ResponseEntity<List<ResponseExerciseNameDTO>> list();
 }
