@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +26,7 @@ public class MuscleGroup {
     @NotBlank(message = "Campo Nome Grupo Muscular obrigatório")
     private String name;
 
-    @OneToMany(mappedBy = "muscleGroup", fetch = FetchType.LAZY)
-    private Set<ExerciseName> exerciseNames;
+    @OneToMany(mappedBy = "muscleGroup")
+    private List<ExerciseName> exerciseNames;
 }
 

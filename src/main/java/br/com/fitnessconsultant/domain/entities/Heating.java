@@ -38,7 +38,7 @@ public class Heating{
     @JoinColumn(name = "id_exercise_name", nullable = false)
     private ExerciseName exerciseName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_training", nullable = false)
     private Training training;
 }

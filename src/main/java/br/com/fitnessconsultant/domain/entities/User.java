@@ -2,6 +2,7 @@ package br.com.fitnessconsultant.domain.entities;
 
 import br.com.fitnessconsultant.domain.enums.Role;
 import br.com.fitnessconsultant.validation.ValidRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -49,6 +50,7 @@ public class User implements UserDetails{
     private String email;
 
     @Column(name = "password", nullable = false)
+    @JsonIgnore
     @NotBlank(message = "Campo Senha é obrigatório")
     private String password;
 
