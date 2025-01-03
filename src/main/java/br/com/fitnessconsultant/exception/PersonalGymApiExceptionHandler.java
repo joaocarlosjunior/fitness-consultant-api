@@ -57,12 +57,13 @@ public class PersonalGymApiExceptionHandler {
     }
 
     @ExceptionHandler({
+            ApiErrorException.class,
             EmailVerificationException.class,
             InvalidTokenException.class,
             InfoAlreadyExistsException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors EmailVerificationException(Exception e) {
+    public ApiErrors ApiErrorException(Exception e) {
         return new ApiErrors(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
