@@ -22,4 +22,6 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
         """)
     @Modifying
     void deleteAllByUserId(@Param("userId") Long userId);
+
+    boolean existsTrainingsById(Long id);
 }

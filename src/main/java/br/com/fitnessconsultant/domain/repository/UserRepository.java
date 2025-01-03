@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomizedUse
 
     boolean existsByPhone(String phone);
 
+    boolean existsUsersById(Long id);
+
     @Query("select u from User u where u.role=:roleUser")
     List<User> findAllUserRoleUser(@Param("roleUser") Role roleUser);
 

@@ -1,5 +1,11 @@
 package br.com.fitnessconsultant.domain.repository;
 
-public interface CustomizedUserRepository<ID> {
-    void deletedById(ID userId);
+import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
+
+import java.util.List;
+
+public interface CustomizedUserRepository<T> {
+    void deletedById(T userId);
+
+    List<UserPeriodizationInfoDTO> getAllUserTrainingInfo(T userId);
 }
