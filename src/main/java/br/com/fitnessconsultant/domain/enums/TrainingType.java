@@ -25,4 +25,8 @@ public enum TrainingType {
         }
         throw new IllegalArgumentException("Valor de TrainingType inválido: " + value);
     }
+
+    public static String getName(TrainingType trainingType){
+        return trainingType.name();
+    }
 }
