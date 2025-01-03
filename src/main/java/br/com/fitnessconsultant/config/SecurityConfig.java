@@ -23,14 +23,23 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] AUTH_WHITELIST = {
+            //SWAGGER
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui",
             "/fitness-consultant-documentation",
-            "/fitness-consultant-apidocs/**"
+            "/fitness-consultant-apidocs/**",
+            //H2-CONSOLE
+            "/h2-console/**"
     };
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
+    private static final String[] AUTH_ADMIN = {
+            "/api/v1/exercise-name",
+            "/api/v1/muscle-group",
+            "/api/v1/exercises"
+    };
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -42,14 +51,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/h2-console/**").permitAll()
                                 .requestMatchers(AUTH_WHITELIST).permitAll()
                                 .requestMatchers("/api/v1/users/**").authenticated()
                                 .requestMatchers("/api/v1/periodizations").authenticated()
                                 .requestMatchers("/api/v1/workouts").authenticated()
-                                .requestMatchers("/api/v1/exercise-name").hasRole("ADMIN")
-                                .requestMatchers("/api/v1/muscle-group").hasRole("ADMIN")
-                                .requestMatchers("/api/v1/exercises").hasRole("ADMIN")
+                                .requestMatchers(AUTH_ADMIN).hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
