@@ -29,6 +29,7 @@ public class PeriodizationMapper {
         if(dto == null){
             return null;
         }
+
         return Periodization.builder()
                 .name(dto.name())
                 .numberWeeks(dto.numberWeeks())
