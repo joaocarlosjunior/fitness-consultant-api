@@ -13,11 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -36,7 +32,7 @@ public interface PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO);
+    ResponseEntity<ResponsePeriodizationDTO> create(RequestPeriodizationDTO requestPeriodizationDTO);
 
     @Operation(
             summary = "Retorna periodização pelo Id",
@@ -53,7 +49,7 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna Periodização pelo Id")
     })
-    ResponseEntity<ResponsePeriodizationDTO> findById(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<ResponsePeriodizationDTO> findById(Long id);
 
     @Operation(
             summary = "Atualiza periodização pelo Id",
@@ -70,8 +66,8 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Atualiza Periodização pelo Id")
     })
-    ResponseEntity<ResponsePeriodizationDTO> update(@PathVariable @Positive @NotNull Long id,
-                                    @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO);
+    ResponseEntity<ResponsePeriodizationDTO> update(Long id,
+                                    UpdatePeriodizationDTO updatePeriodizationDTO);
 
     @Operation(
             summary = "Deleta periodização pelo Id",
@@ -86,7 +82,7 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Periodização pelo Id")
     })
-    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<Void> delete(Long id);
 
     @Operation(
             summary = "Retorna todas as periodizações",
@@ -116,5 +112,5 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os Periodização pelo Id do Usuário")
     })
-    ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id);
+    ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(Long id);
 }

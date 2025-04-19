@@ -4,7 +4,7 @@ import br.com.fitnessconsultant.domain.entities.ConfirmationToken;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.repository.ConfirmationTokenRepository;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
-import br.com.fitnessconsultant.dto.auth.LoginUserDTO;
+import br.com.fitnessconsultant.dto.auth.RequestLoginUserDTO;
 import br.com.fitnessconsultant.dto.auth.ResponseJwtTokenDTO;
 import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InvalidTokenException;
@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<ResponseJwtTokenDTO> authenticate(LoginUserDTO loginUser) {
+    public ResponseEntity<ResponseJwtTokenDTO> authenticate(RequestLoginUserDTO loginUser) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUser.email(), loginUser.password());
 
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);

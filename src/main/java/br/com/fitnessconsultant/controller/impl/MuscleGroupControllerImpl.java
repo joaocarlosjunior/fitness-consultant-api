@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class MuscleGroupControllerImpl implements MuscleGroupController {
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+    public ResponseEntity<Void> create(@RequestBody @NotNull @Validated RequestMuscleGroupDTO requestMuscleGroupDTO) {
         muscleGroupService.create(requestMuscleGroupDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -38,8 +39,9 @@ public class MuscleGroupControllerImpl implements MuscleGroupController {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseMuscleGroupDTO> update(@PathVariable @Positive @NotNull Long id,
-                                         @RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+    public ResponseEntity<ResponseMuscleGroupDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull @Validated RequestMuscleGroupDTO requestMuscleGroupDTO) {
         return muscleGroupService.update(id, requestMuscleGroupDTO);
     }
 

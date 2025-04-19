@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,15 +27,19 @@ public class TrainingControllerImpl implements TrainingController {
     @Override
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseTrainingDTO> create(@RequestBody @NotNull RequestTrainingDTO requestTrainingDTO) {
+    public ResponseEntity<ResponseTrainingDTO> create(
+            @RequestBody @NotNull @Validated RequestTrainingDTO requestTrainingDTO
+    ) {
         return trainingService.create(requestTrainingDTO);
     }
 
     @Override
     @PutMapping({"/{id}"})
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseTrainingDTO> update(@PathVariable @Positive @NotNull Long id,
-                                      @RequestBody @NotNull RequestTrainingDTO requestTrainingDTO) {
+    public ResponseEntity<ResponseTrainingDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull @Validated RequestTrainingDTO requestTrainingDTO
+    ) {
         return trainingService.update(id, requestTrainingDTO);
     }
 

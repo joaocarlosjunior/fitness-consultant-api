@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ExerciseNameControllerImpl implements ExerciseNameController {
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
+    public ResponseEntity<Void> create(@RequestBody @NotNull @Validated RequestExerciseNameDTO requestExerciseNameDTO) {
         exerciseNameService.create(requestExerciseNameDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -37,8 +38,10 @@ public class ExerciseNameControllerImpl implements ExerciseNameController {
 
     @Override
     @PutMapping({"/{id}"})
-    public ResponseEntity<ResponseExerciseNameDTO> update(@PathVariable @Positive @NotNull Long id,
-                                          @RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
+    public ResponseEntity<ResponseExerciseNameDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull @Validated RequestExerciseNameDTO requestExerciseNameDTO
+    ) {
         return exerciseNameService.update(id, requestExerciseNameDTO);
     }
 

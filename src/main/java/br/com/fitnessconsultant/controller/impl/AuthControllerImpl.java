@@ -1,20 +1,21 @@
 package br.com.fitnessconsultant.controller.impl;
 
 import br.com.fitnessconsultant.controller.AuthController;
-import br.com.fitnessconsultant.dto.auth.LoginUserDTO;
+import br.com.fitnessconsultant.dto.auth.RequestLoginUserDTO;
 import br.com.fitnessconsultant.dto.auth.ResponseJwtTokenDTO;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.service.auth.AuthService;
 import br.com.fitnessconsultant.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -29,25 +30,21 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, String>> create(@RequestBody @NotNull RequestUserDTO requestUser,
-                                                      HttpServletRequest request){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> create(
+            @RequestBody @NotNull @Validated RequestUserDTO requestUser,
+            HttpServletRequest request
+    ){
         userService.create(requestUser, getSiteURL(request));
-        Map<String, String> response = new HashMap<>();
-        response.put("message","Cheque seu email para verificação da sua conta");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull LoginUserDTO loginUserDTO) {
-        return authService.authenticate(loginUserDTO);
+    public ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull @Validated RequestLoginUserDTO requestLoginUserDTO) {
+        return authService.authenticate(requestLoginUserDTO);
     }
 
-    @Override
-    @GetMapping("/verify")
-    public ResponseEntity<Map<String, String>> verify(@Param("token") @NotNull String token) {
-        return authService.verify(token);
-    }
 
     private String getSiteURL(HttpServletRequest request) {
         String siteURL = request.getRequestURL().toString();

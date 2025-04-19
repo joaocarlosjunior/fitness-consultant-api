@@ -1,5 +1,6 @@
 package br.com.fitnessconsultant.domain.enums;
 
+import br.com.fitnessconsultant.exception.RoleInvalidException;
 import lombok.Getter;
 
 @Getter
@@ -23,6 +24,6 @@ public enum Role {
                 return role;
             }
         }
-        throw new IllegalArgumentException("Valor de Role inválido: " + value);
+        throw new RoleInvalidException("Valor de Role inválido: " + value);
     }
 }

@@ -40,8 +40,9 @@ public class PeriodizationControllerImpl implements PeriodizationController {
     @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponsePeriodizationDTO> update(@PathVariable @Positive @NotNull Long id,
-                                           @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO){
+    public ResponseEntity<ResponsePeriodizationDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO){
         return periodizationService.update(id, updatePeriodizationDTO);
     }
 
