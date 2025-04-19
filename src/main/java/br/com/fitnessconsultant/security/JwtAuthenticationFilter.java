@@ -37,6 +37,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        if(isPublicEndpoint(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = recoveryToken(request);
 
         if (token == null) {
@@ -64,5 +70,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return authorizationHeader.replace("Bearer ", "");
         }
         return null;
+    }
+
+    private boolean isPublicEndpoint(HttpServletRequest request) {
+        String path = request.getServletPath();
+        String method = request.getMethod();
+        return path.startsWith("/api/v1/auth/") ||
+                path.equals("/swagger-ui/**") ||
+                path.equals("/swagger-ui") ||
+                path.equals("/fitness-consultant-documentation") ||
+                path.equals("/fitness-consultant-apidocs/**") ||
+                method.equals("OPTIONS");
     }
 }
