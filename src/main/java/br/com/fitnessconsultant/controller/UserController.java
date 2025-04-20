@@ -4,24 +4,35 @@ import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
+import br.com.fitnessconsultant.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Usuário", description = "APIs de Gerenciamento de Usuários")
-public interface UserController {
+@RestController
+@Validated
+@RequestMapping("/api/v1/users")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(
-            summary = "Recupera um usuário pelo Id",
-            description = "Obtem um usuário pelo seu Id . A resposta é um objeto User com id, nome, sobrenome," +
+            summary = "Recupera usuário pelo Id",
+            description = "Obtem usuário pelo seu Id . A resposta é um objeto User com id, nome, sobrenome," +
                     "  email, telefone, role, " +
                     "data de criação e atualização."
     )
@@ -31,11 +42,15 @@ public interface UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<ResponseUserDTO> findById(Long id);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<ResponseUserDTO> findById(@PathVariable @Positive @NotNull Long id) {
+        return userService.findById(id);
+    }
 
     @Operation(
-            summary = "Deleta um usuário pelo Id",
-            description = "Deleta um usuário pelo seu Id"
+            summary = "Deleta usuário pelo Id",
+            description = "Deleta usuário pelo seu Id"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
@@ -43,11 +58,16 @@ public interface UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<Void> delete(Long id);
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id) {
+        userService.setDisableUser(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @Operation(
-            summary = "Atualiza um usuário pelo Id",
-            description = "Atualiza um usuário pelo seu Id . A resposta é um objeto User com id, nome, sobrenome," +
+            summary = "Atualiza usuário pelo Id",
+            description = "Atualiza usuário pelo seu Id . A resposta é um objeto User com id, nome, sobrenome," +
                     "  email, telefone, role, " +
                     "data de criação e atualização."
 
@@ -58,8 +78,13 @@ public interface UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<ResponseUserDTO> update(Long id,
-                           UpdateUserDTO updateUserDTO);
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<ResponseUserDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull UpdateUserDTO updateUserDTO) {
+        return userService.update(id, updateUserDTO);
+    }
 
     @Operation(
             summary = "Retorna todos os usuários ativos",
@@ -72,7 +97,11 @@ public interface UserController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<List<ResponseUserDTO>> list();
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ResponseUserDTO>> list() {
+        return userService.list();
+    }
 
     @Operation(
             summary = "Ativa usuário pelo Id",
@@ -85,7 +114,13 @@ public interface UserController {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<Map<String, String>>  setActiveUser(Long id);
+    @PatchMapping("/active-user/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<Map<String, String>> setActiveUser(
+            @PathVariable @Positive @NotNull Long id
+    ) {
+        return userService.setActiveUser(id);
+    }
 
     @Operation(
             summary = "Desabilita usuário pelo Id",
@@ -98,8 +133,26 @@ public interface UserController {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<Map<String, String>> setDisableUser(Long id);
+    @PatchMapping("/disable-user/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<Map<String, String>> setDisableUser(@PathVariable @Positive @NotNull Long id) {
+        return userService.setDisableUser(id);
+    }
 
-    ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTrainingInfo(@PathVariable Long id);
-
+    @Operation(
+            summary = "Busca por todos os treinos pelo Id do usuário",
+            description = "Busca por todos os treinos pelo Id do usuário"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Retornado todos os treinos com sucesso"),
+            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
+    })
+    @GetMapping("/user/{id}/workouts")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTrainingInfo(@PathVariable @Positive Long id){
+        return userService.getAllUserTraining(id);
+    }
 }

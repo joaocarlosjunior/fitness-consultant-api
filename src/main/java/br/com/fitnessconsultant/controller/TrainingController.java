@@ -3,6 +3,7 @@ package br.com.fitnessconsultant.controller;
 import br.com.fitnessconsultant.dto.training.RequestTrainingDTO;
 import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
+import br.com.fitnessconsultant.service.training.TrainingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -10,13 +11,27 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Treino", description = "APIs de Gerenciamento de Treinos")
-public interface TrainingController {
+
+@RestController
+@Validated
+@RequestMapping("/api/v1/workouts")
+public class TrainingController {
+
+    private final TrainingService trainingService;
+
+    public TrainingController(TrainingService trainingService) {
+        this.trainingService = trainingService;
+    }
+
     @Operation(
             summary = "Cria treino",
             description = "Cria um treino. A resposta é um Training com id do treino, id da periodização," +
@@ -29,7 +44,13 @@ public interface TrainingController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<ResponseTrainingDTO> create(RequestTrainingDTO requestTrainingDTO);
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseTrainingDTO> create(
+            @RequestBody @NotNull RequestTrainingDTO requestTrainingDTO
+    ) {
+        return trainingService.create(requestTrainingDTO);
+    }
 
     @Operation(
             summary = "Atualiza treino pelo Id",
@@ -46,8 +67,14 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Atualiza treino pelo Id")
     })
-    ResponseEntity<ResponseTrainingDTO> update(Long id,
-                               RequestTrainingDTO requestTrainingDTO);
+    @PutMapping({"/{id}"})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseTrainingDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull RequestTrainingDTO requestTrainingDTO
+    ) {
+        return trainingService.update(id, requestTrainingDTO);
+    }
 
     @Operation(
             summary = "Deleta treino pelo Id",
@@ -62,7 +89,12 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta treino pelo Id")
     })
-    ResponseEntity<Void> delete(Long id);
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id){
+        trainingService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @Operation(
             summary = "Recupera treino pelo Id",
@@ -79,7 +111,11 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna treino pelo Id")
     })
-    ResponseEntity<ResponseTrainingDTO> findById(Long id);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<ResponseTrainingDTO> findById(@PathVariable @Positive @NotNull Long id){
+        return trainingService.findById(id);
+    }
 
     @Operation(
             summary = "Recupera todos os treinos pelo Id da periodização",
@@ -96,5 +132,10 @@ public interface TrainingController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os treinos pelo Id de Periodização")
     })
-    ResponseEntity<List<ResponseTrainingDTO>> getAllTrainingByIdPeriodization(Long id);
+    @GetMapping("/periodization/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ResponseTrainingDTO>> getAllTrainingByIdPeriodization(@PathVariable @Positive @NotNull Long id){
+        return trainingService.getAllTrainingByIdPeriodization(id);
+    }
+
 }

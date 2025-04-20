@@ -3,6 +3,7 @@ package br.com.fitnessconsultant.controller;
 import br.com.fitnessconsultant.dto.exercise.RequestExerciseDTO;
 import br.com.fitnessconsultant.dto.exercise.ResponseExerciseDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
+import br.com.fitnessconsultant.service.exercise.ExerciseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -10,13 +11,24 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Exercício", description = "APIs de Gerenciamento de exercícios")
-public interface ExerciseController {
+@RestController
+@Validated
+@RequestMapping("/api/v1/exercises")
+public class ExerciseController {
+
+    private final ExerciseService exerciseService;
+
+    public ExerciseController(ExerciseService exerciseService){
+        this.exerciseService = exerciseService;
+    }
 
     @Operation(
             summary = "Adiciona exercício",
@@ -30,7 +42,12 @@ public interface ExerciseController {
                     content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<ResponseExerciseDTO> create(RequestExerciseDTO requestExerciseDTO);
+    @PostMapping
+    public ResponseEntity<ResponseExerciseDTO> create(
+            @RequestBody @NotNull RequestExerciseDTO requestExerciseDTO
+    ){
+        return exerciseService.create(requestExerciseDTO);
+    }
 
     @Operation(
             summary = "Atualiza exercício pelo Id",
@@ -45,10 +62,13 @@ public interface ExerciseController {
                     content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @Parameters({
-            @Parameter(name = "id", description = "Atualiza Exercício pelo Id")
-    })
-    ResponseEntity<ResponseExerciseDTO> update(Long id, RequestExerciseDTO requestExerciseDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseExerciseDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull RequestExerciseDTO requestExerciseDTO
+    ){
+        return exerciseService.update(id, requestExerciseDTO);
+    }
 
     @Operation(
             summary = "Deletado exercício pelo Id",
@@ -65,7 +85,13 @@ public interface ExerciseController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Exercício pelo Id")
     })
-    ResponseEntity<Void> delete(Long id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable @Positive @NotNull Long id
+    ){
+        exerciseService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @Operation(
             summary = "Recupera todos exercícios pelo Id de treino",
@@ -83,6 +109,8 @@ public interface ExerciseController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os Exercícios pelo Id do Treino")
     })
-    ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(Long id);
-
+    @GetMapping("/training/{id}")
+    public ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id){
+        return exerciseService.getAllExercisesByIdTraining(id);
+    }
 }
