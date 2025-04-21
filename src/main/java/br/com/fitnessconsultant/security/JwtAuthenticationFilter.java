@@ -21,7 +21,6 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     private final UserRepository userRepository;
     private final JwtTokenUtils jwtTokenUtils;
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -49,7 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = recoveryToken(request);
             String subject = jwtTokenUtils.getSubjectFromToken(token);
             User user = userRepository.findByEmail(subject).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
-
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -76,7 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.startsWith("/swagger-ui") ||
                 path.equals("/fitness-consultant-documentation") ||
                 path.startsWith("/fitness-consultant-apidocs") ||
-                path.startsWith("/api/v1/auth") ||
+                path.equals("/api/v1/auth/login") ||
                 method.equals("OPTIONS");
     }
 }
