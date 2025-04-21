@@ -44,7 +44,7 @@ public class ExerciseController {
     })
     @PostMapping
     public ResponseEntity<ResponseExerciseDTO> create(
-            @RequestBody @NotNull RequestExerciseDTO requestExerciseDTO
+            @RequestBody @NotNull @Validated RequestExerciseDTO requestExerciseDTO
     ){
         return exerciseService.create(requestExerciseDTO);
     }
@@ -65,7 +65,7 @@ public class ExerciseController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseExerciseDTO> update(
             @PathVariable @Positive @NotNull Long id,
-            @RequestBody @NotNull RequestExerciseDTO requestExerciseDTO
+            @RequestBody @NotNull @Validated RequestExerciseDTO requestExerciseDTO
     ){
         return exerciseService.update(id, requestExerciseDTO);
     }

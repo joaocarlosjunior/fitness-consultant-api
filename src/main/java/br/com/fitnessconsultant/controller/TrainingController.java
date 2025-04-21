@@ -47,7 +47,7 @@ public class TrainingController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseTrainingDTO> create(
-            @RequestBody @NotNull RequestTrainingDTO requestTrainingDTO
+            @RequestBody @NotNull @Validated RequestTrainingDTO requestTrainingDTO
     ) {
         return trainingService.create(requestTrainingDTO);
     }
@@ -71,7 +71,7 @@ public class TrainingController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseTrainingDTO> update(
             @PathVariable @Positive @NotNull Long id,
-            @RequestBody @NotNull RequestTrainingDTO requestTrainingDTO
+            @RequestBody @NotNull @Validated RequestTrainingDTO requestTrainingDTO
     ) {
         return trainingService.update(id, requestTrainingDTO);
     }

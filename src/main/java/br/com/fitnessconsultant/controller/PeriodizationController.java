@@ -47,7 +47,7 @@ public class PeriodizationController {
     })
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO) {
+    public ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull @Validated RequestPeriodizationDTO requestPeriodizationDTO) {
         return periodizationService.create(requestPeriodizationDTO);
     }
 
@@ -88,7 +88,7 @@ public class PeriodizationController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponsePeriodizationDTO> update(
             @PathVariable @Positive @NotNull Long id,
-            @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO){
+            @RequestBody @NotNull @Validated UpdatePeriodizationDTO updatePeriodizationDTO){
         return periodizationService.update(id, updatePeriodizationDTO);
     }
 

@@ -2,6 +2,8 @@ package br.com.fitnessconsultant.security;
 
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
+import br.com.fitnessconsultant.exception.InvalidTokenException;
+import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,16 +40,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        String token = recoveryToken(request);
-
-        if (token == null) {
+        if (isPublicEndpoint(request)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
+            String token = recoveryToken(request);
             String subject = jwtTokenUtils.getSubjectFromToken(token);
-            User user = userRepository.findByEmail(subject).get();
+            User user = userRepository.findByEmail(subject).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
@@ -61,9 +62,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !authorizationHeader.isBlank()) {
             return authorizationHeader.replace("Bearer ", "");
         }
-        return null;
+        throw new InvalidTokenException("Token inválido");
+    }
+
+    private boolean isPublicEndpoint(HttpServletRequest request) {
+        String path = request.getServletPath();
+        String method = request.getMethod();
+
+        return path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-ui") ||
+                path.equals("/fitness-consultant-documentation") ||
+                path.startsWith("/fitness-consultant-apidocs") ||
+                path.startsWith("/api/v1/auth") ||
+                method.equals("OPTIONS");
     }
 }

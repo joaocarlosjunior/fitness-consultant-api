@@ -82,7 +82,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<ResponseUserDTO> update(
             @PathVariable @Positive @NotNull Long id,
-            @RequestBody @NotNull UpdateUserDTO updateUserDTO) {
+            @RequestBody @NotNull @Validated UpdateUserDTO updateUserDTO) {
         return userService.update(id, updateUserDTO);
     }
 
@@ -152,7 +152,7 @@ public class UserController {
     })
     @GetMapping("/user/{id}/workouts")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTrainingInfo(@PathVariable @Positive Long id){
+    public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTrainingInfo(@PathVariable @NotNull @Positive Long id){
         return userService.getAllUserTraining(id);
     }
 }

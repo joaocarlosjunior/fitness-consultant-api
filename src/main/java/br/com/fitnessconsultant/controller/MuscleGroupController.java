@@ -41,7 +41,7 @@ public class MuscleGroupController {
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+    public ResponseEntity<Void> create(@RequestBody @NotNull @Validated RequestMuscleGroupDTO requestMuscleGroupDTO) {
         muscleGroupService.create(requestMuscleGroupDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -83,7 +83,7 @@ public class MuscleGroupController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseMuscleGroupDTO> update(
             @PathVariable @Positive @NotNull Long id,
-            @RequestBody @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+            @RequestBody @NotNull @Validated RequestMuscleGroupDTO requestMuscleGroupDTO) {
         return muscleGroupService.update(id, requestMuscleGroupDTO);
     }
 
