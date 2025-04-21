@@ -3,6 +3,7 @@ package br.com.fitnessconsultant.controller;
 import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
+import br.com.fitnessconsultant.service.exercisename.ExerciseNameService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -10,17 +11,23 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Nome de Exercício", description = "APIs de Gerenciamento de Nomes de Exercícios")
-public interface ExerciseNameController {
+@RestController
+@RequestMapping("/api/v1/exercise-name")
+public class ExerciseNameController {
+
+    private final ExerciseNameService exerciseNameService;
+
+    public ExerciseNameController(ExerciseNameService exerciseNameService) {
+        this.exerciseNameService = exerciseNameService;
+    }
 
     @Operation(
             summary = "Adiciona nome de exercício",
@@ -32,7 +39,11 @@ public interface ExerciseNameController {
             @ApiResponse(responseCode = "404", description = "Id do Grupo Muscular inválido ou inexistente", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
-    ResponseEntity<Void> create(@RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO);
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
+        exerciseNameService.create(requestExerciseNameDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @Operation(
             summary = "Recupera nome de exercício pelo Id",
@@ -48,7 +59,10 @@ public interface ExerciseNameController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna Nome Exercício pelo Id")
     })
-    ResponseEntity<ResponseExerciseNameDTO> findById(@PathVariable @Positive @NotNull Long id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseExerciseNameDTO> findById(@PathVariable @Positive @NotNull Long id) {
+        return exerciseNameService.findById(id);
+    }
 
     @Operation(
             summary = "Atualiza nome de exercício pelo Id",
@@ -64,8 +78,13 @@ public interface ExerciseNameController {
     @Parameters({
             @Parameter(name = "id", description = "Altera Nome Exercício pelo Id")
     })
-    ResponseEntity<ResponseExerciseNameDTO> update(@PathVariable @Positive @NotNull Long id,
-                                   @RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO);
+    @PutMapping({"/{id}"})
+    public ResponseEntity<ResponseExerciseNameDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull RequestExerciseNameDTO requestExerciseNameDTO
+    ) {
+        return exerciseNameService.update(id, requestExerciseNameDTO);
+    }
 
     @Operation(
             summary = "Deleta nome de exercício pelo Id",
@@ -80,7 +99,11 @@ public interface ExerciseNameController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Nome Exercício pelo Id")
     })
-    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id) {
+        exerciseNameService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @Operation(
             summary = "Recuperar todos os nomes de exercícios",
@@ -92,5 +115,9 @@ public interface ExerciseNameController {
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
-    ResponseEntity<List<ResponseExerciseNameDTO>> list();
+    @GetMapping
+    public ResponseEntity<List<ResponseExerciseNameDTO>> list() {
+        return exerciseNameService.list();
+    }
+
 }

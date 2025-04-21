@@ -1,7 +1,11 @@
 package br.com.fitnessconsultant.dto.exercisename;
 
-public record RequestExerciseNameDTO (
-    String exerciseName,
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-    Long idMuscleGroup
+public record RequestExerciseNameDTO (
+        @NotBlank(message = "Campo nome exercício é obrigatório")
+        String exerciseName,
+        @NotNull(message = "Grupo muscular obrigatório")
+        Long idMuscleGroup
 ){}

@@ -60,7 +60,8 @@ public class PersonalGymApiExceptionHandler {
             ApiErrorException.class,
             EmailVerificationException.class,
             InvalidTokenException.class,
-            InfoAlreadyExistsException.class
+            InfoAlreadyExistsException.class,
+            RoleInvalidException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors ApiErrorException(Exception e) {
@@ -74,9 +75,9 @@ public class PersonalGymApiExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiErrors BadCredentialsException() {
-        return new ApiErrors("Usuário ou senha inválida", HttpStatus.UNAUTHORIZED.value());
+        return new ApiErrors("Usuário ou senha inválida", HttpStatus.FORBIDDEN.value());
     }
 
     @ExceptionHandler(AccountStatusException.class)
@@ -86,9 +87,9 @@ public class PersonalGymApiExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrors AccessDeniedException() {
-        return new ApiErrors("Você não está autorizado a acessar este recurso", HttpStatus.FORBIDDEN.value());
+        return new ApiErrors("Você não está autorizado a acessar este recurso", HttpStatus.UNAUTHORIZED.value());
     }
 
     @ExceptionHandler(SignatureException.class)

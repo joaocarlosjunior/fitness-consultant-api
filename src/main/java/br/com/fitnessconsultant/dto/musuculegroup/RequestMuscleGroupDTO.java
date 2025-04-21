@@ -1,5 +1,8 @@
 package br.com.fitnessconsultant.dto.musuculegroup;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record RequestMuscleGroupDTO (
-    String name
+        @NotBlank(message = "Campo nome grupo muscular obrigatório")
+        String name
 ){}

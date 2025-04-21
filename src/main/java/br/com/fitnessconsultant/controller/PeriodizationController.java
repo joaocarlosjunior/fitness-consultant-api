@@ -5,6 +5,7 @@ import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
 import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
+import br.com.fitnessconsultant.service.periodization.PeriodizationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -12,17 +13,25 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Periodização", description = "APIs de Gerenciamento de Periodização")
-public interface PeriodizationController {
+@RestController
+@Validated
+@RequestMapping("/api/v1/periodizations")
+public class PeriodizationController {
+
+    private final PeriodizationService periodizationService;
+
+    public PeriodizationController(PeriodizationService periodizationService){
+        this.periodizationService = periodizationService;
+    }
 
     @Operation(
             summary = "Cria periodização",
@@ -36,7 +45,11 @@ public interface PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO);
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull RequestPeriodizationDTO requestPeriodizationDTO) {
+        return periodizationService.create(requestPeriodizationDTO);
+    }
 
     @Operation(
             summary = "Retorna periodização pelo Id",
@@ -50,10 +63,11 @@ public interface PeriodizationController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    @Parameters({
-            @Parameter(name = "id", description = "Retorna Periodização pelo Id")
-    })
-    ResponseEntity<ResponsePeriodizationDTO> findById(@PathVariable @Positive @NotNull Long id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponsePeriodizationDTO> findById(@PathVariable @Positive @NotNull Long id){
+        System.out.println("id: " + id);
+        return periodizationService.findById(id);
+    }
 
     @Operation(
             summary = "Atualiza periodização pelo Id",
@@ -70,8 +84,13 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Atualiza Periodização pelo Id")
     })
-    ResponseEntity<ResponsePeriodizationDTO> update(@PathVariable @Positive @NotNull Long id,
-                                    @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO);
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponsePeriodizationDTO> update(
+            @PathVariable @Positive @NotNull Long id,
+            @RequestBody @NotNull UpdatePeriodizationDTO updatePeriodizationDTO){
+        return periodizationService.update(id, updatePeriodizationDTO);
+    }
 
     @Operation(
             summary = "Deleta periodização pelo Id",
@@ -86,7 +105,12 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Deleta Periodização pelo Id")
     })
-    ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id);
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id){
+        periodizationService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @Operation(
             summary = "Retorna todas as periodizações",
@@ -99,7 +123,11 @@ public interface PeriodizationController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<List<ResponsePeriodizationDTO>> list();
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ResponsePeriodizationDTO>> list(){
+        return periodizationService.list();
+    }
 
     @Operation(
             summary = "Retorna todas as periodizações pelo Id do usuário",
@@ -116,5 +144,9 @@ public interface PeriodizationController {
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os Periodização pelo Id do Usuário")
     })
-    ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id);
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id){
+        return periodizationService.getAllPeriodizationByUser(id);
+    }
 }

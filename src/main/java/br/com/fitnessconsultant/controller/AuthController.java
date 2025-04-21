@@ -1,28 +1,41 @@
 package br.com.fitnessconsultant.controller;
 
-import br.com.fitnessconsultant.dto.auth.LoginUserDTO;
+import br.com.fitnessconsultant.dto.auth.RequestLoginUserDTO;
 import br.com.fitnessconsultant.dto.auth.ResponseJwtTokenDTO;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
+import br.com.fitnessconsultant.service.auth.AuthService;
+import br.com.fitnessconsultant.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+@RestController
+@Validated
+@RequestMapping("/api/v1/auth")
+public class AuthController {
+    private final UserService userService;
+    private final AuthService authService;
 
-@Tag(name = "Autenticação", description = "APIs de Autenticação de Usuário")
-public interface AuthController {
+    public AuthController(UserService userService, AuthService authService) {
+        this.userService = userService;
+        this.authService = authService;
+    }
 
+    @PostMapping("/signup")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Cria usuário",
             description = "Cria um usuário"
@@ -32,7 +45,13 @@ public interface AuthController {
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<Map<String, String>> create(@RequestBody @NotNull RequestUserDTO requestUser, HttpServletRequest request);
+    public ResponseEntity<Void> create(
+            @RequestBody @NotNull RequestUserDTO requestUser,
+            HttpServletRequest request
+    ){
+        userService.create(requestUser, getSiteURL(request));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @Operation(
             summary = "Autentica usuário",
@@ -44,22 +63,14 @@ public interface AuthController {
             @ApiResponse(responseCode = "403", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
-    ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull LoginUserDTO loginUserDTO);
+    @PostMapping("/login")
+    public ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull RequestLoginUserDTO requestLoginUserDTO) {
+        return authService.authenticate(requestLoginUserDTO);
+    }
 
-    @Operation(
-            summary = "Verifica Email Usuário",
-            description = "Verificação do email do usuário"
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso"),
-            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "403", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
-    })
-    @Parameters({
-            @Parameter(name = "token", description = "Token para verificação do email")
-    })
-    ResponseEntity<Map<String, String>> verify(@Param("token") @NotNull String token);
 
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
 }

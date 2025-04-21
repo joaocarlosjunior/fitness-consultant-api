@@ -36,7 +36,8 @@ public class SecurityConfig {
     private static final String[] AUTH_ADMIN = {
             "/api/v1/exercise-name",
             "/api/v1/muscle-group",
-            "/api/v1/exercises"
+            "/api/v1/exercises",
+            "api/v1/auth/signup",
     };
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
