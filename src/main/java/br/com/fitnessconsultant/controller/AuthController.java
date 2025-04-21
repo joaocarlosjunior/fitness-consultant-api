@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Validated
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final UserService userService;
@@ -46,7 +45,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     public ResponseEntity<Void> create(
-            @RequestBody @NotNull RequestUserDTO requestUser,
+            @RequestBody @NotNull @Validated RequestUserDTO requestUser,
             HttpServletRequest request
     ){
         userService.create(requestUser, getSiteURL(request));
@@ -64,10 +63,9 @@ public class AuthController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PostMapping("/login")
-    public ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull RequestLoginUserDTO requestLoginUserDTO) {
+    public ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull @Validated RequestLoginUserDTO requestLoginUserDTO) {
         return authService.authenticate(requestLoginUserDTO);
     }
-
 
     private String getSiteURL(HttpServletRequest request) {
         String siteURL = request.getRequestURL().toString();
