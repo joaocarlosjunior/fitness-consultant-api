@@ -39,7 +39,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     @Transactional
     public ResponseEntity<ResponsePeriodizationDTO> create(@NotNull @Valid RequestPeriodizationDTO registerPeriodization) {
         User user = userRepository
-                .getReferenceById(registerPeriodization.idUser());
+                .findById(registerPeriodization.idUser()).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
