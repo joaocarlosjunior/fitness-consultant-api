@@ -56,7 +56,7 @@ public class TrainingServiceImpl implements TrainingService {
                 .getReferenceById(requestTrainingDTO.idPeriodization());
 
         training.setTrainingName(requestTrainingDTO.trainingName());
-        training.setTrainingType(TrainingType.fromValue(requestTrainingDTO.trainingType()));
+        training.setTrainingType(TrainingType.fromValue(requestTrainingDTO.idTrainingType()));
         training.setPeriodization(periodization);
 
         return ResponseEntity.ok(
