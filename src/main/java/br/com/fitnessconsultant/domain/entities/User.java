@@ -54,7 +54,7 @@ public class User implements UserDetails{
     @NotBlank(message = "Campo Senha é obrigatório")
     private String password;
 
-    @Column(name = "phone",length = 20, unique = true)
+    @Column(name = "phone",length = 11, unique = true)
     @NotBlank(message = "Campo Telefone é obrigatório")
     @Pattern(regexp = "^[0-9]+$", message = "O campo Telefone deve conter apenas números")
     private String phone;

@@ -13,7 +13,7 @@ public record RequestUserDTO(
         @NotBlank(message = "Campo email obrigatório")
         String email,
         @Pattern(regexp = "^[0-9]+$", message = "Campo telefone deve conter somente números")
-        @Length(min = 12, max = 12, message = "Número deve conter 12 digitos")
+        @Length(min = 11, max = 11, message = "Número deve conter 11 digitos")
         @NotBlank(message = "Campo telefone obrigatório")
         String phone,
         @NotBlank(message = "Campo senha obrigatório")
