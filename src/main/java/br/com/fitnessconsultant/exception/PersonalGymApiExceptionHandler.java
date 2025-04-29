@@ -58,7 +58,7 @@ public class PersonalGymApiExceptionHandler {
 
     @ExceptionHandler({
             ApiErrorException.class,
-            EmailVerificationException.class,
+            SendEmailException.class,
             InvalidTokenException.class,
             InfoAlreadyExistsException.class,
             RoleInvalidException.class,
@@ -106,7 +106,7 @@ public class PersonalGymApiExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ApiErrors AuthenticationException(AuthenticationException e) {
+    public ApiErrors AuthenticationException() {
         return new ApiErrors("Erro ao autenticar usuário", HttpStatus.FORBIDDEN.value());
     }
 }

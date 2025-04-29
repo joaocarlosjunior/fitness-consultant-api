@@ -6,10 +6,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
-
 public interface AuthService {
     ResponseEntity<ResponseJwtTokenDTO> authenticate(@Valid @NotNull RequestLoginUserDTO loginUser);
-
-    ResponseEntity<Map<String, String>> verify(@NotNull String verificationToken);
 }

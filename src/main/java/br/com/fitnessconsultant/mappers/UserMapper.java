@@ -35,7 +35,7 @@ public class UserMapper {
                 .build();
     }
 
-    public User toEntity(RequestUserDTO dto) {
+    public User toEntity(RequestUserDTO dto, String password) {
         if(dto == null){
             return null;
         }
@@ -44,8 +44,9 @@ public class UserMapper {
                 .firstName(dto.firstName())
                 .lastName(dto.lastName())
                 .email(dto.email().toLowerCase())
-                .password(passwordEncoder.encode(dto.password()))
+                .password(passwordEncoder.encode(password))
                 .phone(dto.phone())
+                .isEnabled(true)
                 .role(Role.fromValue(dto.role()))
                 .build();
     }

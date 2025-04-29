@@ -1,11 +1,9 @@
 package br.com.fitnessconsultant.service.email.impl;
 
-import br.com.fitnessconsultant.domain.entities.ConfirmationToken;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.service.email.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,21 +13,21 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 
 @Service
-@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
     @Value("spring.mail.username")
     private String fromAddress;
 
-    @Value("spring.mail.host")
-    private String host;
-
     private final JavaMailSender javaMailSender;
 
+    public EmailServiceImpl(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
     @Async
-    public void sendVerificationEmail(User user, ConfirmationToken confirmationToken, String siteUrl)
+    public void sendEmail(User user, String password)
             throws MessagingException, UnsupportedEncodingException {
         String senderName = "Consultoria Fitness";
-        String subject = "Verificar seu cadastro";
+        String subject = "Senha para acesso ao sistema Consultoria Fitness";
 
         String content = emailContent();
 
@@ -42,10 +40,7 @@ public class EmailServiceImpl implements EmailService {
 
         String fullName = user.getFirstName() + " " + user.getLastName();
         content = content.replace("[[name]]", fullName);
-
-        String verifyURL = siteUrl + "/api/v1/auth/verify?token=" + confirmationToken.getConfirmationToken();
-
-        content = content.replace("[[URL]]", verifyURL);
+        content = content.replace("[[password]]", password);
 
         helper.setText(content, true);
 
@@ -53,10 +48,10 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private String emailContent(){
-        return "Olá [[name]],<br>"
-                + "Por favor, clique no link para verificar seu cadastro:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFICAR</a></h3>"
-                + "Obrigado.<br>"
-                + "Consultoria Fitness";
+        return "<h1>Olá, [[name]]!</h1>"
+                + "<p>A sua senha para acesso a nossa plataforma</p>"
+                + "<p>Senha: <h2>[[password]]</h2></p>"
+                + "<p>Obrigado.</p>"
+                + "<p>Consultoria Fitness</p>";
     }
 }
