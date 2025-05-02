@@ -297,7 +297,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -335,7 +335,7 @@ Header:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -371,7 +371,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -423,7 +423,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -466,7 +466,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -507,7 +507,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -543,7 +543,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -604,7 +604,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -654,7 +654,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -689,7 +689,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -725,7 +725,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -775,7 +775,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -819,7 +819,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -861,7 +861,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -909,7 +909,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -945,7 +945,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -1000,7 +1000,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -1048,7 +1048,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -1096,7 +1096,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -1142,7 +1142,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -1191,7 +1191,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -1227,7 +1227,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -1286,7 +1286,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -1350,7 +1350,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -1401,7 +1401,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -1447,7 +1447,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
@@ -1495,7 +1495,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -1531,7 +1531,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -1587,7 +1587,7 @@ Body:
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 409, 500
 }
@@ -1636,7 +1636,7 @@ Type: Integer
 ```json
 {
   "errors": [
-    "string"
+    "Mensagem informando qual erro"
   ],
   "code": 400 //401, 403, 404, 500
 }
