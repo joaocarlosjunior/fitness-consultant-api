@@ -25,7 +25,7 @@ ajustar exercícios, cargas e formatações, o que tornava o processo lento, rep
 Diante disso, surgiu a proposta de desenvolver um sistema que digitalizasse e otimizasse essa rotina,
 tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 
-![Image](https://github.com/user-attachments/assets/b9001756-d7a5-4b15-bc15-c455e2133d0c)
+![Image](https://github.com/user-attachments/assets/b9001756-d7a5-4b15-bc15-c455e2133d0c)(https://github.com/joaocarlosjunior/fitness-consultant-api)
 
 ## Status do Projeto
 
@@ -52,7 +52,7 @@ tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 
 
 ## Tecnologias
-
+- Java 17
 - [Spring Boot 3.4.4](https://spring.io/projects/spring-boot)
 - [PostgreSQL 15.6](https://www.postgresql.org/docs/release/15.6/)
 - [Redis](https://redis.io/pt/)
