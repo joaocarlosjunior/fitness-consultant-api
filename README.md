@@ -42,6 +42,10 @@ tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 - Classificação de exercícios por grupos musculares
 - Regras e recomendações pré e pós-treino
 
+### Modelagem Banco
+
+![bd](https://github.com/joaocarlosjunior/fitness-consultant-api/assets/83256465/0b511b8c-c3a1-4b66-98af-de9845ba8a9e)
+
 ## Tecnologias
 
 - [Spring Boot 3.4.4](https://spring.io/projects/spring-boot)
@@ -111,12 +115,12 @@ http://localhost:8080/fitness-consultant-documentation
 
 **Endpoints para recursos relacionado ao Usuário**
 
-| rota                                            | descrição                                                                                                   |
-|-------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
-| <kbd>GET /api/v1/users/{id}</kbd>               | Retornar usuário pelo id [request e response](#get-user)                                                    |
-| <kbd>DELETE /api/v1/users/{id}</kbd>            | Deleta Usuário pelo id [request e response](#delete-user)                                                   |
-| <kbd>PUT /api/v1/users/{id}</kbd>               | Atualiza Info Usuário pelo id [request e response](#put-user)                                               |
-| <kbd>GET /api/v1/users/user/{id}/workouts</kbd> | Retornar todas informações de treino do usuário pelo id usuario[request e response](#get-all-training-user) |
+| rota                                            | descrição                                                                                                    |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| <kbd>GET /api/v1/users/{id}</kbd>               | Retornar usuário pelo id [request e response](#get-user)                                                     |
+| <kbd>DELETE /api/v1/users/{id}</kbd>            | Deleta Usuário pelo id [request e response](#delete-user)                                                    |
+| <kbd>PUT /api/v1/users/{id}</kbd>               | Atualiza Info Usuário pelo id [request e response](#put-user)                                                |
+| <kbd>GET /api/v1/users/user/{id}/workouts</kbd> | Retornar todas informações de treino do usuário pelo id usuario [request e response](#get-all-training-user) |
 
 **Endpoints para recursos relacionado a Treinos**
 
