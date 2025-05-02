@@ -1,5 +1,3 @@
-![bd](https://github.com/joaocarlosjunior/fitness-consultant-api/assets/83256465/0b511b8c-c3a1-4b66-98af-de9845ba8a9e)
-
 <h1 align="center" style="font-weight: bold;">API - Sistema de Gerenciamento de Treinos para Personal Trainer</h1>
 <p align="center">
   <a href="#contexto">Contexto</a> • 
