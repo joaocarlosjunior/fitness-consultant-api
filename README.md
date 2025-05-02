@@ -5,6 +5,7 @@
   <a href="#tecnologias">Tecnologias</a> • 
   <a href="#instalação">Instalação</a> •
   <a href="#endpoints-api">API Endpoints</a> •
+  <a href="#desenvolvedores">Desenvolvedores</a> •
   <a href="#licença">Licença</a>
 
 </p>
@@ -26,6 +27,10 @@ tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 
 ![Image](https://github.com/user-attachments/assets/b9001756-d7a5-4b15-bc15-c455e2133d0c)
 
+## Status do Projeto
+
+![status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
+
 ## Funcionalidades
 
 - Cadastro e autenticação de usuários (administrador e usuários)
@@ -43,6 +48,8 @@ tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 ### Modelagem Banco
 
 ![bd](https://github.com/joaocarlosjunior/fitness-consultant-api/assets/83256465/0b511b8c-c3a1-4b66-98af-de9845ba8a9e)
+
+
 
 ## Tecnologias
 
@@ -891,9 +898,9 @@ Body:
   "idPeriodization": 9007199254740991,
   "name": "Nome da Periodização",
   "numberWeeks": 1073741824,
-  "startDate": "Data de início",
-  "createdAt": "Data de criação",
-  "updatedAt": "Data de atualização"
+  "startDate": "02/05/2025",
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025"
 }
 ```
 
@@ -983,8 +990,8 @@ Body:
   "name": "Nome da Periodização",
   "numberWeeks": 1073741824,
   "startDate": "Data de início",
-  "createdAt": "Data de criação",
-  "updatedAt": "Data de atualização"
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025"
 }
 ```
 
@@ -1030,8 +1037,8 @@ Type: Integer
     "name": "Nome da Periodização",
     "numberWeeks": 1073741824,
     "startDate": "Data de início",
-    "createdAt": "Data de criação",
-    "updatedAt": "Data de atualização"
+    "createdAt": "02/05/2025",
+    "updatedAt": "02/05/2025"
   }
 ]
 ```
@@ -1078,8 +1085,8 @@ Type: Integer
     "name": "Nome da Periodização",
     "numberWeeks": 1073741824,
     "startDate": "Data de início",
-    "createdAt": "Data de criação",
-    "updatedAt": "Data de atualização"
+    "createdAt": "02/05/2025",
+    "updatedAt": "02/05/2025"
   }
 ]
 ```
@@ -1125,8 +1132,8 @@ Type: Integer
   "name": "Nome da Periodização",
   "numberWeeks": 1073741824,
   "startDate": "Data de início",
-  "createdAt": "Data de criação",
-  "updatedAt": "Data de atualização"
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025"
 }
 ```
 
@@ -1173,8 +1180,8 @@ Type: Integer
   "email": "emailusuario@email.com",
   "phone": "77999999999",
   "role": "ROLE_USER",
-  "createdAt": "string",
-  "updatedAt": "string",
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025",
   "active": true
 }
 ```
@@ -1268,8 +1275,8 @@ Body:
   "email": "emailusuario@email.com",
   "phone": "77999999999",
   "role": "ROLE_USER",
-  "createdAt": "string",
-  "updatedAt": "string",
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025",
   "active": true
 }
 ```
@@ -1382,8 +1389,8 @@ Type: Integer
     "email": "emailusuario@email.com",
     "phone": "77999999999",
     "role": "ROLE_USER",
-    "createdAt": "string",
-    "updatedAt": "string",
+    "createdAt": "02/05/2025",
+    "updatedAt": "02/05/2025",
     "active": true
   }
 ]
@@ -1430,8 +1437,8 @@ Type: Integer
   "idPeriodization": 9007199254740991,
   "trainingType": "A", //A, B, C, D, E
   "trainingName": "Nome do treino",
-  "createdAt": "Data de criação treino",
-  "updatedAt": "Data de atualização treino"
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025"
 }
 ```
 
@@ -1478,8 +1485,8 @@ Body:
   "idPeriodization": 9007199254740991,
   "trainingType": "A", //A, B, C, D, E
   "trainingName": "Nome do treino",
-  "createdAt": "Data de criação treino",
-  "updatedAt": "Data de atualização treino"
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025"
 }
 ```
 
@@ -1570,8 +1577,8 @@ Body:
   "idPeriodization": 9007199254740991,
   "trainingType": "A", //A, B, C, D, E
   "trainingName": "Nome do treino",
-  "createdAt": "Data de criação treino",
-  "updatedAt": "Data de atualização treino"
+  "createdAt": "02/05/2025",
+  "updatedAt": "02/05/2025"
 }
 ```
 
@@ -1618,8 +1625,8 @@ Type: Integer
     "idPeriodization": 9007199254740991,
     "trainingType": "A", //A, B, C, D, E
     "trainingName": "Nome do treino",
-    "createdAt": "Data de criação treino",
-    "updatedAt": "Data de atualização treino"
+    "createdAt": "02/05/2025",
+    "updatedAt": "02/05/2025"
   }
 ]
 ```
@@ -1634,9 +1641,13 @@ Type: Integer
   "code": 400 //401, 403, 404, 500
 }
 ```
+## Desenvolvedores
+
+[Joao Carlos Ribas](https://www.linkedin.com/in/joaocarlosjr/)
+<br>[Luca Sacramento](https://www.linkedin.com/in/luca-sacramento-de-oliveira/)
 
 ## Licença
 
-[MIT](https://github.com/joaocarlosjunior/fitness-consultant-api/blob/main/LICENSE)
+Este projeto é disponibilizado apenas para fins de estudo e uso pessoal. Qualquer uso comercial é estritamente proibido sem autorização do autor.
 
-
+Consulte o arquivo [LICENSE](https://github.com/joaocarlosjunior/fitness-consultant-api/blob/main/LICENSE) para mais informações.
