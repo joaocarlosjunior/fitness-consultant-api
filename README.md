@@ -29,7 +29,7 @@ tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 
 ## Status do Projeto
 
-![status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)(https://github.com/joaocarlosjunior/fitness-consultant-api)
+[![status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)](https://github.com/joaocarlosjunior/fitness-consultant-api)
 
 ## Funcionalidades
 
