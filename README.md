@@ -25,11 +25,11 @@ ajustar exercícios, cargas e formatações, o que tornava o processo lento, rep
 Diante disso, surgiu a proposta de desenvolver um sistema que digitalizasse e otimizasse essa rotina,
 tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 
-![Image](https://github.com/user-attachments/assets/b9001756-d7a5-4b15-bc15-c455e2133d0c)(https://github.com/joaocarlosjunior/fitness-consultant-api)
+![Image](https://github.com/user-attachments/assets/b9001756-d7a5-4b15-bc15-c455e2133d0c)
 
 ## Status do Projeto
 
-![status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
+![status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)(https://github.com/joaocarlosjunior/fitness-consultant-api)
 
 ## Funcionalidades
 
@@ -48,8 +48,6 @@ tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 ### Modelagem Banco
 
 ![bd](https://github.com/joaocarlosjunior/fitness-consultant-api/assets/83256465/0b511b8c-c3a1-4b66-98af-de9845ba8a9e)
-
-
 
 ## Tecnologias
 - Java 17
