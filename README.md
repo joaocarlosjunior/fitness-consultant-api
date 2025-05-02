@@ -217,8 +217,7 @@ Body:
   "errors": [
     "Mensagem informando qual erro"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -242,8 +241,7 @@ Body:
   "lastName": "Sobrenome Cliente",
   "email": "emailcliente@email.com",
   "phone": "73999999999",
-  "role": 0
-  //0: User 1: Admin
+  "role": 0 //0: User 1: Admin
 }
 ```
 
@@ -258,8 +256,7 @@ Body:
   "errors": [
     "Mensagem informando qual erro"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -295,8 +292,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -334,8 +330,7 @@ Header:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -371,8 +366,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -424,8 +418,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -468,8 +461,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -510,8 +502,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -547,8 +538,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -609,8 +599,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -660,8 +649,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -696,8 +684,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -733,8 +720,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -784,8 +770,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -829,8 +814,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -872,8 +856,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -921,8 +904,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -958,8 +940,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -1014,8 +995,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -1063,8 +1043,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -1112,8 +1091,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -1159,8 +1137,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -1209,8 +1186,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -1246,8 +1222,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -1306,8 +1281,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -1371,8 +1345,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -1423,8 +1396,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -1456,8 +1428,7 @@ Type: Integer
 {
   "idTraining": 9007199254740991,
   "idPeriodization": 9007199254740991,
-  "trainingType": "A",
-  //A, B, C, D, E
+  "trainingType": "A", //A, B, C, D, E
   "trainingName": "Nome do treino",
   "createdAt": "Data de criação treino",
   "updatedAt": "Data de atualização treino"
@@ -1471,8 +1442,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
@@ -1493,8 +1463,7 @@ Body:
 ```json
 {
   "idPeriodization": 9007199254740991,
-  "trainingType": 0,
-  //0: A, 1:B, 2:C, 3:D, 4:E
+  "trainingType": 0, //0: A, 1:B, 2:C, 3:D, 4:E
   "trainingName": "Nome do treino"
 }
 ```
@@ -1507,8 +1476,7 @@ Body:
 {
   "idTraining": 9007199254740991,
   "idPeriodization": 9007199254740991,
-  "trainingType": "A",
-  //A, B, C, D, E
+  "trainingType": "A", //A, B, C, D, E
   "trainingName": "Nome do treino",
   "createdAt": "Data de criação treino",
   "updatedAt": "Data de atualização treino"
@@ -1522,8 +1490,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -1559,8 +1526,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -1589,8 +1555,7 @@ Body:
 ```json
 {
   "idPeriodization": 9007199254740991,
-  "trainingType": 0,
-  //0: A, 1:B, 2:C, 3:D, 4:E
+  "trainingType": 0, //0: A, 1:B, 2:C, 3:D, 4:E
   "trainingName": "Nome do treino"
 }
 ```
@@ -1603,8 +1568,7 @@ Body:
 {
   "idTraining": 9007199254740991,
   "idPeriodization": 9007199254740991,
-  "trainingType": "A",
-  //A, B, C, D, E
+  "trainingType": "A", //A, B, C, D, E
   "trainingName": "Nome do treino",
   "createdAt": "Data de criação treino",
   "updatedAt": "Data de atualização treino"
@@ -1618,8 +1582,7 @@ Body:
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 409, 500
+  "code": 400 //401, 403, 404, 409, 500
 }
 ```
 
@@ -1653,8 +1616,7 @@ Type: Integer
   {
     "idTraining": 9007199254740991,
     "idPeriodization": 9007199254740991,
-    "trainingType": "A",
-    //A, B, C, D, E
+    "trainingType": "A", //A, B, C, D, E
     "trainingName": "Nome do treino",
     "createdAt": "Data de criação treino",
     "updatedAt": "Data de atualização treino"
@@ -1669,8 +1631,7 @@ Type: Integer
   "errors": [
     "string"
   ],
-  "code": 400
-  //401, 403, 404, 500
+  "code": 400 //401, 403, 404, 500
 }
 ```
 
