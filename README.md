@@ -25,7 +25,9 @@ ajustar exercícios, cargas e formatações, o que tornava o processo lento, rep
 Diante disso, surgiu a proposta de desenvolver um sistema que digitalizasse e otimizasse essa rotina,
 tornando o gerenciamento dos treinos mais ágil, prático e escalável.
 
-![Image](https://github.com/user-attachments/assets/b9001756-d7a5-4b15-bc15-c455e2133d0c)
+Tabela genérica utilizada para organização dos treinos:
+
+![Image](https://github.com/user-attachments/assets/c493169d-2bc8-4259-85d4-c3e86979be38)
 
 ## Status do Projeto
 
