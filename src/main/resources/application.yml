@@ -10,7 +10,6 @@ server:
 api:
   openapi:
     dev-url: http://localhost:8080
-    prod-url: https://personal-gym-api.onrender.com
 springdoc:
   swagger-ui:
     path: /fitness-consultant-documentation
