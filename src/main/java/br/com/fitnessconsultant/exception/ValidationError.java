@@ -6,9 +6,10 @@ import lombok.Data;
 public class ValidationError {
     private String field;
     private String message;
-
-    public ValidationError(String field, String message) {
+    private int code;
+    public ValidationError(String field, String message, int code) {
         this.field = field;
         this.message = message;
+        this.code = code;
     }
 }
