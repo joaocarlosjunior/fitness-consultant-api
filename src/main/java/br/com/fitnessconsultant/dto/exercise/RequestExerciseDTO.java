@@ -15,7 +15,7 @@ public record RequestExerciseDTO (
         @Positive
         Integer finalLoad,
         String method,
-        @NotNull(message = "Nome do exercicio é obrigatório")
+        @NotNull(message = "Id do exercício é obrigatório")
         @Positive
         Long idExerciseName
 ){}

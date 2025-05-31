@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record RequestTrainingDTO (
-        @NotNull(message = "Periodização é obrigatório")
+        @NotNull(message = "Id Periodização é obrigatório")
         @Positive
         Long idPeriodization,
         @NotNull(message = "Treino é obrigatório")
