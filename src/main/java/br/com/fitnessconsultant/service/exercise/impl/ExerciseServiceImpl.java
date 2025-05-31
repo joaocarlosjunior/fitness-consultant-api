@@ -44,7 +44,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public ResponseEntity<ResponseExerciseDTO> create(@Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
 
         ExerciseName exerciseName = exerciseNameRepository
-                .getReferenceById(requestExerciseDTO.exerciseName());
+                .getReferenceById(requestExerciseDTO.idExerciseName());
 
         Training training = trainingRepository
                 .getReferenceById(requestExerciseDTO.idTraining());
@@ -60,7 +60,7 @@ public class ExerciseServiceImpl implements ExerciseService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
 
-        if (!requestExerciseDTO.exerciseName().equals(exercise.getExerciseName().getId())) {
+        if (!requestExerciseDTO.idExerciseName().equals(exercise.getExerciseName().getId())) {
             ExerciseName exerciseName = exerciseNameRepository
                     .getReferenceById(requestExerciseDTO.idTraining());
             exercise.setExerciseName(exerciseName);
