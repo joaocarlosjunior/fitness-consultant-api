@@ -1,16 +1,13 @@
 package br.com.fitnessconsultant.service.user.impl;
 
-import br.com.fitnessconsultant.domain.entities.ConfirmationToken;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.enums.Role;
-import br.com.fitnessconsultant.domain.repository.ConfirmationTokenRepository;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
-import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfodasda;
-import br.com.fitnessconsultant.exception.EmailVerificationException;
+import br.com.fitnessconsultant.exception.SendEmailException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.mappers.UserMapper;
@@ -26,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +34,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
 
     public UserServiceImpl(UserRepository userRepository,
                            UserMapper userMapper,
-                           ConfirmationTokenRepository confirmationTokenRepository,
                            EmailService emailService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.confirmationTokenRepository = confirmationTokenRepository;
         this.emailService = emailService;
     }
 
@@ -64,18 +59,14 @@ public class UserServiceImpl implements UserService {
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
         }
 
-        User user = userMapper.toEntity(requestUserDTO);
-
+        String password = generatePassword(6);
+        User user = userMapper.toEntity(requestUserDTO, password);
         userRepository.save(user);
 
-        ConfirmationToken confirmationToken = new ConfirmationToken(user);
-
-        confirmationTokenRepository.save(confirmationToken);
-
         try {
-            emailService.sendVerificationEmail(user, confirmationToken, siteUrl);
+            emailService.sendEmail(user, password);
         } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new EmailVerificationException("Falha no envio do email de verificação");
+            throw new SendEmailException("Falha no envio do email");
         }
     }
 
@@ -166,6 +157,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTraining(Long id) {
         if(!userRepository.existsUsersById(id)){
             throw new UserNotFoundException("Usuário não encontrado");
@@ -178,5 +170,14 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+    }
+
+    private String generatePassword(int length){
+        final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        SecureRandom random = new SecureRandom();
+        return random.ints(length, 0, CARACTERES.length())
+                .mapToObj(index -> String.valueOf(CARACTERES.charAt(index)))
+                .collect(Collectors.joining());
     }
 }
