@@ -40,7 +40,7 @@ public class PeriodizationController {
                     "data de criação e atualização."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Periodização criada com sucesso",content = { @Content(schema = @Schema(implementation = ResponseTrainingDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "201", description = "Periodização criada com sucesso",content = { @Content(schema = @Schema(implementation = ResponsePeriodizationDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
