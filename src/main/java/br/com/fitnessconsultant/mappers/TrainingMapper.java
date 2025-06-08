@@ -17,6 +17,7 @@ public class TrainingMapper {
         }
         return ResponseTrainingDTO
                 .builder()
+                .idTraining(training.getId())
                 .trainingType(training.getTrainingType().name())
                 .trainingName(training.getTrainingName())
                 .createdAt(DateUtils.formatDate(training.getCreatedAt()))
