@@ -2,6 +2,8 @@ package br.com.fitnessconsultant.exception;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.security.SignatureException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class PersonalGymApiExceptionHandler {
@@ -108,5 +112,19 @@ public class PersonalGymApiExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiErrors AuthenticationException() {
         return new ApiErrors("Erro ao autenticar usuário", HttpStatus.FORBIDDEN.value());
+    }
+
+    @ExceptionHandler(MismatchedInputException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleMismatchedInput(MismatchedInputException ex) {
+        return new ApiErrors("Um ou mais campos foram preenchidos com o tipo errado. Verifique os dados enviados.", HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(InvalidFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleInvalidFormat(InvalidFormatException ex) {
+        return new ApiErrors(
+                String.format("O valor '%s' não é válido para o campo esperado. Verifique o tipo de dado enviado.", ex.getValue()),
+                HttpStatus.BAD_REQUEST.value());
     }
 }
