@@ -16,19 +16,11 @@ public class OpenApiConfig {
     @Value("${api.openapi.dev-url}")
     private String devUrl;
 
-    @Value("${api.openapi.prod-url}")
-    private String prodUrl;
-
     @Bean
     public OpenAPI myOpenAPI(){
         Server devServer = new Server();
         devServer.setUrl(devUrl);
         devServer.setDescription("Server URL in Development environment");
-
-        Server prodServer = new Server();
-        prodServer.setUrl(prodUrl);
-        prodServer.setDescription("Server URL in Production environment");
-
         Contact contact = new Contact();
         contact.setEmail("joaocarlos.cic1@gmail.com");
         contact.setName("João Carlos");
@@ -42,6 +34,6 @@ public class OpenApiConfig {
                 .description("Esta API expõe os endpoints para gerenciamento de clientes e seus treinos de um consultor fitness.")
                 .license(mitLicense);
 
-        return new OpenAPI().info(info).servers(List.of(devServer,prodServer));
+        return new OpenAPI().info(info).servers(List.of(devServer));
     }
 }
