@@ -17,9 +17,6 @@ public record RequestUserDTO(
         @Length(min = 11, max = 11, message = "Número deve conter 11 digitos")
         @NotBlank(message = "Campo telefone obrigatório")
         String phone,
-        @NotBlank(message = "Campo senha obrigatório")
-        @Size(value = 6 , message = "Senha deve ter pelo menos 6 caracteres")
-        String password,
         @NotNull(message = "Campo role obrigatório")
         @Positive
         Integer role
