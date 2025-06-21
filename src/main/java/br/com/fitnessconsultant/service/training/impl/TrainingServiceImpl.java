@@ -39,7 +39,8 @@ public class TrainingServiceImpl implements TrainingService {
     public ResponseEntity<ResponseTrainingDTO> create(@Valid @NotNull RequestTrainingDTO requestTrainingDTO) {
 
         Periodization periodization = periodizationRepository
-                .getReferenceById(requestTrainingDTO.idPeriodization());
+                .findById(requestTrainingDTO.idPeriodization())
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrada para o id: " + requestTrainingDTO.idPeriodization()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 trainingMapper.toDto(trainingRepository.save(trainingMapper.toEntity(requestTrainingDTO, periodization)))
@@ -53,7 +54,8 @@ public class TrainingServiceImpl implements TrainingService {
                 .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
 
         Periodization periodization = periodizationRepository
-                .getReferenceById(requestTrainingDTO.idPeriodization());
+                .findById(requestTrainingDTO.idPeriodization())
+                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrada para o id: " + requestTrainingDTO.idPeriodization()));
 
         training.setTrainingName(requestTrainingDTO.trainingName());
         training.setTrainingType(TrainingType.fromValue(requestTrainingDTO.idTrainingType()));

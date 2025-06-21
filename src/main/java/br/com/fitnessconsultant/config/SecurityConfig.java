@@ -37,7 +37,7 @@ public class SecurityConfig {
             "/api/v1/exercise-name",
             "/api/v1/muscle-group",
             "/api/v1/exercises",
-            "api/v1/auth/signup",
+            "/api/v1/auth/signup",
     };
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
