@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,20 +37,19 @@ public class PersonalGymApiExceptionHandler {
         for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
             String field = violation.getPropertyPath().toString();
             String message = violation.getMessage();
-            errors.add(new ValidationError(field, message));
+            errors.add(new ValidationError(field, message, HttpStatus.BAD_REQUEST.value()));
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors MethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<String> errors = e.getBindingResult()
-                .getAllErrors()
+    public ResponseEntity<List<ValidationError>> MethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        List<ValidationError> errors = e.getFieldErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(error -> new ValidationError(error.getField(), error.getDefaultMessage(), HttpStatus.BAD_REQUEST.value()))
                 .toList();
-        return new ApiErrors(errors, HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RecordNotFoundException.class)

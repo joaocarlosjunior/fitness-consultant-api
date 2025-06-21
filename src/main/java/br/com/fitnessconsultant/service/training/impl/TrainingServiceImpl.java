@@ -58,7 +58,7 @@ public class TrainingServiceImpl implements TrainingService {
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrada para o id: " + requestTrainingDTO.idPeriodization()));
 
         training.setTrainingName(requestTrainingDTO.trainingName());
-        training.setTrainingType(TrainingType.fromValue(requestTrainingDTO.trainingType()));
+        training.setTrainingType(TrainingType.fromValue(requestTrainingDTO.idTrainingType()));
         training.setPeriodization(periodization);
 
         return ResponseEntity.ok(
