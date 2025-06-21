@@ -18,7 +18,6 @@ public record RequestUserDTO(
         @NotBlank(message = "Campo telefone obrigatório")
         String phone,
         @NotNull(message = "Campo role obrigatório")
-        @Positive
         Integer role
 ) {
 }
