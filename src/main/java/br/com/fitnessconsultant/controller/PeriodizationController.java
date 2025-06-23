@@ -145,7 +145,7 @@ public class PeriodizationController {
             @Parameter(name = "id", description = "Retorna todos os Periodização pelo Id do Usuário")
     })
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id){
         return periodizationService.getAllPeriodizationByUser(id);
     }
