@@ -5,6 +5,7 @@ import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.user.UserService;
+import br.com.fitnessconsultant.validation.CheckUserAccess;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,7 +44,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @CheckUserAccess
     public ResponseEntity<ResponseUserDTO> findById(@PathVariable @Positive @NotNull Long id) {
         return userService.findById(id);
     }
@@ -59,7 +60,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @CheckUserAccess
     public ResponseEntity<Void> delete(@PathVariable @Positive @NotNull Long id) {
         userService.setDisableUser(id);
         return ResponseEntity.noContent().build();
@@ -79,7 +80,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @CheckUserAccess
     public ResponseEntity<ResponseUserDTO> update(
             @PathVariable @Positive @NotNull Long id,
             @RequestBody @NotNull @Validated UpdateUserDTO updateUserDTO) {
@@ -115,7 +116,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PatchMapping("/active-user/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @CheckUserAccess
     public ResponseEntity<Map<String, String>> setActiveUser(
             @PathVariable @Positive @NotNull Long id
     ) {
@@ -134,7 +135,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @PatchMapping("/disable-user/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @CheckUserAccess
     public ResponseEntity<Map<String, String>> setDisableUser(@PathVariable @Positive @NotNull Long id) {
         return userService.setDisableUser(id);
     }
@@ -151,7 +152,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     @GetMapping("/user/{id}/workouts")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @CheckUserAccess
     public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTrainingInfo(@PathVariable @NotNull @Positive Long id){
         return userService.getAllUserTraining(id);
     }
