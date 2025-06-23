@@ -7,13 +7,11 @@ import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
-import br.com.fitnessconsultant.exception.SendEmailException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.mappers.UserMapper;
 import br.com.fitnessconsultant.service.email.EmailService;
 import br.com.fitnessconsultant.service.user.UserService;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -22,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
@@ -59,15 +56,16 @@ public class UserServiceImpl implements UserService {
             throw new InfoAlreadyExistsException("Telefone já cadastrado");
         }
 
-        String password = generatePassword(6);
+        //String password = generatePassword(6);
+        String password = "12345";
         User user = userMapper.toEntity(requestUserDTO, password);
         userRepository.save(user);
 
-        try {
+/*        try {
             emailService.sendEmail(user, password);
         } catch (MessagingException | UnsupportedEncodingException e) {
             throw new SendEmailException("Falha no envio do email");
-        }
+        }*/
     }
 
     @Transactional(readOnly = true)
