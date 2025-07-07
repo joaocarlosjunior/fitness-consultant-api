@@ -1593,7 +1593,7 @@ Body:
 }
 ```
 
-<h3 id="#get-workouts-periodization">GET /api/v1/workouts/periodization/{id}</h3>
+<h3 id="get-workouts-periodization">GET /api/v1/workouts/periodization/{id}</h3>
 
 **REQUEST**
 
