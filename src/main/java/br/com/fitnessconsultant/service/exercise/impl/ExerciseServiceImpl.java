@@ -62,15 +62,29 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         if (!requestExerciseDTO.idExerciseName().equals(exercise.getExerciseName().getId())) {
             ExerciseName exerciseName = exerciseNameRepository
-                    .getReferenceById(requestExerciseDTO.idTraining());
+                    .findById(requestExerciseDTO.idExerciseName()).orElseThrow(() -> new RecordNotFoundException("Id nome de exercicio inválido id: " + requestExerciseDTO.idExerciseName()));
             exercise.setExerciseName(exerciseName);
         }
 
-        exercise.setMethod(requestExerciseDTO.method());
-        exercise.setSeries(requestExerciseDTO.series());
-        exercise.setFinalLoad(requestExerciseDTO.finalLoad());
-        exercise.setInitialLoad(requestExerciseDTO.initialLoad());
-        exercise.setRepetitions(requestExerciseDTO.repetitions());
+        if (requestExerciseDTO.method() != null && !requestExerciseDTO.method().isBlank()) {
+            exercise.setMethod(requestExerciseDTO.method());
+        }
+
+        if (requestExerciseDTO.series() != null) {
+            exercise.setSeries(requestExerciseDTO.series());
+        }
+
+        if (requestExerciseDTO.finalLoad() != null) {
+            exercise.setFinalLoad(requestExerciseDTO.finalLoad());
+        }
+
+        if (requestExerciseDTO.initialLoad() != null) {
+            exercise.setInitialLoad(requestExerciseDTO.initialLoad());
+        }
+
+        if (requestExerciseDTO.repetitions() != null) {
+            exercise.setRepetitions(requestExerciseDTO.repetitions());
+        }
 
         return ResponseEntity.ok(exerciseMapper.toDto(exerciseRepository.save(exercise)));
     }
@@ -84,7 +98,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@NotNull @Positive Long id) {
-        if(!trainingRepository.existsTrainingsById(id)){
+        if (!trainingRepository.existsTrainingsById(id)) {
             throw new RecordNotFoundException("Exercício não encontrado");
         }
 
@@ -92,9 +106,9 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         return ResponseEntity.ok(
                 exercises
-                .stream()
-                .map(exerciseMapper::toDto)
-                .collect(Collectors.toList())
+                        .stream()
+                        .map(exerciseMapper::toDto)
+                        .collect(Collectors.toList())
         );
     }
 

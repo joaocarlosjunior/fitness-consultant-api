@@ -1,5 +1,6 @@
 package br.com.fitnessconsultant.service.exercisename;
 
+import br.com.fitnessconsultant.dto.exercisename.RequestUpdateExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ public interface ExerciseNameService {
     ResponseEntity<ResponseExerciseNameDTO> findById(Long id);
 
     ResponseEntity<ResponseExerciseNameDTO> update(Long id,
-                                   RequestExerciseNameDTO requestExerciseNameDTO);
+                                   RequestUpdateExerciseNameDTO requestUpdateExerciseNameDTO);
 
     void delete(@PathVariable Long id);
 

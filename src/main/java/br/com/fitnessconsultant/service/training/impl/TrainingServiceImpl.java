@@ -6,6 +6,7 @@ import br.com.fitnessconsultant.domain.enums.TrainingType;
 import br.com.fitnessconsultant.domain.repository.PeriodizationRepository;
 import br.com.fitnessconsultant.domain.repository.TrainingRepository;
 import br.com.fitnessconsultant.dto.training.RequestTrainingDTO;
+import br.com.fitnessconsultant.dto.training.RequestUpdateTrainingDTO;
 import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.mappers.TrainingMapper;
@@ -48,18 +49,25 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseTrainingDTO> update(@NotNull @Positive Long id, @Valid @NotNull RequestTrainingDTO requestTrainingDTO) {
+    public ResponseEntity<ResponseTrainingDTO> update(@NotNull @Positive Long id, @Valid @NotNull RequestUpdateTrainingDTO requestUpdateTrainingDTO) {
         Training training = trainingRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Treino não encontrado"));
 
-        Periodization periodization = periodizationRepository
-                .findById(requestTrainingDTO.idPeriodization())
-                .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrada para o id: " + requestTrainingDTO.idPeriodization()));
+        if (requestUpdateTrainingDTO.trainingName() != null && !requestUpdateTrainingDTO.trainingName().isBlank()) {
+            training.setTrainingName(requestUpdateTrainingDTO.trainingName());
+        }
 
-        training.setTrainingName(requestTrainingDTO.trainingName());
-        training.setTrainingType(TrainingType.fromValue(requestTrainingDTO.trainingType()));
-        training.setPeriodization(periodization);
+        if (requestUpdateTrainingDTO.trainingType() != null) {
+            training.setTrainingType(TrainingType.fromValue(requestUpdateTrainingDTO.trainingType()));
+        }
+
+        if (requestUpdateTrainingDTO.idPeriodization() != null) {
+            Periodization periodization = periodizationRepository
+                    .findById(requestUpdateTrainingDTO.idPeriodization())
+                    .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrada para o id: " + requestUpdateTrainingDTO.idPeriodization()));
+            training.setPeriodization(periodization);
+        }
 
         return ResponseEntity.ok(
                 trainingMapper.toDto(trainingRepository.save(training))

@@ -7,6 +7,7 @@ import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
+import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.mappers.UserMapper;
@@ -111,53 +112,57 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public ResponseEntity<ResponseUserDTO> update(@NotNull @Positive Long id, @NotNull @Valid UpdateUserDTO updateUserDTO) {
-        User user = findUser(id);
+            User user = findUser(id);
 
-        String currentEmail = user.getEmail();
-        String newEmail = updateUserDTO.email();
+            if (updateUserDTO.email() != null && !updateUserDTO.email().equals(user.getEmail())) {
+                boolean emailExists = userRepository.existsByEmailIgnoreCase(updateUserDTO.email());
 
-        if (!newEmail.equals(currentEmail)) {
-            boolean emailExists = userRepository.existsByEmailIgnoreCase(newEmail);
-
-            if (emailExists) {
-                throw new InfoAlreadyExistsException("Email já cadastrado");
+                if (emailExists) {
+                    throw new InfoAlreadyExistsException("Email já cadastrado");
+                }
             }
-        }
 
-        String newPhone = updateUserDTO.phone();
-        String currentPhone = user.getPhone();
+            if (updateUserDTO.phone() != null && !updateUserDTO.phone().equals(user.getPhone())) {
+                boolean phoneExists = userRepository.existsByPhone(updateUserDTO.phone());
 
-        if (!newPhone.equals(currentPhone)) {
-            boolean phoneExists = userRepository.existsByPhone(newPhone);
-
-            if (phoneExists) {
-                throw new InfoAlreadyExistsException("Telefone já cadastrado");
+                if (phoneExists) {
+                    throw new InfoAlreadyExistsException("Telefone já cadastrado");
+                }
             }
-        }
 
-        user.setFirstName(updateUserDTO.firstName());
-        user.setLastName(updateUserDTO.lastName());
-        user.setEmail(updateUserDTO.email());
-        user.setPhone(updateUserDTO.phone());
+            if(updateUserDTO.firstName() != null && !updateUserDTO.firstName().isBlank()){
+                user.setFirstName(updateUserDTO.firstName());
+            }
+            if(updateUserDTO.lastName() != null && !updateUserDTO.lastName().isBlank()){
+                user.setLastName(updateUserDTO.lastName());
+            }
 
-        return ResponseEntity.ok(userMapper.toDto(userRepository.save(user)));
+            if(updateUserDTO.email() != null && !updateUserDTO.email().isBlank()){
+                user.setEmail(updateUserDTO.email());
+            }
+
+            if(updateUserDTO.phone() != null && !updateUserDTO.phone().isBlank()){
+                user.setPhone(updateUserDTO.phone());
+            }
+
+            return ResponseEntity.ok(userMapper.toDto(userRepository.save(user)));
     }
 
     @Transactional(readOnly = true)
     public ResponseEntity<List<ResponseUserDTO>> list() {
         return ResponseEntity.ok(
                 userRepository
-                .findAllUserRoleUser(Role.ROLE_USER)
-                .stream()
+                        .findAllUserRoleUser(Role.ROLE_USER)
+                        .stream()
                         .map(userMapper::toDto)
-                .collect(Collectors.toList())
+                        .collect(Collectors.toList())
         );
     }
 
     @Override
     @Transactional
     public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTraining(Long id) {
-        if(!userRepository.existsUsersById(id)){
+        if (!userRepository.existsUsersById(id)) {
             throw new UserNotFoundException("Usuário não encontrado");
         }
 
@@ -170,7 +175,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
-    private String generatePassword(int length){
+    private String generatePassword(int length) {
         final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         SecureRandom random = new SecureRandom();
