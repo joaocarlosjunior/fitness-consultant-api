@@ -1,6 +1,7 @@
 package br.com.fitnessconsultant.controller;
 
 import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
+import br.com.fitnessconsultant.dto.exercisename.RequestUpdateExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.exercisename.ExerciseNameService;
@@ -83,9 +84,9 @@ public class ExerciseNameController {
     @PutMapping({"/{id}"})
     public ResponseEntity<ResponseExerciseNameDTO> update(
             @PathVariable @Positive @NotNull Long id,
-            @RequestBody @NotNull @Validated RequestExerciseNameDTO requestExerciseNameDTO
+            @RequestBody @NotNull @Validated RequestUpdateExerciseNameDTO requestUpdateExerciseNameDTO
     ) {
-        return exerciseNameService.update(id, requestExerciseNameDTO);
+        return exerciseNameService.update(id, requestUpdateExerciseNameDTO);
     }
 
     @Operation(

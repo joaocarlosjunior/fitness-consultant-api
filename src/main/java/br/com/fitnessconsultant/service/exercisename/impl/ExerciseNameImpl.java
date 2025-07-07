@@ -4,8 +4,10 @@ import br.com.fitnessconsultant.domain.entities.ExerciseName;
 import br.com.fitnessconsultant.domain.entities.MuscleGroup;
 import br.com.fitnessconsultant.domain.repository.ExerciseNameRepository;
 import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
+import br.com.fitnessconsultant.dto.exercisename.RequestUpdateExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
+import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.mappers.ExerciseNameMapper;
@@ -60,29 +62,34 @@ public class ExerciseNameImpl implements ExerciseNameService {
 
     @Transactional
     public ResponseEntity<ResponseExerciseNameDTO> update(@Positive @NotNull Long id,
-                                                          @Valid @NotNull RequestExerciseNameDTO requestExerciseNameDTO) {
+                                                          @Valid @NotNull RequestUpdateExerciseNameDTO requestUpdateExerciseNameDTO) {
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
 
-        String newExerciseName = requestExerciseNameDTO.exerciseName();
-        String currentExerciseName = exerciseName.getExerciseName();
+        if (requestUpdateExerciseNameDTO.exerciseName() == null ||
+                requestUpdateExerciseNameDTO.exerciseName().isBlank()) {
+            throw new ApiErrorException("Campo nome exercicio inválido");
+        }
 
-        if (!newExerciseName.equalsIgnoreCase(currentExerciseName)) {
+        if (!requestUpdateExerciseNameDTO.exerciseName().equalsIgnoreCase(exerciseName.getExerciseName())) {
             boolean exerciseNameExists = exerciseNameRepository.
-                    existsByExerciseNameIgnoreCase(newExerciseName);
+                    existsByExerciseNameIgnoreCase(requestUpdateExerciseNameDTO.exerciseName());
 
             if (exerciseNameExists) {
                 throw new InfoAlreadyExistsException("Nome Exercício já existente");
             }
+
+            exerciseName.setExerciseName(requestUpdateExerciseNameDTO.exerciseName());
         }
 
-        MuscleGroup muscleGroup = muscleGroupRepository
-                .findById(requestExerciseNameDTO.idMuscleGroup())
-                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
+        if (requestUpdateExerciseNameDTO.idMuscleGroup() != null) {
+            MuscleGroup muscleGroup = muscleGroupRepository
+                    .findById(requestUpdateExerciseNameDTO.idMuscleGroup())
+                    .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
-        exerciseName.setExerciseName(requestExerciseNameDTO.exerciseName());
-        exerciseName.setMuscleGroup(muscleGroup);
+            exerciseName.setMuscleGroup(muscleGroup);
+        }
 
         return ResponseEntity.ok(exerciseNameMapper.toDto(exerciseNameRepository.save(exerciseName)));
     }

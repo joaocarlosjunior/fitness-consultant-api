@@ -1,5 +1,6 @@
 package br.com.fitnessconsultant.config;
 
+import br.com.fitnessconsultant.security.CustomAccessDeniedHandler;
 import br.com.fitnessconsultant.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     private static final String[] AUTH_WHITELIST = {
             //SWAGGER
@@ -34,14 +35,15 @@ public class SecurityConfig {
     };
 
     private static final String[] AUTH_ADMIN = {
-            "/api/v1/exercise-name",
-            "/api/v1/muscle-group",
-            "/api/v1/exercises",
+            "/api/v1/exercise-name/**",
+            "/api/v1/muscle-group/**",
+            "/api/v1/exercises/**",
             "/api/v1/auth/signup",
     };
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomAccessDeniedHandler accessDeniedHandler) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -59,6 +61,7 @@ public class SecurityConfig {
                                 .requestMatchers(AUTH_ADMIN).hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
+                .exceptionHandling(e -> e.accessDeniedHandler(this.accessDeniedHandler))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

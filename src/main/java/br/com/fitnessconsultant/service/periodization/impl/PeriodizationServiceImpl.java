@@ -53,8 +53,18 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
-        periodization.setName(updatePeriodizationDTO.name());
-        periodization.setNumberWeeks(updatePeriodizationDTO.numberWeeks());
+        if (updatePeriodizationDTO.name() != null && !updatePeriodizationDTO.name().isBlank()) {
+            periodization.setName(updatePeriodizationDTO.name());
+        }
+
+        if (updatePeriodizationDTO.numberWeeks() != null) {
+            periodization.setNumberWeeks(updatePeriodizationDTO.numberWeeks());
+        }
+
+        if (updatePeriodizationDTO.idUser() != null) {
+            User user = userRepository.findById(updatePeriodizationDTO.idUser()).orElseThrow(() -> new UserNotFoundException("Usuario não encontrato"));
+            periodization.setUser(user);
+        }
 
         return ResponseEntity.ok(periodizationMapper.toDto(periodizationRepository.save(periodization)));
     }

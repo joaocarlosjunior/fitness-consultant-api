@@ -33,7 +33,7 @@ public class TrainingMapper {
         return Training
                 .builder()
                 .trainingName(dto.trainingName())
-                .trainingType(TrainingType.fromValue(dto.idTrainingType()))
+                .trainingType(TrainingType.fromValue(dto.trainingType()))
                 .periodization(periodization)
                 .isDone(false)
                 .build();

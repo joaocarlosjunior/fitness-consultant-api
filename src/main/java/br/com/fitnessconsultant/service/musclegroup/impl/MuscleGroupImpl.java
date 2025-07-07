@@ -4,6 +4,7 @@ import br.com.fitnessconsultant.domain.entities.MuscleGroup;
 import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
 import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
 import br.com.fitnessconsultant.dto.musuculegroup.RequestMuscleGroupDTO;
+import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.mappers.MuscleGroupMapper;
@@ -58,16 +59,19 @@ public class MuscleGroupImpl implements MuscleGroupService {
 
     @Transactional
     public ResponseEntity<ResponseMuscleGroupDTO> update(@NotNull @Positive Long id, @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
-        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.name())) {
-            throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
-        }
-
         MuscleGroup muscleGroup = muscleGroupRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
 
-        muscleGroup.setName(requestMuscleGroupDTO.name());
+        if (requestMuscleGroupDTO.name() == null || requestMuscleGroupDTO.name().isBlank()) {
+            throw new ApiErrorException("Erro ao atualizar grupo muscular, request body não contém nome do grupo muscular");
+        }
 
+        if (muscleGroupRepository.existsByNameIgnoreCase(requestMuscleGroupDTO.name())) {
+            throw new InfoAlreadyExistsException("Grupo Muscular já cadastrado");
+        }
+
+        muscleGroup.setName(requestMuscleGroupDTO.name());
         return ResponseEntity.ok(muscleGroupMapper.toDto(muscleGroupRepository.save(muscleGroup)));
     }
 
