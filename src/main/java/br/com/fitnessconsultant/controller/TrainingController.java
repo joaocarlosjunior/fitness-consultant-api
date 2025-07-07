@@ -1,6 +1,7 @@
 package br.com.fitnessconsultant.controller;
 
 import br.com.fitnessconsultant.dto.training.RequestTrainingDTO;
+import br.com.fitnessconsultant.dto.training.RequestUpdateTrainingDTO;
 import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
 import br.com.fitnessconsultant.exception.ApiErrors;
 import br.com.fitnessconsultant.service.training.TrainingService;
@@ -71,9 +72,9 @@ public class TrainingController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseTrainingDTO> update(
             @PathVariable @Positive @NotNull Long id,
-            @RequestBody @NotNull @Validated RequestTrainingDTO requestTrainingDTO
+            @RequestBody @NotNull @Validated RequestUpdateTrainingDTO requestUpdateTrainingDTO
     ) {
-        return trainingService.update(id, requestTrainingDTO);
+        return trainingService.update(id, requestUpdateTrainingDTO);
     }
 
     @Operation(
