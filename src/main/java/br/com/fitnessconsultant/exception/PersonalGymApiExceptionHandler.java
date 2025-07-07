@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,9 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.security.SignatureException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestControllerAdvice
 public class PersonalGymApiExceptionHandler {
@@ -104,6 +104,18 @@ public class PersonalGymApiExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiErrors JWTCreationException() {
         return new ApiErrors("Erro ao gerar token", HttpStatus.FORBIDDEN.value());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors HttpMessageNotReadableException() {
+        return new ApiErrors("Erro na request", HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors DataIntegrityViolationException(DataIntegrityViolationException e) {
+        return new ApiErrors("Violação de integridade de dados", HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(AuthenticationException.class)
