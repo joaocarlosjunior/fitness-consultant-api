@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    void create(RequestUserDTO requestUserDTO, String siteUrl);
+    void create(RequestUserDTO requestUserDTO);
 
     ResponseEntity<ResponseUserDTO> findById(Long id);
 
