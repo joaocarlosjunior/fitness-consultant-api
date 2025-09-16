@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +44,9 @@ public class AuthController {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
     })
     public ResponseEntity<Void> create(
-            @RequestBody @NotNull @Validated RequestUserDTO requestUser,
-            HttpServletRequest request
+            @RequestBody @NotNull @Validated RequestUserDTO requestUser
     ){
-        userService.create(requestUser, getSiteURL(request));
+        userService.create(requestUser);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -65,10 +63,5 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull @Validated RequestLoginUserDTO requestLoginUserDTO) {
         return authService.authenticate(requestLoginUserDTO);
-    }
-
-    private String getSiteURL(HttpServletRequest request) {
-        String siteURL = request.getRequestURL().toString();
-        return siteURL.replace(request.getServletPath(), "");
     }
 }
