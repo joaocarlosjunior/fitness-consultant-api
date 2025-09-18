@@ -65,7 +65,6 @@ public class PeriodizationController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ResponsePeriodizationDTO> findById(@PathVariable @Positive @NotNull Long id){
-        System.out.println("id: " + id);
         return periodizationService.findById(id);
     }
 
