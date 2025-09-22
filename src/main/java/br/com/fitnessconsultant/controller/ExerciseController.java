@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ExerciseController {
 
     private final ExerciseService exerciseService;
 
-    public ExerciseController(ExerciseService exerciseService){
+    public ExerciseController(ExerciseService exerciseService) {
         this.exerciseService = exerciseService;
     }
 
@@ -36,17 +37,17 @@ public class ExerciseController {
                     "carga inicial, carga final, método e nome do exercício"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Adicionado um novo exercício com sucesso", content = { @Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "201", description = "Adicionado um novo exercício com sucesso", content = {@Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id Nome de Exercício ou Treino inválido ou inexistente",
-                    content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
+                    content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @PostMapping
     public ResponseEntity<ResponseExerciseDTO> create(
             @RequestBody @NotNull @Validated RequestExerciseDTO requestExerciseDTO
-    ){
-        return exerciseService.create(requestExerciseDTO);
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(exerciseService.create(requestExerciseDTO));
     }
 
     @Operation(
@@ -56,18 +57,18 @@ public class ExerciseController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Atualizado exercício com sucesso",
-                    content = { @Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+                    content = {@Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id Exercício, Nome de Exercício ou Treino inválido ou inexistente",
-                    content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
+                    content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @PutMapping("/{id}")
     public ResponseEntity<ResponseExerciseDTO> update(
             @PathVariable @Positive @NotNull Long id,
             @RequestBody @NotNull @Validated RequestExerciseDTO requestExerciseDTO
-    ){
-        return exerciseService.update(id, requestExerciseDTO);
+    ) {
+        return ResponseEntity.ok(exerciseService.update(id, requestExerciseDTO));
     }
 
     @Operation(
@@ -77,10 +78,10 @@ public class ExerciseController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Deletado exercício com sucesso"),
-            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id Exercício inválido ou inexistente",
-                    content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
+                    content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @Parameters({
             @Parameter(name = "id", description = "Deleta Exercício pelo Id")
@@ -88,7 +89,7 @@ public class ExerciseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable @Positive @NotNull Long id
-    ){
+    ) {
         exerciseService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -100,17 +101,17 @@ public class ExerciseController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Retornado com sucesso todos exercícios pelo id de treino"
-                    , content = { @Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
+                    , content = {@Content(schema = @Schema(implementation = ResponseExerciseDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Id treino inválido ou inexistente",
-                    content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json") })
+                    content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ApiErrors.class), mediaType = "application/json")})
     })
     @Parameters({
             @Parameter(name = "id", description = "Retorna todos os Exercícios pelo Id do Treino")
     })
     @GetMapping("/training/{id}")
-    public ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id){
-        return exerciseService.getAllExercisesByIdTraining(id);
+    public ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@PathVariable @Positive @NotNull Long id) {
+        return ResponseEntity.ok(exerciseService.getAllExercisesByIdTraining(id));
     }
 }

@@ -64,7 +64,7 @@ public class ExerciseNameController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ResponseExerciseNameDTO> findById(@PathVariable @Positive @NotNull Long id) {
-        return exerciseNameService.findById(id);
+        return ResponseEntity.ok(exerciseNameService.findById(id));
     }
 
     @Operation(
@@ -86,7 +86,7 @@ public class ExerciseNameController {
             @PathVariable @Positive @NotNull Long id,
             @RequestBody @NotNull @Validated RequestUpdateExerciseNameDTO requestUpdateExerciseNameDTO
     ) {
-        return exerciseNameService.update(id, requestUpdateExerciseNameDTO);
+        return ResponseEntity.ok(exerciseNameService.update(id, requestUpdateExerciseNameDTO));
     }
 
     @Operation(
@@ -120,7 +120,7 @@ public class ExerciseNameController {
     })
     @GetMapping
     public ResponseEntity<List<ResponseExerciseNameDTO>> list() {
-        return exerciseNameService.list();
+        return ResponseEntity.ok(exerciseNameService.list());
     }
 
 }

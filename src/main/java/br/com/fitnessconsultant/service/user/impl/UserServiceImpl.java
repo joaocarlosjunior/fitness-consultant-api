@@ -15,15 +15,11 @@ import br.com.fitnessconsultant.service.user.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,103 +65,94 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ResponseUserDTO> findById(@NotNull @Positive Long id) {
+    public ResponseUserDTO findById(@NotNull @Positive Long id) {
         User user = findUser(id);
 
-        return ResponseEntity.ok(userMapper.toDto(user));
+        return userMapper.toDto(user);
     }
 
     @Transactional
-    public ResponseEntity<Map<String, String>> setActiveUser(@NotNull @Positive Long id) {
+    public boolean setActiveUser(@NotNull @Positive Long id) {
         User user = findUser(id);
-
-        Map<String, String> response = new HashMap<>();
 
         if (!user.isEnabled()) {
             user.setEnabled(true);
             userRepository.save(user);
-            response.put("message", "Usuário ativado com sucesso");
-            return ResponseEntity.ok(response);
+            return true;
         }
 
-        response.put("message", "Usuário já ativo");
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return false;
     }
 
     @Transactional
-    public ResponseEntity<Map<String, String>> setDisableUser(@NotNull @Positive Long id) {
+    public boolean setDisableUser(@NotNull @Positive Long id) {
         User user = findUser(id);
-
-        Map<String, String> response = new HashMap<>();
 
         if (user.isEnabled()) {
             user.setEnabled(false);
             userRepository.save(user);
-            response.put("message", "Usuário desativado com sucesso");
-            return ResponseEntity.ok(response);
+            return true;
         }
 
-        response.put("message", "Usuário já não está ativo");
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return false;
     }
 
     @Transactional
-    public ResponseEntity<ResponseUserDTO> update(@NotNull @Positive Long id, @NotNull @Valid UpdateUserDTO updateUserDTO) {
-            User user = findUser(id);
+    public ResponseUserDTO update(@NotNull @Positive Long id, @NotNull @Valid UpdateUserDTO updateUserDTO) {
+        User user = findUser(id);
 
-            if (updateUserDTO.email() != null && !updateUserDTO.email().equals(user.getEmail())) {
-                boolean emailExists = userRepository.existsByEmailIgnoreCase(updateUserDTO.email());
+        if (updateUserDTO.email() != null && !updateUserDTO.email().equals(user.getEmail())) {
+            boolean emailExists = userRepository.existsByEmailIgnoreCase(updateUserDTO.email());
 
-                if (emailExists) {
-                    throw new InfoAlreadyExistsException("Email já cadastrado");
-                }
+            if (emailExists) {
+                throw new InfoAlreadyExistsException("Email já cadastrado");
             }
+        }
 
-            if (updateUserDTO.phone() != null && !updateUserDTO.phone().equals(user.getPhone())) {
-                boolean phoneExists = userRepository.existsByPhone(updateUserDTO.phone());
+        if (updateUserDTO.phone() != null && !updateUserDTO.phone().equals(user.getPhone())) {
+            boolean phoneExists = userRepository.existsByPhone(updateUserDTO.phone());
 
-                if (phoneExists) {
-                    throw new InfoAlreadyExistsException("Telefone já cadastrado");
-                }
+            if (phoneExists) {
+                throw new InfoAlreadyExistsException("Telefone já cadastrado");
             }
+        }
 
-            if(updateUserDTO.firstName() != null && !updateUserDTO.firstName().isBlank()){
-                user.setFirstName(updateUserDTO.firstName());
-            }
-            if(updateUserDTO.lastName() != null && !updateUserDTO.lastName().isBlank()){
-                user.setLastName(updateUserDTO.lastName());
-            }
+        if (updateUserDTO.firstName() != null && !updateUserDTO.firstName().isBlank()) {
+            user.setFirstName(updateUserDTO.firstName());
+        }
+        if (updateUserDTO.lastName() != null && !updateUserDTO.lastName().isBlank()) {
+            user.setLastName(updateUserDTO.lastName());
+        }
 
-            if(updateUserDTO.email() != null && !updateUserDTO.email().isBlank()){
-                user.setEmail(updateUserDTO.email());
-            }
+        if (updateUserDTO.email() != null && !updateUserDTO.email().isBlank()) {
+            user.setEmail(updateUserDTO.email());
+        }
 
-            if(updateUserDTO.phone() != null && !updateUserDTO.phone().isBlank()){
-                user.setPhone(updateUserDTO.phone());
-            }
+        if (updateUserDTO.phone() != null && !updateUserDTO.phone().isBlank()) {
+            user.setPhone(updateUserDTO.phone());
+        }
 
-            return ResponseEntity.ok(userMapper.toDto(userRepository.save(user)));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ResponseUserDTO>> list() {
-        return ResponseEntity.ok(
+    public List<ResponseUserDTO> list() {
+        return
                 userRepository
                         .findAllUserRoleUser(Role.ROLE_USER)
                         .stream()
                         .map(userMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTraining(Long id) {
+    public List<UserPeriodizationInfoDTO> getAllUserTraining(Long id) {
         if (!userRepository.existsUsersById(id)) {
             throw new UserNotFoundException("Usuário não encontrado");
         }
 
-        return ResponseEntity.ok(userRepository.getAllUserTrainingInfo(id));
+        return userRepository.getAllUserTrainingInfo(id);
     }
 
     private User findUser(Long id) {

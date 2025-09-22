@@ -6,16 +6,14 @@ import br.com.fitnessconsultant.domain.entities.Training;
 import br.com.fitnessconsultant.domain.repository.ExerciseNameRepository;
 import br.com.fitnessconsultant.domain.repository.ExerciseRepository;
 import br.com.fitnessconsultant.domain.repository.TrainingRepository;
-import br.com.fitnessconsultant.dto.exercise.ResponseExerciseDTO;
 import br.com.fitnessconsultant.dto.exercise.RequestExerciseDTO;
+import br.com.fitnessconsultant.dto.exercise.ResponseExerciseDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.mappers.ExerciseMapper;
 import br.com.fitnessconsultant.service.exercise.ExerciseService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +39,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseExerciseDTO> create(@Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
+    public ResponseExerciseDTO create(@Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
 
         ExerciseName exerciseName = exerciseNameRepository
                 .getReferenceById(requestExerciseDTO.idExerciseName());
@@ -49,13 +47,12 @@ public class ExerciseServiceImpl implements ExerciseService {
         Training training = trainingRepository
                 .getReferenceById(requestExerciseDTO.idTraining());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                exerciseMapper
-                        .toDto(exerciseRepository.save(exerciseMapper.toEntity(requestExerciseDTO, exerciseName, training))));
+        return exerciseMapper
+                .toDto(exerciseRepository.save(exerciseMapper.toEntity(requestExerciseDTO, exerciseName, training)));
     }
 
     @Transactional
-    public ResponseEntity<ResponseExerciseDTO> update(@NotNull @Positive Long id, @Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
+    public ResponseExerciseDTO update(@NotNull @Positive Long id, @Valid @NotNull RequestExerciseDTO requestExerciseDTO) {
         Exercise exercise = exerciseRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
@@ -86,7 +83,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             exercise.setRepetitions(requestExerciseDTO.repetitions());
         }
 
-        return ResponseEntity.ok(exerciseMapper.toDto(exerciseRepository.save(exercise)));
+        return exerciseMapper.toDto(exerciseRepository.save(exercise));
     }
 
     @Transactional
@@ -98,19 +95,17 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ResponseExerciseDTO>> getAllExercisesByIdTraining(@NotNull @Positive Long id) {
+    public List<ResponseExerciseDTO> getAllExercisesByIdTraining(@NotNull @Positive Long id) {
         if (!trainingRepository.existsTrainingsById(id)) {
             throw new RecordNotFoundException("Exercício não encontrado");
         }
 
         List<Exercise> exercises = exerciseRepository.getAllExercisesByIdTraining(id);
 
-        return ResponseEntity.ok(
-                exercises
+        return exercises
                         .stream()
                         .map(exerciseMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList());
     }
 
 }

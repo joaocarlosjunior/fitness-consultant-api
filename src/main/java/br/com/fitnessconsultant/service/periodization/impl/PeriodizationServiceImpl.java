@@ -14,8 +14,6 @@ import br.com.fitnessconsultant.service.periodization.PeriodizationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,18 +35,17 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     }
 
     @Transactional
-    public ResponseEntity<ResponsePeriodizationDTO> create(@NotNull @Valid RequestPeriodizationDTO registerPeriodization) {
+    public ResponsePeriodizationDTO create(@NotNull @Valid RequestPeriodizationDTO registerPeriodization) {
         User user = userRepository
                 .findById(registerPeriodization.idUser()).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        periodizationMapper.toDto(periodizationRepository.save(periodizationMapper.toEntity(registerPeriodization, user)))
-                );
+        return periodizationMapper
+                .toDto(periodizationRepository
+                        .save(periodizationMapper.toEntity(registerPeriodization, user)));
     }
 
     @Transactional
-    public ResponseEntity<ResponsePeriodizationDTO> update(@NotNull @Positive Long id, @NotNull @Valid UpdatePeriodizationDTO updatePeriodizationDTO) {
+    public ResponsePeriodizationDTO update(@NotNull @Positive Long id, @NotNull @Valid UpdatePeriodizationDTO updatePeriodizationDTO) {
         Periodization periodization = periodizationRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
@@ -66,16 +63,16 @@ public class PeriodizationServiceImpl implements PeriodizationService {
             periodization.setUser(user);
         }
 
-        return ResponseEntity.ok(periodizationMapper.toDto(periodizationRepository.save(periodization)));
+        return periodizationMapper.toDto(periodizationRepository.save(periodization));
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ResponsePeriodizationDTO> findById(@NotNull @Positive Long id) {
+    public ResponsePeriodizationDTO findById(@NotNull @Positive Long id) {
         Periodization periodization = periodizationRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
-        return ResponseEntity.ok(periodizationMapper.toDto(periodizationRepository.save(periodization)));
+        return periodizationMapper.toDto(periodizationRepository.save(periodization));
     }
 
     @Transactional
@@ -86,25 +83,25 @@ public class PeriodizationServiceImpl implements PeriodizationService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ResponsePeriodizationDTO>> list() {
-        return ResponseEntity.ok(periodizationRepository
+    public List<ResponsePeriodizationDTO> list() {
+        return periodizationRepository
                 .findAll()
                 .stream()
                 .map((periodizationMapper::toDto))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByUser(@NotNull @Positive Long id) {
+    public List<ResponsePeriodizationDTO> getAllPeriodizationByUser(@NotNull @Positive Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         List<Periodization> periodizations = periodizationRepository
                 .getAllPeriodizationByIdUser(id);
 
-        return ResponseEntity.ok(periodizations.
+        return periodizations.
                 stream()
                 .map(periodizationMapper::toDto)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 }

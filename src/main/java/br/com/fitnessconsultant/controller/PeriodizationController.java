@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -48,7 +49,7 @@ public class PeriodizationController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponsePeriodizationDTO> create(@RequestBody @NotNull @Validated RequestPeriodizationDTO requestPeriodizationDTO) {
-        return periodizationService.create(requestPeriodizationDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(periodizationService.create(requestPeriodizationDTO));
     }
 
     @Operation(
@@ -65,7 +66,7 @@ public class PeriodizationController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ResponsePeriodizationDTO> findById(@PathVariable @Positive @NotNull Long id){
-        return periodizationService.findById(id);
+        return ResponseEntity.ok(periodizationService.findById(id));
     }
 
     @Operation(
@@ -88,7 +89,7 @@ public class PeriodizationController {
     public ResponseEntity<ResponsePeriodizationDTO> update(
             @PathVariable @Positive @NotNull Long id,
             @RequestBody @NotNull @Validated UpdatePeriodizationDTO updatePeriodizationDTO){
-        return periodizationService.update(id, updatePeriodizationDTO);
+        return ResponseEntity.ok(periodizationService.update(id, updatePeriodizationDTO));
     }
 
     @Operation(
@@ -125,7 +126,7 @@ public class PeriodizationController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ResponsePeriodizationDTO>> list(){
-        return periodizationService.list();
+        return ResponseEntity.ok(periodizationService.list());
     }
 
     @Operation(
@@ -146,6 +147,6 @@ public class PeriodizationController {
     @GetMapping("/user/{id}")
     @CheckUserAccess
     public ResponseEntity<List<ResponsePeriodizationDTO>> getAllPeriodizationByIdUser(@PathVariable @Positive @NotNull Long id){
-        return periodizationService.getAllPeriodizationByUser(id);
+        return ResponseEntity.ok(periodizationService.getAllPeriodizationByUser(id));
     }
 }
