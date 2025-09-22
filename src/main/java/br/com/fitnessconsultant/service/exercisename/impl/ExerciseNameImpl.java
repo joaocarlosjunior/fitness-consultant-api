@@ -4,9 +4,9 @@ import br.com.fitnessconsultant.domain.entities.ExerciseName;
 import br.com.fitnessconsultant.domain.entities.MuscleGroup;
 import br.com.fitnessconsultant.domain.repository.ExerciseNameRepository;
 import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
+import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.RequestUpdateExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
-import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
@@ -15,7 +15,6 @@ import br.com.fitnessconsultant.service.exercisename.ExerciseNameService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,17 +51,16 @@ public class ExerciseNameImpl implements ExerciseNameService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ResponseExerciseNameDTO> findById(@Positive @NotNull Long id) {
+    public ResponseExerciseNameDTO findById(@Positive @NotNull Long id) {
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Nome Exercicio não encontrado"));
 
-        return ResponseEntity.ok(exerciseNameMapper.toDto(exerciseName));
+        return exerciseNameMapper.toDto(exerciseName);
     }
 
     @Transactional
-    public ResponseEntity<ResponseExerciseNameDTO> update(@Positive @NotNull Long id,
-                                                          @Valid @NotNull RequestUpdateExerciseNameDTO requestUpdateExerciseNameDTO) {
+    public ResponseExerciseNameDTO update(@Positive @NotNull Long id, @Valid @NotNull RequestUpdateExerciseNameDTO requestUpdateExerciseNameDTO) {
         ExerciseName exerciseName = exerciseNameRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Nome Exercício não encontrado"));
@@ -91,7 +89,7 @@ public class ExerciseNameImpl implements ExerciseNameService {
             exerciseName.setMuscleGroup(muscleGroup);
         }
 
-        return ResponseEntity.ok(exerciseNameMapper.toDto(exerciseNameRepository.save(exerciseName)));
+        return exerciseNameMapper.toDto(exerciseNameRepository.save(exerciseName));
     }
 
     public void delete(@Positive @NotNull Long id) {
@@ -101,12 +99,12 @@ public class ExerciseNameImpl implements ExerciseNameService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ResponseExerciseNameDTO>> list() {
+    public List<ResponseExerciseNameDTO> list() {
         List<ExerciseName> exerciseNames = exerciseNameRepository.findAll();
 
-        return ResponseEntity.ok(exerciseNames
+        return exerciseNames
                 .stream()
                 .map(exerciseNameMapper::toDto)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 }

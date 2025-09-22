@@ -62,6 +62,6 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<ResponseJwtTokenDTO> authenticate(@RequestBody @NotNull @Validated RequestLoginUserDTO requestLoginUserDTO) {
-        return authService.authenticate(requestLoginUserDTO);
+        return ResponseEntity.ok(authService.authenticate(requestLoginUserDTO));
     }
 }

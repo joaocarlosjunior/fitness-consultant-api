@@ -5,7 +5,6 @@ import br.com.fitnessconsultant.dto.auth.RequestLoginUserDTO;
 import br.com.fitnessconsultant.dto.auth.ResponseJwtTokenDTO;
 import br.com.fitnessconsultant.service.auth.AuthService;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,13 +24,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<ResponseJwtTokenDTO> authenticate(RequestLoginUserDTO loginUser) {
+    public ResponseJwtTokenDTO authenticate(RequestLoginUserDTO loginUser) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUser.email(), loginUser.password());
 
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
         var user = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(ResponseJwtTokenDTO.builder().token(jwtTokenUtils.generateToken(user)).build());
+        return ResponseJwtTokenDTO.builder().token(jwtTokenUtils.generateToken(user)).build();
     }
 }

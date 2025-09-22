@@ -13,11 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +48,7 @@ public class UserController {
     @GetMapping("/{id}")
     @CheckUserAccess
     public ResponseEntity<ResponseUserDTO> findById(@PathVariable @Positive @NotNull Long id) {
-        return userService.findById(id);
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @Operation(
@@ -84,7 +86,7 @@ public class UserController {
     public ResponseEntity<ResponseUserDTO> update(
             @PathVariable @Positive @NotNull Long id,
             @RequestBody @NotNull @Validated UpdateUserDTO updateUserDTO) {
-        return userService.update(id, updateUserDTO);
+        return ResponseEntity.ok(userService.update(id, updateUserDTO));
     }
 
     @Operation(
@@ -101,7 +103,7 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ResponseUserDTO>> list() {
-        return userService.list();
+        return ResponseEntity.ok(userService.list());
     }
 
     @Operation(
@@ -120,7 +122,14 @@ public class UserController {
     public ResponseEntity<Map<String, String>> setActiveUser(
             @PathVariable @Positive @NotNull Long id
     ) {
-        return userService.setActiveUser(id);
+        Map<String, String> response = new HashMap<>();
+        if(userService.setActiveUser(id)){
+            response.put("message", "Usuário ativado com sucesso");
+            return ResponseEntity.ok(response);
+        }else{
+            response.put("message", "Usuário já ativo");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
     }
 
     @Operation(
@@ -137,7 +146,14 @@ public class UserController {
     @PatchMapping("/disable-user/{id}")
     @CheckUserAccess
     public ResponseEntity<Map<String, String>> setDisableUser(@PathVariable @Positive @NotNull Long id) {
-        return userService.setDisableUser(id);
+        Map<String, String> response = new HashMap<>();
+        if(userService.setDisableUser(id)){
+            response.put("message", "Usuário desativado com sucesso");;
+            return ResponseEntity.ok(response);
+        }else{
+            response.put("message", "Usuário já não está ativo");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
     }
 
     @Operation(
@@ -154,6 +170,6 @@ public class UserController {
     @GetMapping("/user/{id}/workouts")
     @CheckUserAccess
     public ResponseEntity<List<UserPeriodizationInfoDTO>> getAllUserTrainingInfo(@PathVariable @NotNull @Positive Long id){
-        return userService.getAllUserTraining(id);
+        return ResponseEntity.ok(userService.getAllUserTraining(id));
     }
 }

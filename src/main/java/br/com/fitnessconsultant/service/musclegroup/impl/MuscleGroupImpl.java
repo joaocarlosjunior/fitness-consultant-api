@@ -2,8 +2,8 @@ package br.com.fitnessconsultant.service.musclegroup.impl;
 
 import br.com.fitnessconsultant.domain.entities.MuscleGroup;
 import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
-import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
 import br.com.fitnessconsultant.dto.musuculegroup.RequestMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
 import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
@@ -12,7 +12,6 @@ import br.com.fitnessconsultant.service.musclegroup.MuscleGroupService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,12 +41,12 @@ public class MuscleGroupImpl implements MuscleGroupService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ResponseMuscleGroupDTO> findById(@NotNull @Positive Long id) {
-        return ResponseEntity.ok(muscleGroupRepository
+    public ResponseMuscleGroupDTO findById(@NotNull @Positive Long id) {
+        return muscleGroupRepository
                 .findById(id)
                 .map(muscleGroupMapper::toDto
                 )
-                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado")));
+                .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
     }
 
     @Transactional
@@ -58,7 +57,7 @@ public class MuscleGroupImpl implements MuscleGroupService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseMuscleGroupDTO> update(@NotNull @Positive Long id, @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
+    public ResponseMuscleGroupDTO update(@NotNull @Positive Long id, @Valid @NotNull RequestMuscleGroupDTO requestMuscleGroupDTO) {
         MuscleGroup muscleGroup = muscleGroupRepository
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Grupo Muscular não encontrado"));
@@ -72,14 +71,14 @@ public class MuscleGroupImpl implements MuscleGroupService {
         }
 
         muscleGroup.setName(requestMuscleGroupDTO.name());
-        return ResponseEntity.ok(muscleGroupMapper.toDto(muscleGroupRepository.save(muscleGroup)));
+        return muscleGroupMapper.toDto(muscleGroupRepository.save(muscleGroup));
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ResponseMuscleGroupDTO>> list() {
-        return ResponseEntity.ok(muscleGroupRepository
+    public List<ResponseMuscleGroupDTO> list() {
+        return muscleGroupRepository
                 .findAll()
                 .stream().map(muscleGroupMapper::toDto)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 }

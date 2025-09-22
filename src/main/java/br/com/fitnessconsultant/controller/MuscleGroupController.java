@@ -84,7 +84,7 @@ public class MuscleGroupController {
     public ResponseEntity<ResponseMuscleGroupDTO> update(
             @PathVariable @Positive @NotNull Long id,
             @RequestBody @NotNull @Validated RequestMuscleGroupDTO requestMuscleGroupDTO) {
-        return muscleGroupService.update(id, requestMuscleGroupDTO);
+        return ResponseEntity.ok(muscleGroupService.update(id, requestMuscleGroupDTO));
     }
 
     @Operation(
@@ -104,7 +104,7 @@ public class MuscleGroupController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ResponseMuscleGroupDTO> findById(@PathVariable @Positive @NotNull Long id) {
-        return muscleGroupService.findById(id);
+        return ResponseEntity.ok(muscleGroupService.findById(id));
     }
 
     @Operation(
@@ -120,7 +120,7 @@ public class MuscleGroupController {
     })
     @GetMapping
     public ResponseEntity<List<ResponseMuscleGroupDTO>> list() {
-        return muscleGroupService.list();
+        return ResponseEntity.ok(muscleGroupService.list());
     }
 
 }
