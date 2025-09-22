@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -86,7 +85,7 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsMuscleGroup() throws Exception {
-        when(muscleGroupService.update(1L, MUSCULE_GROUP)).thenReturn(ResponseEntity.ok(MUSCLE_GROUP_RESPONSE));
+        when(muscleGroupService.update(1L, MUSCULE_GROUP)).thenReturn(MUSCLE_GROUP_RESPONSE);
 
         mockMvc.perform(put("/api/v1/muscle-groups/{id}", 1L)
                 .content(objectMapper.writeValueAsString(MUSCULE_GROUP))
@@ -130,7 +129,7 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsMuscleGroup() throws Exception{
-        when(muscleGroupService.findById(1L)).thenReturn(ResponseEntity.ok(MUSCLE_GROUP_RESPONSE));
+        when(muscleGroupService.findById(1L)).thenReturn(MUSCLE_GROUP_RESPONSE);
 
         mockMvc.perform(get("/api/v1/muscle-groups/{id}", 1L))
                 .andExpect(status().isOk())
@@ -159,7 +158,7 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void list_IfThereRegistered_ReturnsMuscleGroups() throws Exception {
-        when(muscleGroupService.list()).thenReturn(ResponseEntity.ok(MUSCLE_GROUP_LIST));
+        when(muscleGroupService.list()).thenReturn(MUSCLE_GROUP_LIST);
 
         mockMvc.perform(get("/api/v1/muscle-groups"))
                 .andExpect(status().isOk())
@@ -168,7 +167,7 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void list_IfNotThereRegistered_ReturnsEmptyList() throws Exception {
-        when(muscleGroupService.list()).thenReturn(ResponseEntity.ok(List.of()));
+        when(muscleGroupService.list()).thenReturn(List.of());
 
         mockMvc.perform(get("/api/v1/muscle-groups"))
                 .andExpect(status().isOk())
