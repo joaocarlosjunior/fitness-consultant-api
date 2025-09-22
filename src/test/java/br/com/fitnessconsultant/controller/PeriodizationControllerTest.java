@@ -16,9 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -47,7 +45,7 @@ public class PeriodizationControllerTest {
 
     @Test
     public void create_WithValidData_ReturnsPeriodization() throws Exception {
-        when(periodizationService.create(PERIODIZATION)).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(PERIODIZATION_RESPONSE));
+        when(periodizationService.create(PERIODIZATION)).thenReturn(PERIODIZATION_RESPONSE);
 
         mockMvc.perform(post("/api/v1/periodizations")
                         .content(objectMapper.writeValueAsString(PERIODIZATION))
@@ -67,7 +65,7 @@ public class PeriodizationControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsPeriodization() throws Exception {
-        when(periodizationService.findById(1L)).thenReturn(ResponseEntity.ok(PERIODIZATION_RESPONSE));
+        when(periodizationService.findById(1L)).thenReturn(PERIODIZATION_RESPONSE);
 
         mockMvc.perform(get("/api/v1/periodizations/{id}", 1L))
                 .andExpect(status().isOk())
@@ -98,7 +96,7 @@ public class PeriodizationControllerTest {
     public void update_WithValidData_ReturnsPeriodization() throws Exception {
         UpdatePeriodizationDTO updatePeriodizationDTO = new UpdatePeriodizationDTO("Nome Periodizacao Atualizado", 10, 1L);
         ResponsePeriodizationDTO responsePeriodizationDTO = new ResponsePeriodizationDTO(1L, "Nome Periodizacao Atualizado", 10, "2025-09-16T15:42:30", "2025-09-16T15:42:30", "2025-09-16T15:42:30");
-        when(periodizationService.update(1L, updatePeriodizationDTO)).thenReturn(ResponseEntity.ok(responsePeriodizationDTO));
+        when(periodizationService.update(1L, updatePeriodizationDTO)).thenReturn(responsePeriodizationDTO);
 
         mockMvc.perform(put("/api/v1/periodizations/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -167,7 +165,7 @@ public class PeriodizationControllerTest {
 
     @Test
     public void list_IfThereRegistered_ReturnsPeriodizations() throws Exception {
-        when(periodizationService.list()).thenReturn(ResponseEntity.ok(PERIODIZATION_LIST));
+        when(periodizationService.list()).thenReturn(PERIODIZATION_LIST);
 
         mockMvc.perform(get("/api/v1/periodizations"))
                 .andExpect(status().isOk())
@@ -176,7 +174,7 @@ public class PeriodizationControllerTest {
 
     @Test
     public void list_IfNotThereRegistered_ReturnsEmptyList() throws Exception {
-        when(periodizationService.list()).thenReturn(ResponseEntity.ok(List.of()));
+        when(periodizationService.list()).thenReturn(List.of());
 
         mockMvc.perform(get("/api/v1/periodizations"))
                 .andExpect(status().isOk())
@@ -185,7 +183,7 @@ public class PeriodizationControllerTest {
 
     @Test
     public void getAllPeriodizationByIdUser_WithExistingUser_ReturnsPeriodizations() throws Exception {
-        when(periodizationService.getAllPeriodizationByUser(1L)).thenReturn(ResponseEntity.ok(PERIODIZATION_LIST));
+        when(periodizationService.getAllPeriodizationByUser(1L)).thenReturn(PERIODIZATION_LIST);
 
         mockMvc.perform(get("/api/v1/periodizations/user/{id}", 1L))
                 .andExpect(status().isOk())

@@ -15,9 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -46,7 +44,7 @@ public class TrainingControllerTest {
 
     @Test
     public void create_WithValidData_ReturnsTraining() throws Exception {
-        when(trainingService.create(TRAINING)).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(RESPONSE_TRAINING));
+        when(trainingService.create(TRAINING)).thenReturn(RESPONSE_TRAINING);
 
         mockMvc.perform(post("/api/v1/workouts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +68,7 @@ public class TrainingControllerTest {
     public void update_WithValidData_ReturnsUpdatedTraining() throws Exception {
         RequestUpdateTrainingDTO requestUpdateTrainingDTO = new RequestUpdateTrainingDTO(1L, 1, "Nome treino atualizado");
         ResponseTrainingDTO responseTrainingDTO = new ResponseTrainingDTO(1L, 1L, "A", "Nome treino atualizado", "2025-09-16T15:42:30", "2025-09-16T15:42:30");
-        when(trainingService.update(1L, requestUpdateTrainingDTO)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseTrainingDTO));
+        when(trainingService.update(1L, requestUpdateTrainingDTO)).thenReturn(responseTrainingDTO);
 
         mockMvc.perform(put("/api/v1/workouts/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -134,7 +132,7 @@ public class TrainingControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsTraining() throws Exception {
-        when(trainingService.findById(1L)).thenReturn(ResponseEntity.ok(RESPONSE_TRAINING));
+        when(trainingService.findById(1L)).thenReturn(RESPONSE_TRAINING);
 
         mockMvc.perform(get("/api/v1/workouts/{id}", 1L))
                 .andExpect(status().isOk())
@@ -163,7 +161,7 @@ public class TrainingControllerTest {
 
     @Test
     public void getAllTrainingByIdPeriodization_WithExistingId_ReturnsTrainings() throws Exception {
-        when(trainingService.getAllTrainingByIdPeriodization(1L)).thenReturn(ResponseEntity.ok(RESPONSE_TRAININGS));
+        when(trainingService.getAllTrainingByIdPeriodization(1L)).thenReturn(RESPONSE_TRAININGS);
 
         mockMvc.perform(get("/api/v1/workouts/periodization/{id}", 1L))
                 .andExpect(status().isOk())

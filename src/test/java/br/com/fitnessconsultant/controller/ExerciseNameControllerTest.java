@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -66,7 +65,7 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsExerciseName() throws Exception {
-        when(exerciseNameService.findById(EXERCISE_NAME_RESPONSE.getIdExerciseName())).thenReturn(ResponseEntity.ok(EXERCISE_NAME_RESPONSE));
+        when(exerciseNameService.findById(EXERCISE_NAME_RESPONSE.getIdExerciseName())).thenReturn(EXERCISE_NAME_RESPONSE);
 
         mockMvc.perform(get("/api/v1/exercise-name/{id}", EXERCISE_NAME_RESPONSE.getIdExerciseName()))
                 .andExpect(status().isOk())
@@ -96,7 +95,7 @@ public class ExerciseNameControllerTest {
     @Test
     public void update_WithValidData_ReturnsExerciseName() throws Exception {
         RequestUpdateExerciseNameDTO updateExerciseNameDTO = new RequestUpdateExerciseNameDTO("Nome Exercicio", 1L);
-        when(exerciseNameService.update(1L, updateExerciseNameDTO)).thenReturn(ResponseEntity.ok(EXERCISE_NAME_RESPONSE));
+        when(exerciseNameService.update(1L, updateExerciseNameDTO)).thenReturn(EXERCISE_NAME_RESPONSE);
 
         mockMvc.perform(put("/api/v1/exercise-name/{id}", 1L)
                         .content(objectMapper.writeValueAsString(updateExerciseNameDTO))
@@ -175,7 +174,7 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void list_IfThereRegistered_ReturnsExerciseNames() throws Exception {
-        when(exerciseNameService.list()).thenReturn(ResponseEntity.ok(EXERCISE_NAME_LIST));
+        when(exerciseNameService.list()).thenReturn(EXERCISE_NAME_LIST);
 
         mockMvc.perform(get("/api/v1/exercise-name"))
                 .andExpect(status().isOk())
@@ -184,7 +183,7 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void list_IfNotThereRegistered_ReturnsEmptyList() throws Exception {
-        when(exerciseNameService.list()).thenReturn(ResponseEntity.ok(List.of()));
+        when(exerciseNameService.list()).thenReturn(List.of());
 
         mockMvc.perform(get("/api/v1/exercise-name"))
                 .andExpect(status().isOk())

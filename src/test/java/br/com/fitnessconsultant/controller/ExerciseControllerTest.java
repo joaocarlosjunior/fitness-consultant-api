@@ -14,9 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,7 +42,7 @@ public class ExerciseControllerTest {
 
     @Test
     public void create_WithValidData_ReturnsExcercise() throws Exception {
-        when(exerciseService.create(NEW_EXERCISE)).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(EXERCISE));
+        when(exerciseService.create(NEW_EXERCISE)).thenReturn(EXERCISE);
 
         mockMvc.perform(post("/api/v1/exercises")
                         .content(objectMapper.writeValueAsString(NEW_EXERCISE))
@@ -73,7 +71,7 @@ public class ExerciseControllerTest {
         RequestExerciseDTO updateExercise = new RequestExerciseDTO(1L, 4, "Atualizado Exercicio", 20, 35, "metodo teste", 1L);
         ResponseExerciseDTO responseExercise = new ResponseExerciseDTO(1L, 4, "Atualizado Exercicio", 20, 35, "metodo teste", "Nome exercicio");
 
-        when(exerciseService.update(1L, updateExercise)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseExercise));
+        when(exerciseService.update(1L, updateExercise)).thenReturn(responseExercise);
 
         mockMvc.perform(put("/api/v1/exercises/{id}", 1L)
                         .content(objectMapper.writeValueAsString(updateExercise))
@@ -141,7 +139,7 @@ public class ExerciseControllerTest {
 
     @Test
     public void getAllExercisesByIdTraining_WithExistingId_ReturnsExercises() throws Exception {
-        when(exerciseService.getAllExercisesByIdTraining(1L)).thenReturn(ResponseEntity.ok(LIST_EXERCISES));
+        when(exerciseService.getAllExercisesByIdTraining(1L)).thenReturn(LIST_EXERCISES);
 
         mockMvc.perform(get("/api/v1/exercises/training/{id}", 1L))
                 .andExpect(status().isOk())

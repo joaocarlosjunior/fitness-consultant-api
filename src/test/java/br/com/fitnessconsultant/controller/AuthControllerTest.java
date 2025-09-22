@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -86,7 +85,7 @@ public class AuthControllerTest {
     public void authenticate_WithValidData_ReturnsJwtToken() throws Exception {
         ResponseJwtTokenDTO tokenExample = new ResponseJwtTokenDTO("tokenexemplo");
         when(authService.authenticate(new RequestLoginUserDTO("email_usuario@email.com", "password")))
-                .thenReturn(ResponseEntity.ok(tokenExample));
+                .thenReturn(tokenExample);
 
         RequestLoginUserDTO requestLoginUserDTO = new RequestLoginUserDTO("email_usuario@email.com", "password");
 

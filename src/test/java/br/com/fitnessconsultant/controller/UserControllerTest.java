@@ -13,9 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,9 +24,8 @@ import java.util.stream.Stream;
 
 import static br.com.fitnessconsultant.common.UserConstants.*;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,7 +45,7 @@ public class UserControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsUser() throws Exception {
-        when(userService.findById(1L)).thenReturn(ResponseEntity.ok(USER));
+        when(userService.findById(1L)).thenReturn(USER);
 
         mockMvc.perform(get("/api/v1/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -99,7 +96,7 @@ public class UserControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsUser() throws Exception {
-        when(userService.update(1L, UPDATE_USER)).thenReturn(ResponseEntity.ok(USER));
+        when(userService.update(1L, UPDATE_USER)).thenReturn(USER);
 
         mockMvc.perform(put("/api/v1/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +140,7 @@ public class UserControllerTest {
 
     @Test
     public void list_HaveRegistered_ReturnsUsers() throws Exception {
-        when(userService.list()).thenReturn(ResponseEntity.ok(USERS));
+        when(userService.list()).thenReturn(USERS);
 
         mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk())
@@ -152,7 +149,7 @@ public class UserControllerTest {
 
     @Test
     public void list_NoHaveRegistered_ReturnsEmptyList() throws Exception {
-        when(userService.list()).thenReturn(ResponseEntity.ok(List.of()));
+        when(userService.list()).thenReturn(List.of());
 
         mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk())
@@ -164,7 +161,7 @@ public class UserControllerTest {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Usuário ativado com sucesso");
 
-        when(userService.setActiveUser(1L)).thenReturn(ResponseEntity.ok(response));
+        when(userService.setActiveUser(1L)).thenReturn(true);
 
         mockMvc.perform(patch("/api/v1/users/active-user/{id}", 1L))
                 .andExpect(status().isOk())
@@ -184,7 +181,7 @@ public class UserControllerTest {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Usuário já ativo");
 
-        when(userService.setActiveUser(1L)).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT).body(response));
+        when(userService.setActiveUser(1L)).thenReturn(false);
 
         mockMvc.perform(patch("/api/v1/users/active-user/{id}", 1L))
                 .andExpect(status().isConflict())
@@ -208,7 +205,7 @@ public class UserControllerTest {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Usuário desativado com sucesso");
 
-        when(userService.setDisableUser(1L)).thenReturn(ResponseEntity.ok(response));
+        when(userService.setDisableUser(1L)).thenReturn(true);
 
         mockMvc.perform(patch("/api/v1/users/disable-user/{id}", 1L))
                 .andExpect(status().isOk())
@@ -228,7 +225,7 @@ public class UserControllerTest {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Usuário já não está ativo");
 
-        when(userService.setDisableUser(1L)).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT).body(response));
+        when(userService.setDisableUser(1L)).thenReturn(false);
 
         mockMvc.perform(patch("/api/v1/users/disable-user/{id}", 1L))
                 .andExpect(status().isConflict())
