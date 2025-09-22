@@ -7,7 +7,6 @@ import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
-import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
 import br.com.fitnessconsultant.mappers.UserMapper;
@@ -43,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void create(@Valid @NotNull RequestUserDTO requestUserDTO, String siteUrl) {
+    public void create(@Valid @NotNull RequestUserDTO requestUserDTO) {
 
         boolean emailExists = userRepository.existsByEmailIgnoreCase(requestUserDTO.email());
 

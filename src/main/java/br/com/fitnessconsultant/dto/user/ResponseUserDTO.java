@@ -1,11 +1,13 @@
 package br.com.fitnessconsultant.dto.user;
 
 import br.com.fitnessconsultant.domain.enums.Role;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class ResponseUserDTO {
     private Long idUser;
 

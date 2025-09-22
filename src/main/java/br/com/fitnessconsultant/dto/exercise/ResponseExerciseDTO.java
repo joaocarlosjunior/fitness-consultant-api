@@ -1,9 +1,11 @@
 package br.com.fitnessconsultant.dto.exercise;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 @Builder
 public class ResponseExerciseDTO {
     private Long idExercise;

@@ -91,9 +91,10 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Transactional
     public void delete(@NotNull @Positive Long id) {
-        exerciseRepository.delete(exerciseRepository
-                .getReferenceById(id)
-        );
+        Exercise exercise = exerciseRepository
+                .findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Exercício não encontrado"));
+        exerciseRepository.delete(exercise);
     }
 
     @Transactional(readOnly = true)
