@@ -1,13 +1,17 @@
 package br.com.fitnessconsultant.common;
 
+import br.com.fitnessconsultant.domain.entities.ExerciseName;
 import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static br.com.fitnessconsultant.common.MusculeGroupConstants.MUSCLE_GROUP;
+
 public class ExerciseNameConstants {
-    public static final RequestExerciseNameDTO EXERCISE_NAME = new RequestExerciseNameDTO("Nome exercício", 1L);
+    public static final ExerciseName EXERCISE_NAME = new ExerciseName(1L, "Nome do exercicio", MUSCLE_GROUP);
+    public static final RequestExerciseNameDTO EXERCISE_NAME_REQUEST = new RequestExerciseNameDTO("Nome exercicio", 1L);
     public static final ResponseExerciseNameDTO EXERCISE_NAME_RESPONSE = new ResponseExerciseNameDTO(1L, "Nome do exercício", "Nome do grupo muscular");
 
     public static final List<ResponseExerciseNameDTO> EXERCISE_NAME_LIST = Arrays.asList(

@@ -1,12 +1,17 @@
 package br.com.fitnessconsultant.common;
 
+import br.com.fitnessconsultant.domain.entities.Exercise;
 import br.com.fitnessconsultant.dto.exercise.RequestExerciseDTO;
 import br.com.fitnessconsultant.dto.exercise.ResponseExerciseDTO;
 
 import java.util.List;
 
+import static br.com.fitnessconsultant.common.ExerciseNameConstants.EXERCISE_NAME;
+import static br.com.fitnessconsultant.common.TrainingConstants.TRAINING;
+
 public class ExerciseConstants {
-    public static final RequestExerciseDTO NEW_EXERCISE =  new RequestExerciseDTO(
+    public static final Exercise EXERCISE = new Exercise(1L, 1, "Repeticoes", 10, 20, "Metodo", EXERCISE_NAME, TRAINING);
+    public static final RequestExerciseDTO EXERCISE_REQUEST =  new RequestExerciseDTO(
             1L,
             2,
             "Repeticoes teste",
@@ -16,7 +21,7 @@ public class ExerciseConstants {
             1L
     );
 
-    public static final ResponseExerciseDTO EXERCISE =  new ResponseExerciseDTO(
+    public static final ResponseExerciseDTO EXERCISE_RESPONSE =  new ResponseExerciseDTO(
             1L,
             2,
             "Repeticoes teste",
