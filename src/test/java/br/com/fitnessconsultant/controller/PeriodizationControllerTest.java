@@ -45,10 +45,10 @@ public class PeriodizationControllerTest {
 
     @Test
     public void create_WithValidData_ReturnsPeriodization() throws Exception {
-        when(periodizationService.create(PERIODIZATION)).thenReturn(PERIODIZATION_RESPONSE);
+        when(periodizationService.create(PERIODIZATION_REQUEST)).thenReturn(PERIODIZATION_RESPONSE);
 
         mockMvc.perform(post("/api/v1/periodizations")
-                        .content(objectMapper.writeValueAsString(PERIODIZATION))
+                        .content(objectMapper.writeValueAsString(PERIODIZATION_REQUEST))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_RESPONSE)));

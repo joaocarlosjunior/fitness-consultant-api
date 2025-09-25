@@ -45,12 +45,12 @@ public class UserControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsUser() throws Exception {
-        when(userService.findById(1L)).thenReturn(USER);
+        when(userService.findById(1L)).thenReturn(USER_RESPONSE);
 
         mockMvc.perform(get("/api/v1/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(USER)));
+                .andExpect(content().json(objectMapper.writeValueAsString(USER_RESPONSE)));
     }
 
     @Test
@@ -96,13 +96,13 @@ public class UserControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsUser() throws Exception {
-        when(userService.update(1L, UPDATE_USER)).thenReturn(USER);
+        when(userService.update(1L, UPDATE_USER)).thenReturn(USER_RESPONSE);
 
         mockMvc.perform(put("/api/v1/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(UPDATE_USER)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(USER)));
+                .andExpect(content().json(objectMapper.writeValueAsString(USER_RESPONSE)));
     }
 
     @ParameterizedTest

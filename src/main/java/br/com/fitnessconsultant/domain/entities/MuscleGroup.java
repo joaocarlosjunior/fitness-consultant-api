@@ -28,5 +28,10 @@ public class MuscleGroup {
 
     @OneToMany(mappedBy = "muscleGroup")
     private List<ExerciseName> exerciseNames;
+
+    public MuscleGroup(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
 

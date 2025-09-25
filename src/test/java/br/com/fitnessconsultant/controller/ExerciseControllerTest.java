@@ -42,19 +42,19 @@ public class ExerciseControllerTest {
 
     @Test
     public void create_WithValidData_ReturnsExcercise() throws Exception {
-        when(exerciseService.create(NEW_EXERCISE)).thenReturn(EXERCISE);
+        when(exerciseService.create(EXERCISE_REQUEST)).thenReturn(EXERCISE_RESPONSE);
 
         mockMvc.perform(post("/api/v1/exercises")
-                        .content(objectMapper.writeValueAsString(NEW_EXERCISE))
+                        .content(objectMapper.writeValueAsString(EXERCISE_REQUEST))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.idExercise").value(EXERCISE.getIdExercise()))
-                .andExpect(jsonPath("$.series").value(EXERCISE.getSeries()))
-                .andExpect(jsonPath("$.repetitions").value(EXERCISE.getRepetitions()))
-                .andExpect(jsonPath("$.initialLoad").value(EXERCISE.getInitialLoad()))
-                .andExpect(jsonPath("$.finalLoad").value(EXERCISE.getFinalLoad()))
-                .andExpect(jsonPath("$.method").value(EXERCISE.getMethod()))
-                .andExpect(jsonPath("$.exerciseName").value(EXERCISE.getExerciseName()));
+                .andExpect(jsonPath("$.idExercise").value(EXERCISE_RESPONSE.getIdExercise()))
+                .andExpect(jsonPath("$.series").value(EXERCISE_RESPONSE.getSeries()))
+                .andExpect(jsonPath("$.repetitions").value(EXERCISE_RESPONSE.getRepetitions()))
+                .andExpect(jsonPath("$.initialLoad").value(EXERCISE_RESPONSE.getInitialLoad()))
+                .andExpect(jsonPath("$.finalLoad").value(EXERCISE_RESPONSE.getFinalLoad()))
+                .andExpect(jsonPath("$.method").value(EXERCISE_RESPONSE.getMethod()))
+                .andExpect(jsonPath("$.exerciseName").value(EXERCISE_RESPONSE.getExerciseName()));
     }
 
     @ParameterizedTest
@@ -82,10 +82,10 @@ public class ExerciseControllerTest {
 
     @Test
     public void update_WithUnexistingId_ReturnsNotFound() throws Exception {
-        doThrow(new RecordNotFoundException("Exercício não encontrado")).when(exerciseService).update(1L, NEW_EXERCISE);
+        doThrow(new RecordNotFoundException("Exercício não encontrado")).when(exerciseService).update(1L, EXERCISE_REQUEST);
 
         mockMvc.perform(put("/api/v1/exercises/{id}", 1L)
-                        .content(objectMapper.writeValueAsString(NEW_EXERCISE))
+                        .content(objectMapper.writeValueAsString(EXERCISE_REQUEST))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }

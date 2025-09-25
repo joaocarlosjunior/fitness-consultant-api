@@ -1,13 +1,17 @@
 package br.com.fitnessconsultant.common;
 
+import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.enums.Role;
+import br.com.fitnessconsultant.dto.auth.RequestLoginUserDTO;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserConstants {
+    public static final User USER = new User(1L, "Nome usuario", "Sobrenome usuario", "email@email.com", "senha1234", "77999999999", Role.ROLE_USER, LocalDateTime.now(), LocalDateTime.now(),true);
     public static final RequestUserDTO NEW_USER = new RequestUserDTO(
             "Nome Usuario",
             "Sobrenome Usuario",
@@ -22,7 +26,7 @@ public class UserConstants {
             "77999999999",
             0);
 
-    public static final ResponseUserDTO USER = new ResponseUserDTO(
+    public static final ResponseUserDTO USER_RESPONSE = new ResponseUserDTO(
             1L,
             "Nome usuario",
             "Sobrenome usuario",
@@ -70,5 +74,10 @@ public class UserConstants {
                     "2025-09-16T15:42:30",
                     true
             )
+    );
+
+    public static final RequestLoginUserDTO LOGIN_USER = new RequestLoginUserDTO(
+            "test@example.com",
+            "password123"
     );
 }

@@ -42,10 +42,10 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void create_WithValidData_ReturnsCreated() throws Exception {
-        doNothing().when(exerciseNameService).create(EXERCISE_NAME);
+        doNothing().when(exerciseNameService).create(EXERCISE_NAME_REQUEST);
 
         mockMvc.perform(post("/api/v1/exercise-name")
-                        .content(objectMapper.writeValueAsString(EXERCISE_NAME))
+                        .content(objectMapper.writeValueAsString(EXERCISE_NAME_REQUEST))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated());
