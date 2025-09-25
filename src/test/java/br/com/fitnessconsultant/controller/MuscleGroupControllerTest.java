@@ -43,7 +43,7 @@ public class MuscleGroupControllerTest {
     @Test
     public void create_WithValidData_ReturnsCreated() throws Exception {
         mockMvc.perform(post("/api/v1/muscle-groups")
-                .content(objectMapper.writeValueAsString(MUSCULE_GROUP))
+                .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isCreated());
     }
@@ -85,10 +85,10 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsMuscleGroup() throws Exception {
-        when(muscleGroupService.update(1L, MUSCULE_GROUP)).thenReturn(MUSCLE_GROUP_RESPONSE);
+        when(muscleGroupService.update(1L, MUSCULE_GROUP_REQUEST)).thenReturn(MUSCLE_GROUP_RESPONSE);
 
         mockMvc.perform(put("/api/v1/muscle-groups/{id}", 1L)
-                .content(objectMapper.writeValueAsString(MUSCULE_GROUP))
+                .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(MUSCLE_GROUP_RESPONSE)));
@@ -105,10 +105,10 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void update_WithUnexistingId_ReturnsNotFound() throws Exception {
-        doThrow(RecordNotFoundException.class).when(muscleGroupService).update(1L, MUSCULE_GROUP);
+        doThrow(RecordNotFoundException.class).when(muscleGroupService).update(1L, MUSCULE_GROUP_REQUEST);
 
         mockMvc.perform(put("/api/v1/muscle-groups/{id}", 1L)
-                        .content(objectMapper.writeValueAsString(MUSCULE_GROUP))
+                        .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -116,7 +116,7 @@ public class MuscleGroupControllerTest {
     @Test
     public void update_WithInvalidId_ReturnsBadRequest() throws Exception {
         mockMvc.perform(put("/api/v1/muscle-groups/{id}", -1L)
-                        .content(objectMapper.writeValueAsString(MUSCULE_GROUP))
+                        .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

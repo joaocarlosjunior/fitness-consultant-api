@@ -44,11 +44,11 @@ public class TrainingControllerTest {
 
     @Test
     public void create_WithValidData_ReturnsTraining() throws Exception {
-        when(trainingService.create(TRAINING)).thenReturn(RESPONSE_TRAINING);
+        when(trainingService.create(TRAINING_REQUEST)).thenReturn(RESPONSE_TRAINING);
 
         mockMvc.perform(post("/api/v1/workouts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(TRAINING))
+                        .content(objectMapper.writeValueAsString(TRAINING_REQUEST))
                 )
                 .andExpect(status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(RESPONSE_TRAINING)));
