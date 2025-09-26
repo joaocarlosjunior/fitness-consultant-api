@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ExerciseNameImpl implements ExerciseNameService {
+public class ExerciseNameServiceImpl implements ExerciseNameService {
     private final ExerciseNameRepository exerciseNameRepository;
     private final MuscleGroupRepository muscleGroupRepository;
     private final ExerciseNameMapper exerciseNameMapper;
 
-    public ExerciseNameImpl(ExerciseNameRepository exerciseNameRepository,
+    public ExerciseNameServiceImpl(ExerciseNameRepository exerciseNameRepository,
                             MuscleGroupRepository muscleGroupRepository,
                             ExerciseNameMapper exerciseNameMapper) {
         this.exerciseNameRepository = exerciseNameRepository;
