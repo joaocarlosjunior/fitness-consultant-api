@@ -97,6 +97,8 @@ public class ExerciseServiceTest {
         assertThat(sut).isNotNull();
         assertThat(sut).isEqualTo(EXERCISE_RESPONSE);
         verify(exerciseRepository).findById(1L);
+        verify(exerciseRepository).save(EXERCISE);
+        verify(exerciseMapper).toDto(EXERCISE);
     }
 
     @Test
@@ -152,7 +154,6 @@ public class ExerciseServiceTest {
         assertThat(sut).isNotNull();
         assertThat(sut).hasSize(exercises.size());
         assertThat(sut).extracting("idExercise").containsExactly(1L, 2L, 3L, 4L);
-        verify(trainingRepository).existsTrainingsById(1L);
         verify(trainingRepository).existsTrainingsById(1L);
         verify(exerciseRepository).getAllExercisesByIdTraining(1L);
         verify(exerciseMapper, times(4)).toDto(any(Exercise.class));
