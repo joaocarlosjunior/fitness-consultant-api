@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MuscleGroupImpl implements MuscleGroupService {
+public class MuscleGroupServiceImpl implements MuscleGroupService {
 
     private final MuscleGroupRepository muscleGroupRepository;
     private final MuscleGroupMapper muscleGroupMapper;
 
-    public MuscleGroupImpl(MuscleGroupRepository muscleGroupRepository,
+    public MuscleGroupServiceImpl(MuscleGroupRepository muscleGroupRepository,
                            MuscleGroupMapper muscleGroupMapper) {
         this.muscleGroupRepository = muscleGroupRepository;
         this.muscleGroupMapper = muscleGroupMapper;
