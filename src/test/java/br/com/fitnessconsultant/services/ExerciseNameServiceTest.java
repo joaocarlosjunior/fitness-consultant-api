@@ -20,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -86,9 +85,9 @@ public class ExerciseNameServiceTest {
 
     @Test
     public void findById_WhenExerciseNameNotFound_ThrowsException() {
-        when(exerciseNameRepository.findById(99L)).thenThrow(new EntityNotFoundException());
+        when(exerciseNameRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> exerciseNameService.findById(1L)).isInstanceOf(EntityNotFoundException.class);
+        assertThatThrownBy(() -> exerciseNameService.findById(99L)).isInstanceOf(RecordNotFoundException.class);
     }
 
     @Test
@@ -131,7 +130,7 @@ public class ExerciseNameServiceTest {
 
     @Test
     public void update_WhenExerciseNameNotFound_ThrowsException() {
-        when(exerciseNameRepository.findById(99L)).thenThrow(new RecordNotFoundException("Nome Exercício não encontrado"));
+        when(exerciseNameRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> exerciseNameService.update(99L, EXERCISE_NAME_UPDATE_REQUEST));
     }
@@ -159,7 +158,7 @@ public class ExerciseNameServiceTest {
     public void update_WithUnexistingIDMuscleGroup_ThrowsException() {
         when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
         when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName())).thenReturn(false);
-        when(muscleGroupRepository.findById(EXERCISE_NAME_UPDATE_REQUEST.idMuscleGroup())).thenThrow(new RecordNotFoundException("Grupo Muscular não encontrado"));
+        when(muscleGroupRepository.findById(EXERCISE_NAME_UPDATE_REQUEST.idMuscleGroup())).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> exerciseNameService.update(1L, EXERCISE_NAME_UPDATE_REQUEST));
         verify(exerciseNameRepository).findById(1L);
@@ -177,7 +176,7 @@ public class ExerciseNameServiceTest {
 
     @Test
     public void delete_WithUnexistingID_ThrowsException() {
-        when(exerciseNameRepository.findById(1L)).thenThrow(new RecordNotFoundException("Nome Exercício não encontrado"));
+        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> exerciseNameService.delete(1L));
         verify(exerciseNameRepository).findById(1L);

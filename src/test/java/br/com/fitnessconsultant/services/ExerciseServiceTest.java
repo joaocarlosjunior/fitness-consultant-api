@@ -103,7 +103,7 @@ public class ExerciseServiceTest {
 
     @Test
     public void update_ByUnexistingIdExercise_ThrowsExeception() {
-        when(exerciseRepository.findById(1L)).thenThrow(new RecordNotFoundException("Exercício não encontrado"));
+        when(exerciseRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> exerciseService.update(1L, EXERCISE_REQUEST))
                 .isInstanceOf(RecordNotFoundException.class)
@@ -120,7 +120,7 @@ public class ExerciseServiceTest {
 
     @Test
     public void delete_ByUnexistingId_ThrowsExeception() {
-        when(exerciseRepository.findById(1L)).thenThrow(new RecordNotFoundException("Exercício não encontrado"));
+        when(exerciseRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> exerciseService.delete(1L)).isInstanceOf(RecordNotFoundException.class).hasMessage("Exercício não encontrado");
     }

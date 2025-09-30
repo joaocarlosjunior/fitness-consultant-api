@@ -75,7 +75,7 @@ public class MuscleGroupServiceTest {
 
     @Test
     public void findById_WithUnexistingId_ThrowsException() {
-        when(muscleGroupRepository.findById(99L)).thenThrow(new RecordNotFoundException("Grupo Muscular não encontrado"));
+        when(muscleGroupRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatCode(() -> muscleGroupService.findById(99L))
                 .hasMessage("Grupo Muscular não encontrado")
@@ -94,7 +94,7 @@ public class MuscleGroupServiceTest {
 
     @Test
     public void delete_WithUnexistingId_ThrowsException() {
-        when(muscleGroupRepository.findById(99L)).thenThrow(new RecordNotFoundException("Grupo Muscular não encontrado"));
+        when(muscleGroupRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatCode(() -> muscleGroupService.delete(99L))
                 .hasMessage("Grupo Muscular não encontrado")
@@ -138,7 +138,7 @@ public class MuscleGroupServiceTest {
 
     @Test
     public void update_WithUnexistingId_ThrowsException() {
-        when(muscleGroupRepository.findById(99L)).thenThrow(new RecordNotFoundException("Grupo Muscular não encontrado"));
+        when(muscleGroupRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatCode(() -> muscleGroupService.update(99L, MUSCULE_GROUP_REQUEST))
                 .hasMessage("Grupo Muscular não encontrado")
