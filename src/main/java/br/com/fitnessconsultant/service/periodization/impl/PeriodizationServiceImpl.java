@@ -72,7 +72,7 @@ public class PeriodizationServiceImpl implements PeriodizationService {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrado"));
 
-        return periodizationMapper.toDto(periodizationRepository.save(periodization));
+        return periodizationMapper.toDto(periodization);
     }
 
     @Transactional
