@@ -36,7 +36,6 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Transactional
     public ResponseTrainingDTO create(@Valid @NotNull RequestTrainingDTO requestTrainingDTO) {
-
         Periodization periodization = periodizationRepository
                 .findById(requestTrainingDTO.idPeriodization())
                 .orElseThrow(() -> new RecordNotFoundException("Periodização não encontrada para o id: " + requestTrainingDTO.idPeriodization()));
