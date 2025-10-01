@@ -165,11 +165,11 @@ public class PeriodizationControllerTest {
 
     @Test
     public void list_IfThereRegistered_ReturnsPeriodizations() throws Exception {
-        when(periodizationService.list()).thenReturn(PERIODIZATION_LIST);
+        when(periodizationService.list()).thenReturn(PERIODIZATION_LIST_RESPONSE);
 
         mockMvc.perform(get("/api/v1/periodizations"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_LIST)));
+                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_LIST_RESPONSE)));
     }
 
     @Test
@@ -183,11 +183,11 @@ public class PeriodizationControllerTest {
 
     @Test
     public void getAllPeriodizationByIdUser_WithExistingUser_ReturnsPeriodizations() throws Exception {
-        when(periodizationService.getAllPeriodizationByUser(1L)).thenReturn(PERIODIZATION_LIST);
+        when(periodizationService.getAllPeriodizationByUser(1L)).thenReturn(PERIODIZATION_LIST_RESPONSE);
 
         mockMvc.perform(get("/api/v1/periodizations/user/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_LIST)));
+                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_LIST_RESPONSE)));
     }
 
     @Test
