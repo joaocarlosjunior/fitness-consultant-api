@@ -22,8 +22,8 @@ spring:
   mail:
     host: sandbox.smtp.mailtrap.io
     port: 587
-    username:
-    password:
+    username: ${USERNAME}
+    password: ${PASSWORD}
     properties:
       mail:
         smtp:
@@ -35,5 +35,5 @@ server:
     include-message: always
 api:
   jwt:
-    secret: ZNN473xXgvNVhsVov4qTGFAatEAmYHl7aiftahK824ZwlRxnQE9msRWFwc3s0sSq
+    secret: ${JWT_SECRET}
     jwtExpirationSeg: 10800
