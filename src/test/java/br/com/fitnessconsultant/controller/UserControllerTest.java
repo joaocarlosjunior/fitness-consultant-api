@@ -140,11 +140,11 @@ public class UserControllerTest {
 
     @Test
     public void list_HaveRegistered_ReturnsUsers() throws Exception {
-        when(userService.list()).thenReturn(USERS);
+        when(userService.list()).thenReturn(LIST_USERS_RESPONSE);
 
         mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(USERS)));
+                .andExpect(content().json(objectMapper.writeValueAsString(LIST_USERS_RESPONSE)));
     }
 
     @Test
@@ -242,6 +242,15 @@ public class UserControllerTest {
     public void setDisableUser_WithoutIdInPath_ReturnsNotFound() throws Exception {
         mockMvc.perform(patch("/api/v1/users/disable-user/"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getAllUserTraining_WithExisingUserAndRegisteredInfoTraining_ReturnsInfoTraining() throws Exception {
+        when(userService.getAllUserTraining(1L)).thenReturn(PERIODIZATION_INFO_LIST);
+
+        mockMvc.perform(get("/api/v1/users/user/{id}/workouts", 1L))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_INFO_LIST)));
     }
 
     private static Stream<Arguments> providersInvalidUpdateUsers(){
