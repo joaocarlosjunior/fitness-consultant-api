@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.UserConstants.NEW_USER;
+import static br.com.fitnessconsultant.common.UserConstants.NEW_USER_REQUEST;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,11 +46,11 @@ public class AuthControllerTest {
 
     @Test
     public void createUser_WithValidData_ReturnsCreated() throws Exception {
-        doNothing().when(userService).create(NEW_USER);
+        doNothing().when(userService).create(NEW_USER_REQUEST);
 
         mockMvc.perform(
                 post("/api/v1/auth/signup")
-                        .content(objectMapper.writeValueAsString(NEW_USER))
+                        .content(objectMapper.writeValueAsString(NEW_USER_REQUEST))
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andExpect(status().isCreated());
