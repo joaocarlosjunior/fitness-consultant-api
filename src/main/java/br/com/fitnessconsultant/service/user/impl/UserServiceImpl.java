@@ -18,7 +18,6 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -147,7 +146,6 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsUsersById(id)) {
             throw new UserNotFoundException("Usuário não encontrado");
         }
-
         return userRepository.getAllUserTrainingInfo(id);
     }
 
@@ -157,12 +155,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
-    private String generatePassword(int length) {
+/*    private String generatePassword(int length) {
         final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         SecureRandom random = new SecureRandom();
         return random.ints(length, 0, CARACTERES.length())
                 .mapToObj(index -> String.valueOf(CARACTERES.charAt(index)))
                 .collect(Collectors.joining());
-    }
+    }*/
 }
