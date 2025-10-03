@@ -101,20 +101,24 @@ public class UserServiceImpl implements UserService {
     public ResponseUserDTO update(@NotNull @Positive Long id, @NotNull @Valid UpdateUserDTO updateUserDTO) {
         User user = findUser(id);
 
-        if (updateUserDTO.email() != null && !updateUserDTO.email().equals(user.getEmail())) {
+        if (updateUserDTO.email() != null && !updateUserDTO.email().isBlank() && !updateUserDTO.email().equals(user.getEmail())) {
             boolean emailExists = userRepository.existsByEmailIgnoreCase(updateUserDTO.email());
 
             if (emailExists) {
                 throw new InfoAlreadyExistsException("Email já cadastrado");
             }
+
+            user.setEmail(updateUserDTO.email());
         }
 
-        if (updateUserDTO.phone() != null && !updateUserDTO.phone().equals(user.getPhone())) {
+        if (updateUserDTO.phone() != null && !updateUserDTO.phone().isBlank() && !updateUserDTO.phone().equals(user.getPhone())) {
             boolean phoneExists = userRepository.existsByPhone(updateUserDTO.phone());
 
             if (phoneExists) {
                 throw new InfoAlreadyExistsException("Telefone já cadastrado");
             }
+
+            user.setPhone(updateUserDTO.phone());
         }
 
         if (updateUserDTO.firstName() != null && !updateUserDTO.firstName().isBlank()) {
@@ -122,14 +126,6 @@ public class UserServiceImpl implements UserService {
         }
         if (updateUserDTO.lastName() != null && !updateUserDTO.lastName().isBlank()) {
             user.setLastName(updateUserDTO.lastName());
-        }
-
-        if (updateUserDTO.email() != null && !updateUserDTO.email().isBlank()) {
-            user.setEmail(updateUserDTO.email());
-        }
-
-        if (updateUserDTO.phone() != null && !updateUserDTO.phone().isBlank()) {
-            user.setPhone(updateUserDTO.phone());
         }
 
         return userMapper.toDto(userRepository.save(user));
