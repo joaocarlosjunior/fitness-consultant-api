@@ -14,11 +14,4 @@ import java.util.List;
 public interface PeriodizationRepository extends JpaRepository<Periodization, Long> {
     @Query(value = "select p from Periodization p where p.user.id=:id")
     List<Periodization> getAllPeriodizationByIdUser(@PathParam("id") Long id);
-
-    @Query("""
-        delete from Periodization p
-        where p.user.id = :userId
-        """)
-    @Modifying
-    void deleteAllByUserId(@Param("userId") Long userId);
 }

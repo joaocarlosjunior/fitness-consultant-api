@@ -13,15 +13,5 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
     @Query(value = "select t from Training t where t.periodization.id=:id")
     List<Training> getAllTrainingByIdPeriodization(@PathParam("id") Long id);
 
-    @Query("""
-        delete from Training t
-        where t.periodization.id in (
-            select p.id from Periodization p
-            where p.user.id = :userId
-        )
-        """)
-    @Modifying
-    void deleteAllByUserId(@Param("userId") Long userId);
-
     boolean existsTrainingsById(Long id);
 }

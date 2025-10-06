@@ -8,7 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ExerciseNameRepository extends JpaRepository<ExerciseName, Long> {
-    Optional<ExerciseName> findByExerciseNameIgnoreCase(String name);
-
     boolean existsByExerciseNameIgnoreCase(String name);
 }

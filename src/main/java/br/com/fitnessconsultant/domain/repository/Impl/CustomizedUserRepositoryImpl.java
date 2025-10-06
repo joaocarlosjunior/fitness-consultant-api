@@ -31,20 +31,6 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
     }
 
     @Override
-    public void deletedById(Long userId) {
-        exerciseRepository.deleteAllByUserId(userId);
-        trainingRepository.deleteAllByUserId(userId);
-        periodizationRepository.deleteAllByUserId(userId);
-
-        entityManager.createQuery("""
-                                    delete from User
-                                    where id = :userId
-                        """)
-                .setParameter("userId", userId)
-                .executeUpdate();
-    }
-
-    @Override
     public List<UserPeriodizationInfoDTO> getAllUserTrainingInfo(Long userId) {
         List<Tuple> periodizations = entityManager.createQuery(
                         "select p.id as id, p.name as name, p.numberWeeks as number_weeks " +
