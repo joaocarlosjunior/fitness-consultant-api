@@ -27,7 +27,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                 .getResultList();
 
         if (periodizations.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         List<UserPeriodizationInfoDTO> dto = periodizations.stream()
@@ -53,7 +53,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                 .getResultList();
 
         if (trainings.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         List<UserTrainingInfoDTO> dto = trainings.stream()
@@ -82,7 +82,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                 .getResultList();
 
         if (exercises.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         List<UserExerciseInfoDTO> dto = exercises.stream()
