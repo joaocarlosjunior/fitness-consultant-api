@@ -30,7 +30,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
             return List.of();
         }
 
-        List<UserPeriodizationInfoDTO> dto = periodizations.stream()
+        return periodizations.stream()
                 .map(periodization ->
                         new UserPeriodizationInfoDTO(
                                 (Long) periodization.get("id"),
@@ -39,8 +39,6 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                                 getUserTraining((Long) periodization.get("id"))
                         )
                 ).toList();
-
-        return dto;
     }
 
     private List<UserTrainingInfoDTO> getUserTraining(Long idPeriodization) {
@@ -56,7 +54,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
             return List.of();
         }
 
-        List<UserTrainingInfoDTO> dto = trainings.stream()
+        return trainings.stream()
                 .map(training -> new UserTrainingInfoDTO(
                                 (Long) training.get("id"),
                                 (String) training.get("training_name"),
@@ -64,8 +62,6 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                                 getUserExercise((Long) training.get("id"))
                         )
                 ).toList();
-
-        return dto;
     }
 
     private List<UserExerciseInfoDTO> getUserExercise(Long idTraining) {
@@ -85,7 +81,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
             return List.of();
         }
 
-        List<UserExerciseInfoDTO> dto = exercises.stream()
+        return exercises.stream()
                 .map(exercise -> new UserExerciseInfoDTO(
                                 (Long) exercise.get("id"),
                                 (String) exercise.get("exercise_name"),
@@ -96,7 +92,5 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                                 (Integer) exercise.get("final_load")
                         )
                 ).toList();
-
-        return dto;
     }
 }
