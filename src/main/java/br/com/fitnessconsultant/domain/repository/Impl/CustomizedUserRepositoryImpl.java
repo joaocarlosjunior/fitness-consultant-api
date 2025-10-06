@@ -2,9 +2,6 @@ package br.com.fitnessconsultant.domain.repository.Impl;
 
 import br.com.fitnessconsultant.domain.enums.TrainingType;
 import br.com.fitnessconsultant.domain.repository.CustomizedUserRepository;
-import br.com.fitnessconsultant.domain.repository.ExerciseRepository;
-import br.com.fitnessconsultant.domain.repository.PeriodizationRepository;
-import br.com.fitnessconsultant.domain.repository.TrainingRepository;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserExerciseInfoDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserTrainingInfoDTO;
@@ -14,19 +11,9 @@ import jakarta.persistence.Tuple;
 import java.util.List;
 
 public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Long> {
-
-    private final PeriodizationRepository periodizationRepository;
-    private final TrainingRepository trainingRepository;
-    private final ExerciseRepository exerciseRepository;
     private final EntityManager entityManager;
 
-    public CustomizedUserRepositoryImpl(PeriodizationRepository periodizationRepository,
-                                        TrainingRepository trainingRepository,
-                                        ExerciseRepository exerciseRepository,
-                                        EntityManager entityManager) {
-        this.periodizationRepository = periodizationRepository;
-        this.trainingRepository = trainingRepository;
-        this.exerciseRepository = exerciseRepository;
+    public CustomizedUserRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -39,7 +26,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                 .setParameter("userId", userId)
                 .getResultList();
 
-        if(periodizations.isEmpty()){
+        if (periodizations.isEmpty()) {
             return null;
         }
 
@@ -65,7 +52,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                 .setParameter("id", idPeriodization)
                 .getResultList();
 
-        if(trainings.isEmpty()){
+        if (trainings.isEmpty()) {
             return null;
         }
 
@@ -94,7 +81,7 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository<Lo
                 .setParameter("id", idTraining)
                 .getResultList();
 
-        if(exercises.isEmpty()){
+        if (exercises.isEmpty()) {
             return null;
         }
 
