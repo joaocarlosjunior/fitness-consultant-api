@@ -27,4 +27,9 @@ public class ExerciseName {
     @ManyToOne
     @JoinColumn(name = "id_muscle_group", nullable = false)
     private MuscleGroup muscleGroup;
+
+    public ExerciseName(String exerciseName, MuscleGroup muscleGroup) {
+        this.exerciseName = exerciseName;
+        this.muscleGroup = muscleGroup;
+    }
 }
