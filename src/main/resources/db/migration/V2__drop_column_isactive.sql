@@ -1,1 +1,0 @@
-ALTER TABLE tbl_user DROP COLUMN is_active;
