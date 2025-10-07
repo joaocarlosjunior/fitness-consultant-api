@@ -3,7 +3,6 @@ package br.com.fitnessconsultant.repositories;
 import br.com.fitnessconsultant.domain.entities.ExerciseName;
 import br.com.fitnessconsultant.domain.entities.MuscleGroup;
 import br.com.fitnessconsultant.domain.repository.ExerciseNameRepository;
-import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,12 +25,10 @@ public class ExerciseNameRepositoryTest {
     private TestEntityManager testEntityManager;
     @Autowired
     private ExerciseNameRepository exerciseNameRepository;
-    @Autowired
-    private MuscleGroupRepository muscleGroupRepository;
 
     @Test
     public void create_WithValidData_ReturnsExerciseName() {
-        MuscleGroup muscleGroup = muscleGroupRepository.save(MuscleGroup.builder().name("Nome grupo muscular").build());
+        MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
         ExerciseName exerciseName = new ExerciseName("Nome exercicio", muscleGroup);
         exerciseNameRepository.save(exerciseName);
 
@@ -39,13 +36,12 @@ public class ExerciseNameRepositoryTest {
 
         assertThat(sut).isNotNull();
         assertThat(sut.getExerciseName()).isEqualTo(exerciseName.getExerciseName());
-
     }
 
     @ParameterizedTest
     @MethodSource("providesInvalidExerciseNames")
     public void create_WithInvalidData_ThrowsException(ExerciseName exerciseName) {
-        MuscleGroup muscleGroup = muscleGroupRepository.save(MuscleGroup.builder().name("Nome grupo muscular").build());
+        MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
         exerciseName.setMuscleGroup(muscleGroup);
 
         assertThrows(ConstraintViolationException.class, () -> exerciseNameRepository.save(exerciseName));
@@ -59,7 +55,7 @@ public class ExerciseNameRepositoryTest {
 
     @Test
     public void existsByExerciseNameIgnoreCase_WithExistingExerciseName_ReturnsBoolean() {
-        MuscleGroup muscleGroup = muscleGroupRepository.save(MuscleGroup.builder().name("Nome grupo muscular").build());
+        MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
         ExerciseName exerciseName = new ExerciseName("Nome exercicio", muscleGroup);
         testEntityManager.persist(exerciseName);
 
@@ -77,7 +73,7 @@ public class ExerciseNameRepositoryTest {
 
     @Test
     public void findById_WithExistingExerciseName_ReturnsExerciseName() {
-        MuscleGroup muscleGroup = muscleGroupRepository.save(MuscleGroup.builder().name("Nome grupo muscular").build());
+        MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
         ExerciseName exerciseName = testEntityManager.persistAndFlush(new ExerciseName("Nome exercicio", muscleGroup));
 
         Optional<ExerciseName> sut = exerciseNameRepository.findById(exerciseName.getId());
@@ -95,7 +91,7 @@ public class ExerciseNameRepositoryTest {
 
     @Test
     public void delete_WithExistingExerciseName_RemovesExerciseNameFromDatabase() {
-        MuscleGroup muscleGroup = muscleGroupRepository.save(MuscleGroup.builder().name("Nome grupo muscular").build());
+        MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
         ExerciseName exerciseName = testEntityManager.persistAndFlush(new ExerciseName("Nome exercicio", muscleGroup));
 
         exerciseNameRepository.delete(exerciseName);
