@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS tbl_user
     email      VARCHAR(100) NOT NULL,
     phone      VARCHAR(11) NOT NULL,
     password   VARCHAR,
-    is_active  BOOLEAN     NOT NULL,
     role       VARCHAR(20) NOT NULL,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
