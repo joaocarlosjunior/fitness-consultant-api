@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS tbl_exercise
 (
     id_exercise      BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     series           INTEGER,
-    repetitions      VARCHAR(10),
+    repetitions      VARCHAR(100),
     initial_load     INTEGER,
     final_load       INTEGER,
     method_exercise  VARCHAR(100),
