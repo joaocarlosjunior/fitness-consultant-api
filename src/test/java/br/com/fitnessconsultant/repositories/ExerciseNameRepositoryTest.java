@@ -38,6 +38,16 @@ public class ExerciseNameRepositoryTest {
         assertThat(sut.getExerciseName()).isEqualTo(exerciseName.getExerciseName());
     }
 
+    @Test
+    public void create_WithExistingExerciseName_ThrowsException() {
+        MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
+        ExerciseName exerciseName1 = ExerciseName.builder().exerciseName("Nome exercicio").muscleGroup(muscleGroup).build();
+        ExerciseName exerciseName2 = ExerciseName.builder().exerciseName("Nome exercicio").muscleGroup(muscleGroup).build();
+        testEntityManager.persist(exerciseName1);
+
+        assertThrows(DataIntegrityViolationException.class, () -> exerciseNameRepository.save(exerciseName2));
+    }
+
     @ParameterizedTest
     @MethodSource("providesInvalidExerciseNames")
     public void create_WithInvalidData_ThrowsException(ExerciseName exerciseName) {
