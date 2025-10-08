@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS tbl_training_time
 CREATE TABLE IF NOT EXISTS tbl_muscle_group
 (
     id_muscle_group BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    name_group      VARCHAR(100),
+    name_group      VARCHAR(100) NOT NULL,
     PRIMARY KEY (id_muscle_group)
 );
 
