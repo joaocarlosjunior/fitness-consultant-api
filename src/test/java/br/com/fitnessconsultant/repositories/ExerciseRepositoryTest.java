@@ -74,7 +74,7 @@ public class ExerciseRepositoryTest {
 
     @Test
     public void findById_WithExistingId_ReturnsExercise() {
-        Exercise exercise = testEntityManager.persistAndFlush(this.createsExercise());
+        Exercise exercise = testEntityManager.persistFlushFind(this.createsExercise());
 
         Optional<Exercise> sut = exerciseRepository.findById(exercise.getId());
 
@@ -91,7 +91,7 @@ public class ExerciseRepositoryTest {
 
     @Test
     public void delete_WithExistingExercise_RemovePlanesFromDatabase() {
-        Exercise exercise = testEntityManager.persistAndFlush(this.createsExercise());
+        Exercise exercise = testEntityManager.persistFlushFind(this.createsExercise());
 
         exerciseRepository.delete(exercise);
 

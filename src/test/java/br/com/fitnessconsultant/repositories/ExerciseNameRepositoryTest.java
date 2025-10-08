@@ -57,7 +57,7 @@ public class ExerciseNameRepositoryTest {
     public void existsByExerciseNameIgnoreCase_WithExistingExerciseName_ReturnsBoolean() {
         MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
         ExerciseName exerciseName = new ExerciseName("Nome exercicio", muscleGroup);
-        testEntityManager.persist(exerciseName);
+        testEntityManager.persistAndFlush(exerciseName);
 
         boolean sut = exerciseNameRepository.existsByExerciseNameIgnoreCase(exerciseName.getExerciseName());
 
@@ -74,7 +74,7 @@ public class ExerciseNameRepositoryTest {
     @Test
     public void findById_WithExistingExerciseName_ReturnsExerciseName() {
         MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
-        ExerciseName exerciseName = testEntityManager.persistAndFlush(new ExerciseName("Nome exercicio", muscleGroup));
+        ExerciseName exerciseName = testEntityManager.persistFlushFind(new ExerciseName("Nome exercicio", muscleGroup));
 
         Optional<ExerciseName> sut = exerciseNameRepository.findById(exerciseName.getId());
 
@@ -92,7 +92,7 @@ public class ExerciseNameRepositoryTest {
     @Test
     public void delete_WithExistingExerciseName_RemovesExerciseNameFromDatabase() {
         MuscleGroup muscleGroup = testEntityManager.persistAndFlush(MuscleGroup.builder().name("Nome grupo muscular").build());
-        ExerciseName exerciseName = testEntityManager.persistAndFlush(new ExerciseName("Nome exercicio", muscleGroup));
+        ExerciseName exerciseName = testEntityManager.persistFlushFind(new ExerciseName("Nome exercicio", muscleGroup));
 
         exerciseNameRepository.delete(exerciseName);
 
