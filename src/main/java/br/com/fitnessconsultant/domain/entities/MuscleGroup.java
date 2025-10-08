@@ -22,7 +22,7 @@ public class MuscleGroup {
     @Column(name = "id_muscle_group",nullable = false)
     private Long id;
 
-    @Column(name = "name_group", length = 50, nullable = false)
+    @Column(name = "name_group", length = 100, nullable = false)
     @NotBlank(message = "Campo Nome Grupo Muscular obrigatório")
     private String name;
 
