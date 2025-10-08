@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS tbl_exercise_name
 (
     id_exercise_name BIGINT      NOT NULL GENERATED ALWAYS AS IDENTITY,
     exercise_name    VARCHAR(100) NOT NULL,
-    id_muscle_group  BIGINT,
+    id_muscle_group  BIGINT NOT NULL,
     CONSTRAINT exercise_name_unique UNIQUE (exercise_name),
     FOREIGN KEY (id_muscle_group) REFERENCES tbl_muscle_group (id_muscle_group) ON DELETE CASCADE,
     PRIMARY KEY (id_exercise_name)
