@@ -65,7 +65,8 @@ CREATE TABLE IF NOT EXISTS tbl_muscle_group
 (
     id_muscle_group BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
     name_group      VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id_muscle_group)
+    PRIMARY KEY (id_muscle_group),
+    CONSTRAINT name_group_unique UNIQUE (name_group)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_exercise_name
