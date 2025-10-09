@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS tbl_periodization
     name             VARCHAR(100) NOT NULL,
     number_weeks     INTEGER NOT NULL,
     start_date       TIMESTAMP,
-    id_user          BIGINT,
+    id_user          BIGINT NOT NULL,
     created_at       TIMESTAMP,
     updated_at       TIMESTAMP,
     PRIMARY KEY (id_periodization),
@@ -108,9 +108,3 @@ CREATE TABLE IF NOT EXISTS tbl_exercise
     FOREIGN KEY (id_training) REFERENCES tbl_training (id_training) ON DELETE CASCADE,
     FOREIGN KEY (id_exercise_name) REFERENCES tbl_exercise_name (id_exercise_name) ON DELETE CASCADE
 );
-/*
-INSERT INTO tbl_user
-(first_name, last_name, email, phone, password, role, created_at, is_enabled)
-VALUES('Admin', 'Master', 'admin@admin.com', '739999999', '$2a$12$UKcaNWsQXfNZFH4gKLaRFuts8SNDNmUvtTBmd8N.N6rLK1Xareum2', 'ROLE_ADMIN', NOW(), true);
-|*
- */
