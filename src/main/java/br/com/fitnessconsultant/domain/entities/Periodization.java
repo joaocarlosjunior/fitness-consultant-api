@@ -24,11 +24,11 @@ public class Periodization {
     @Column(name = "id_periodization", nullable = false)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     @NotBlank(message = "Nome da Periodização obrigatório")
     private String name;
 
-    @Column(name = "number_weeks")
+    @Column(name = "number_weeks", nullable = false)
     private Integer numberWeeks;
 
     @Column(name = "start_date")

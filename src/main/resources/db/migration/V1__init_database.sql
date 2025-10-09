@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS tbl_confirmation_token
 CREATE TABLE IF NOT EXISTS tbl_periodization
 (
     id_periodization BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    name             VARCHAR(100),
-    number_weeks     INTEGER,
+    name             VARCHAR(100) NOT NULL,
+    number_weeks     INTEGER NOT NULL,
     start_date       TIMESTAMP,
     id_user          BIGINT,
     created_at       TIMESTAMP,
