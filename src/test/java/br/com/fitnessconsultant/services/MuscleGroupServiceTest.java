@@ -7,8 +7,10 @@ import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
 import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.factories.MuscleGroupFactory;
 import br.com.fitnessconsultant.mappers.MuscleGroupMapper;
 import br.com.fitnessconsultant.service.musclegroup.impl.MuscleGroupServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.MusculeGroupConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,39 +39,49 @@ public class MuscleGroupServiceTest {
     private MuscleGroupRepository muscleGroupRepository;
     @Mock
     private MuscleGroupMapper muscleGroupMapper;
+    private MuscleGroup muscleGroup;
+    private RequestMuscleGroupDTO muscleGroupRequest;
+    private ResponseMuscleGroupDTO muscleGroupResponse;
+
+    @BeforeEach
+    void setUp() {
+        muscleGroup = MuscleGroupFactory.createMuscleGroup();
+        muscleGroupRequest = MuscleGroupFactory.createMuscleGroupRequest();
+        muscleGroupResponse = MuscleGroupFactory.createMuscleGroupResponse();
+    }
 
     @Test
     public void create_WithUnregisteredMuscleGroup_DoesNotThrowAnyException() {
-        when(muscleGroupRepository.existsByNameIgnoreCase(MUSCULE_GROUP_REQUEST.name())).thenReturn(false);
-        when(muscleGroupMapper.toEntity(MUSCULE_GROUP_REQUEST)).thenReturn(MUSCLE_GROUP);
+        when(muscleGroupRepository.existsByNameIgnoreCase(muscleGroupRequest.name())).thenReturn(false);
+        when(muscleGroupMapper.toEntity(muscleGroupRequest)).thenReturn(muscleGroup);
 
-        assertThatCode(() -> muscleGroupService.create(MUSCULE_GROUP_REQUEST)).doesNotThrowAnyException();
-        verify(muscleGroupRepository).existsByNameIgnoreCase(MUSCULE_GROUP_REQUEST.name());
-        verify(muscleGroupMapper).toEntity(MUSCULE_GROUP_REQUEST);
-        verify(muscleGroupRepository).save(MUSCLE_GROUP);
+        assertThatCode(() -> muscleGroupService.create(muscleGroupRequest)).doesNotThrowAnyException();
+        verify(muscleGroupRepository).existsByNameIgnoreCase(muscleGroupRequest.name());
+        verify(muscleGroupMapper).toEntity(muscleGroupRequest);
+        verify(muscleGroupRepository).save(muscleGroup);
     }
 
     @Test
     public void create_WithRegisteredMuscleGroup_ThrowsException() {
-        when(muscleGroupRepository.existsByNameIgnoreCase(MUSCULE_GROUP_REQUEST.name())).thenReturn(true);
+        when(muscleGroupRepository.existsByNameIgnoreCase(muscleGroupRequest.name())).thenReturn(true);
 
-        assertThatCode(() -> muscleGroupService.create(MUSCULE_GROUP_REQUEST))
+        assertThatCode(() -> muscleGroupService.create(muscleGroupRequest))
                 .hasMessage("Grupo Muscular já cadastrado")
                 .isInstanceOf(InfoAlreadyExistsException.class);
-        verify(muscleGroupRepository).existsByNameIgnoreCase(MUSCULE_GROUP_REQUEST.name());
+        verify(muscleGroupRepository).existsByNameIgnoreCase(muscleGroupRequest.name());
     }
 
     @Test
     public void findById_WithExistingId_ReturnsMuscleGroup() {
-        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(MUSCLE_GROUP));
-        when(muscleGroupMapper.toDto(MUSCLE_GROUP)).thenReturn(MUSCLE_GROUP_RESPONSE);
+        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(muscleGroup));
+        when(muscleGroupMapper.toDto(muscleGroup)).thenReturn(muscleGroupResponse);
 
         ResponseMuscleGroupDTO sut = muscleGroupService.findById(1L);
 
         assertThat(sut).isNotNull();
-        assertThat(sut).isEqualTo(MUSCLE_GROUP_RESPONSE);
+        assertThat(sut).isEqualTo(muscleGroupResponse);
         verify(muscleGroupRepository).findById(1L);
-        verify(muscleGroupMapper).toDto(MUSCLE_GROUP);
+        verify(muscleGroupMapper).toDto(muscleGroup);
     }
 
     @Test
@@ -85,11 +96,11 @@ public class MuscleGroupServiceTest {
 
     @Test
     public void delete_WithExistingId_DoesNotThrowAnyException() {
-        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(MUSCLE_GROUP));
+        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(muscleGroup));
 
         assertThatCode(() -> muscleGroupService.delete(1L)).doesNotThrowAnyException();
         verify(muscleGroupRepository).findById(1L);
-        verify(muscleGroupRepository).delete(MUSCLE_GROUP);
+        verify(muscleGroupRepository).delete(muscleGroup);
     }
 
     @Test
@@ -104,43 +115,43 @@ public class MuscleGroupServiceTest {
 
     @Test
     public void update_WithDataValidAndExistingId_ReturnsUpdatedMuscleGroup() {
-        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(MUSCLE_GROUP));
-        when(muscleGroupRepository.existsByNameIgnoreCase(MUSCULE_GROUP_REQUEST.name())).thenReturn(false);
-        when(muscleGroupRepository.save(MUSCLE_GROUP)).thenReturn(MUSCLE_GROUP);
-        when(muscleGroupMapper.toDto(MUSCLE_GROUP)).thenReturn(MUSCLE_GROUP_RESPONSE);
+        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(muscleGroup));
+        when(muscleGroupRepository.existsByNameIgnoreCase(muscleGroupRequest.name())).thenReturn(false);
+        when(muscleGroupRepository.save(muscleGroup)).thenReturn(muscleGroup);
+        when(muscleGroupMapper.toDto(muscleGroup)).thenReturn(muscleGroupResponse);
 
-        ResponseMuscleGroupDTO sut = muscleGroupService.update(1L, MUSCULE_GROUP_REQUEST);
+        ResponseMuscleGroupDTO sut = muscleGroupService.update(1L, muscleGroupRequest);
 
         assertThat(sut).isNotNull();
-        assertThat(sut).isEqualTo(MUSCLE_GROUP_RESPONSE);
+        assertThat(sut).isEqualTo(muscleGroupResponse);
         verify(muscleGroupRepository).findById(1L);
-        verify(muscleGroupRepository).save(MUSCLE_GROUP);
-        verify(muscleGroupMapper).toDto(MUSCLE_GROUP);
+        verify(muscleGroupRepository).save(muscleGroup);
+        verify(muscleGroupMapper).toDto(muscleGroup);
     }
 
     @ParameterizedTest
     @MethodSource("providerInvalidMuscleGroupDTO")
     public void update_WithDataInvalidAndExistingId_ThrowsException(RequestMuscleGroupDTO requestMuscleGroupDTO) {
-        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(MUSCLE_GROUP));
+        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(muscleGroup));
 
         assertThrows(ApiErrorException.class, () -> muscleGroupService.update(1L, requestMuscleGroupDTO));
     }
 
     @Test
     public void update_WithNameMuscleGroupAlreadyRegistered_ThrowsException() {
-        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(MUSCLE_GROUP));
-        when(muscleGroupRepository.existsByNameIgnoreCase(MUSCULE_GROUP_REQUEST.name())).thenReturn(true);
+        when(muscleGroupRepository.findById(1L)).thenReturn(Optional.of(muscleGroup));
+        when(muscleGroupRepository.existsByNameIgnoreCase(muscleGroupRequest.name())).thenReturn(true);
 
-        assertThrows(InfoAlreadyExistsException.class, () -> muscleGroupService.update(1L, MUSCULE_GROUP_REQUEST));
+        assertThrows(InfoAlreadyExistsException.class, () -> muscleGroupService.update(1L, muscleGroupRequest));
         verify(muscleGroupRepository).findById(1L);
-        verify(muscleGroupRepository).existsByNameIgnoreCase(MUSCULE_GROUP_REQUEST.name());
+        verify(muscleGroupRepository).existsByNameIgnoreCase(muscleGroupRequest.name());
     }
 
     @Test
     public void update_WithUnexistingId_ThrowsException() {
         when(muscleGroupRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatCode(() -> muscleGroupService.update(99L, MUSCULE_GROUP_REQUEST))
+        assertThatCode(() -> muscleGroupService.update(99L, muscleGroupRequest))
                 .hasMessage("Grupo Muscular não encontrado")
                 .isInstanceOf(RecordNotFoundException.class);
         verify(muscleGroupRepository).findById(99L);

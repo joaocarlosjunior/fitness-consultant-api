@@ -2,10 +2,13 @@ package br.com.fitnessconsultant.controller;
 
 import br.com.fitnessconsultant.domain.repository.UserRepository;
 import br.com.fitnessconsultant.dto.musuculegroup.RequestMuscleGroupDTO;
+import br.com.fitnessconsultant.dto.musuculegroup.ResponseMuscleGroupDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.factories.MuscleGroupFactory;
 import br.com.fitnessconsultant.service.musclegroup.MuscleGroupService;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.MusculeGroupConstants.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -39,11 +41,21 @@ public class MuscleGroupControllerTest {
     private JwtTokenUtils jwtTokenUtils;
     @MockitoBean
     private MuscleGroupService muscleGroupService;
+    private RequestMuscleGroupDTO muscleGroupRequest;
+    private ResponseMuscleGroupDTO muscleGroupResponse;
+    private List<ResponseMuscleGroupDTO> muscleGroupResponseList;
+
+    @BeforeEach
+    void setUp() {
+        muscleGroupRequest = MuscleGroupFactory.createMuscleGroupRequest();
+        muscleGroupResponse = MuscleGroupFactory.createMuscleGroupResponse();
+        muscleGroupResponseList = MuscleGroupFactory.createMuscleGroupList();
+    }
 
     @Test
     public void create_WithValidData_ReturnsCreated() throws Exception {
         mockMvc.perform(post("/api/v1/muscle-groups")
-                .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
+                .content(objectMapper.writeValueAsString(muscleGroupRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isCreated());
     }
@@ -85,13 +97,13 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsMuscleGroup() throws Exception {
-        when(muscleGroupService.update(1L, MUSCULE_GROUP_REQUEST)).thenReturn(MUSCLE_GROUP_RESPONSE);
+        when(muscleGroupService.update(1L, muscleGroupRequest)).thenReturn(muscleGroupResponse);
 
         mockMvc.perform(put("/api/v1/muscle-groups/{id}", 1L)
-                .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(muscleGroupRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(MUSCLE_GROUP_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(muscleGroupResponse)));
     }
 
     @ParameterizedTest
@@ -105,10 +117,10 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void update_WithUnexistingId_ReturnsNotFound() throws Exception {
-        doThrow(RecordNotFoundException.class).when(muscleGroupService).update(1L, MUSCULE_GROUP_REQUEST);
+        doThrow(RecordNotFoundException.class).when(muscleGroupService).update(1L, muscleGroupRequest);
 
         mockMvc.perform(put("/api/v1/muscle-groups/{id}", 1L)
-                        .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
+                        .content(objectMapper.writeValueAsString(muscleGroupRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -116,7 +128,7 @@ public class MuscleGroupControllerTest {
     @Test
     public void update_WithInvalidId_ReturnsBadRequest() throws Exception {
         mockMvc.perform(put("/api/v1/muscle-groups/{id}", -1L)
-                        .content(objectMapper.writeValueAsString(MUSCULE_GROUP_REQUEST))
+                        .content(objectMapper.writeValueAsString(muscleGroupRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -128,16 +140,16 @@ public class MuscleGroupControllerTest {
     }
 
     @Test
-    public void findById_WithExistingId_ReturnsMuscleGroup() throws Exception{
-        when(muscleGroupService.findById(1L)).thenReturn(MUSCLE_GROUP_RESPONSE);
+    public void findById_WithExistingId_ReturnsMuscleGroup() throws Exception {
+        when(muscleGroupService.findById(1L)).thenReturn(muscleGroupResponse);
 
         mockMvc.perform(get("/api/v1/muscle-groups/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(MUSCLE_GROUP_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(muscleGroupResponse)));
     }
 
     @Test
-    public void findById_WithUnexistingId_ReturnsNotFound() throws Exception{
+    public void findById_WithUnexistingId_ReturnsNotFound() throws Exception {
         doThrow(RecordNotFoundException.class).when(muscleGroupService).findById(1L);
 
         mockMvc.perform(get("/api/v1/muscle-groups/{id}", 1L))
@@ -145,7 +157,7 @@ public class MuscleGroupControllerTest {
     }
 
     @Test
-    public void findById_WithInvalidId_ReturnsBadRequest() throws Exception{
+    public void findById_WithInvalidId_ReturnsBadRequest() throws Exception {
         mockMvc.perform(get("/api/v1/muscle-groups/{id}", -1L))
                 .andExpect(status().isBadRequest());
     }
@@ -158,11 +170,11 @@ public class MuscleGroupControllerTest {
 
     @Test
     public void list_IfThereRegistered_ReturnsMuscleGroups() throws Exception {
-        when(muscleGroupService.list()).thenReturn(MUSCLE_GROUP_LIST);
+        when(muscleGroupService.list()).thenReturn(muscleGroupResponseList);
 
         mockMvc.perform(get("/api/v1/muscle-groups"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(MUSCLE_GROUP_LIST)));
+                .andExpect(content().json(objectMapper.writeValueAsString(muscleGroupResponseList)));
     }
 
     @Test

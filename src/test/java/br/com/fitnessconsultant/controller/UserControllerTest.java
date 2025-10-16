@@ -1,11 +1,14 @@
 package br.com.fitnessconsultant.controller;
 
 import br.com.fitnessconsultant.domain.repository.UserRepository;
+import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
 import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
+import br.com.fitnessconsultant.factories.UserFactory;
 import br.com.fitnessconsultant.service.user.UserService;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.UserConstants.*;
+import static br.com.fitnessconsultant.common.UserConstants.PERIODIZATION_INFO_LIST;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,15 +45,25 @@ public class UserControllerTest {
     private UserRepository userRepository;
     @MockitoBean
     private UserService userService;
+    private ResponseUserDTO userResponse;
+    private UpdateUserDTO updateUserRequest;
+    private List<ResponseUserDTO> userResponseList;
+
+    @BeforeEach
+    void setUp() {
+        userResponse = UserFactory.createUserResponse();
+        updateUserRequest = UserFactory.createUpdateUserRequest();
+        userResponseList = UserFactory.createUserListResponse();
+    }
 
     @Test
     public void findById_WithExistingId_ReturnsUser() throws Exception {
-        when(userService.findById(1L)).thenReturn(USER_RESPONSE);
+        when(userService.findById(1L)).thenReturn(userResponse);
 
         mockMvc.perform(get("/api/v1/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(USER_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(userResponse)));
     }
 
     @Test
@@ -96,13 +109,13 @@ public class UserControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsUser() throws Exception {
-        when(userService.update(1L, UPDATE_USER)).thenReturn(USER_RESPONSE);
+        when(userService.update(1L, updateUserRequest)).thenReturn(userResponse);
 
         mockMvc.perform(put("/api/v1/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(UPDATE_USER)))
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(USER_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(userResponse)));
     }
 
     @ParameterizedTest
@@ -116,11 +129,11 @@ public class UserControllerTest {
 
     @Test
     public void update_WithUnexistingId_ReturnsBadRequest() throws Exception {
-        doThrow(UserNotFoundException.class).when(userService).update(99L, UPDATE_USER);
+        doThrow(UserNotFoundException.class).when(userService).update(99L, updateUserRequest);
 
         mockMvc.perform(put("/api/v1/users/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(UPDATE_USER)))
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isNotFound());
     }
 
@@ -128,7 +141,7 @@ public class UserControllerTest {
     public void update_WithInvalidId_ReturnsBadRequest() throws Exception {
         mockMvc.perform(put("/api/v1/users/{id}", -1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(UPDATE_USER)))
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -140,11 +153,11 @@ public class UserControllerTest {
 
     @Test
     public void list_HaveRegistered_ReturnsUsers() throws Exception {
-        when(userService.list()).thenReturn(LIST_USERS_RESPONSE);
+        when(userService.list()).thenReturn(userResponseList);
 
         mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(LIST_USERS_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(userResponseList)));
     }
 
     @Test

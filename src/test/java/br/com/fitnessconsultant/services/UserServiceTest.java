@@ -3,12 +3,16 @@ package br.com.fitnessconsultant.services;
 import br.com.fitnessconsultant.domain.entities.User;
 import br.com.fitnessconsultant.domain.enums.Role;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
+import br.com.fitnessconsultant.dto.user.RequestUserDTO;
 import br.com.fitnessconsultant.dto.user.ResponseUserDTO;
+import br.com.fitnessconsultant.dto.user.UpdateUserDTO;
 import br.com.fitnessconsultant.dto.user.usertraininginfo.UserPeriodizationInfoDTO;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
+import br.com.fitnessconsultant.factories.UserFactory;
 import br.com.fitnessconsultant.mappers.UserMapper;
 import br.com.fitnessconsultant.service.user.impl.UserServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +23,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.fitnessconsultant.common.UserConstants.*;
+import static br.com.fitnessconsultant.common.UserConstants.LIST_USERS;
+import static br.com.fitnessconsultant.common.UserConstants.PERIODIZATION_INFO_LIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,50 +41,62 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @Mock
     private UserMapper userMapper;
+    private User user;
+    private RequestUserDTO userRequest;
+    private ResponseUserDTO userResponse;
+    private UpdateUserDTO updateUserRequest;
+
+    @BeforeEach
+    void setUp() {
+        user = UserFactory.createUser();
+        userRequest = UserFactory.createUserRequest();
+        userResponse = UserFactory.createUserResponse();
+        updateUserRequest = UserFactory.createUpdateUserRequest();
+    }
 
     @Test
     public void create_WithValidData_DoesNotThrowException() {
         String password = "12345";
-        when(userRepository.existsByEmailIgnoreCase(NEW_USER_REQUEST.email())).thenReturn(false);
-        when(userRepository.existsByPhone(NEW_USER_REQUEST.phone())).thenReturn(false);
-        when(userMapper.toEntity(NEW_USER_REQUEST, password)).thenReturn(USER);
+        when(userRepository.existsByEmailIgnoreCase(userRequest.email())).thenReturn(false);
+        when(userRepository.existsByPhone(userRequest.phone())).thenReturn(false);
+        when(userMapper.toEntity(userRequest, password)).thenReturn(user);
 
-        assertThatCode(() -> userService.create(NEW_USER_REQUEST)).doesNotThrowAnyException();
-        verify(userRepository).existsByEmailIgnoreCase(NEW_USER_REQUEST.email());
-        verify(userRepository).existsByPhone(NEW_USER_REQUEST.phone());
-        verify(userMapper).toEntity(NEW_USER_REQUEST, password);
-        verify(userRepository).save(USER);
+        assertThatCode(() -> userService.create(userRequest)).doesNotThrowAnyException();
+        verify(userRepository).existsByEmailIgnoreCase(userRequest.email());
+        verify(userRepository).existsByPhone(userRequest.phone());
+        verify(userMapper).toEntity(userRequest, password);
+        verify(userRepository).save(user);
     }
 
     @Test
     public void create_WithUserEmailAlreadyRegistered_ThrowsException() {
-        when(userRepository.existsByEmailIgnoreCase(NEW_USER_REQUEST.email())).thenReturn(true);
+        when(userRepository.existsByEmailIgnoreCase(userRequest.email())).thenReturn(true);
 
-        assertThrows(InfoAlreadyExistsException.class, () -> userService.create(NEW_USER_REQUEST));
-        verify(userRepository).existsByEmailIgnoreCase(NEW_USER_REQUEST.email());
+        assertThrows(InfoAlreadyExistsException.class, () -> userService.create(userRequest));
+        verify(userRepository).existsByEmailIgnoreCase(userRequest.email());
     }
 
     @Test
     public void create_WithUserPhoneAlreadyRegistered_ThrowsException() {
-        when(userRepository.existsByEmailIgnoreCase(NEW_USER_REQUEST.email())).thenReturn(false);
-        when(userRepository.existsByPhone(NEW_USER_REQUEST.phone())).thenReturn(true);
+        when(userRepository.existsByEmailIgnoreCase(userRequest.email())).thenReturn(false);
+        when(userRepository.existsByPhone(userRequest.phone())).thenReturn(true);
 
-        assertThrowsExactly(InfoAlreadyExistsException.class, () -> userService.create(NEW_USER_REQUEST));
-        verify(userRepository).existsByEmailIgnoreCase(NEW_USER_REQUEST.email());
-        verify(userRepository).existsByPhone(NEW_USER_REQUEST.phone());
+        assertThrowsExactly(InfoAlreadyExistsException.class, () -> userService.create(userRequest));
+        verify(userRepository).existsByEmailIgnoreCase(userRequest.email());
+        verify(userRepository).existsByPhone(userRequest.phone());
     }
 
     @Test
     public void findById_WithExistingId_ReturnsUser() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(USER));
-        when(userMapper.toDto(USER)).thenReturn(USER_RESPONSE);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userMapper.toDto(user)).thenReturn(userResponse);
 
         ResponseUserDTO sut = userService.findById(1L);
 
         assertThat(sut).isNotNull();
-        assertThat(sut).isEqualTo(USER_RESPONSE);
+        assertThat(sut).isEqualTo(userResponse);
         verify(userRepository).findById(1L);
-        verify(userMapper).toDto(USER);
+        verify(userMapper).toDto(user);
     }
 
     @Test
@@ -138,43 +155,43 @@ public class UserServiceTest {
 
     @Test
     public void update_UpdateAllUserData_ReturnsUser() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(USER));
-        when(userRepository.existsByEmailIgnoreCase(UPDATE_USER.email())).thenReturn(false);
-        when(userRepository.existsByPhone(UPDATE_USER.phone())).thenReturn(false);
-        when(userRepository.save(USER)).thenReturn(USER);
-        when(userMapper.toDto(USER)).thenReturn(USER_RESPONSE);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmailIgnoreCase(updateUserRequest.email())).thenReturn(false);
+        when(userRepository.existsByPhone(updateUserRequest.phone())).thenReturn(false);
+        when(userRepository.save(user)).thenReturn(user);
+        when(userMapper.toDto(user)).thenReturn(userResponse);
 
-        ResponseUserDTO sut = userService.update(1L, UPDATE_USER);
+        ResponseUserDTO sut = userService.update(1L, updateUserRequest);
 
         assertThat(sut).isNotNull();
-        assertThat(sut).isEqualTo(USER_RESPONSE);
+        assertThat(sut).isEqualTo(userResponse);
         verify(userRepository).findById(1L);
-        verify(userRepository).existsByEmailIgnoreCase(UPDATE_USER.email());
-        verify(userRepository).existsByPhone(UPDATE_USER.phone());
-        verify(userRepository).save(USER);
-        verify(userMapper).toDto(USER);
+        verify(userRepository).existsByEmailIgnoreCase(updateUserRequest.email());
+        verify(userRepository).existsByPhone(updateUserRequest.phone());
+        verify(userRepository).save(user);
+        verify(userMapper).toDto(user);
     }
 
     @Test
     public void update_WithEmailExists_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(USER));
-        when(userRepository.existsByEmailIgnoreCase(UPDATE_USER.email())).thenReturn(true);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmailIgnoreCase(updateUserRequest.email())).thenReturn(true);
 
-        assertThrows(InfoAlreadyExistsException.class, () -> userService.update(1L, UPDATE_USER));
+        assertThrows(InfoAlreadyExistsException.class, () -> userService.update(1L, updateUserRequest));
         verify(userRepository).findById(1L);
-        verify(userRepository).existsByEmailIgnoreCase(UPDATE_USER.email());
+        verify(userRepository).existsByEmailIgnoreCase(updateUserRequest.email());
     }
 
     @Test
     public void update_WithPhoneExists_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(USER));
-        when(userRepository.existsByEmailIgnoreCase(UPDATE_USER.email())).thenReturn(false);
-        when(userRepository.existsByPhone(UPDATE_USER.phone())).thenReturn(true);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmailIgnoreCase(updateUserRequest.email())).thenReturn(false);
+        when(userRepository.existsByPhone(updateUserRequest.phone())).thenReturn(true);
 
-        assertThrows(InfoAlreadyExistsException.class, () -> userService.update(1L, UPDATE_USER));
+        assertThrows(InfoAlreadyExistsException.class, () -> userService.update(1L, updateUserRequest));
         verify(userRepository).findById(1L);
-        verify(userRepository).existsByEmailIgnoreCase(UPDATE_USER.email());
-        verify(userRepository).existsByPhone(UPDATE_USER.phone());
+        verify(userRepository).existsByEmailIgnoreCase(updateUserRequest.email());
+        verify(userRepository).existsByPhone(updateUserRequest.phone());
     }
 
     @Test

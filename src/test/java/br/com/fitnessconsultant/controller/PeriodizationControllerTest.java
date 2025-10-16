@@ -6,9 +6,11 @@ import br.com.fitnessconsultant.dto.periodization.ResponsePeriodizationDTO;
 import br.com.fitnessconsultant.dto.periodization.UpdatePeriodizationDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
 import br.com.fitnessconsultant.exception.UserNotFoundException;
+import br.com.fitnessconsultant.factories.PeriodizationFactory;
 import br.com.fitnessconsultant.service.periodization.PeriodizationService;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.PeriodizationConstants.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,16 +43,28 @@ public class PeriodizationControllerTest {
     private UserRepository userRepository;
     @MockitoBean
     private PeriodizationService periodizationService;
+    private RequestPeriodizationDTO periodizationRequest;
+    private ResponsePeriodizationDTO periodizationResponse;
+    private UpdatePeriodizationDTO updatePeriodizationRequest;
+    private List<ResponsePeriodizationDTO> periodizationResponseList;
+
+    @BeforeEach
+    void setUp() {
+        periodizationRequest = PeriodizationFactory.createPeriodizationRequest();
+        periodizationResponse = PeriodizationFactory.createPeriodizationResponse();
+        updatePeriodizationRequest = PeriodizationFactory.createUpdatePeriodization();
+        periodizationResponseList = PeriodizationFactory.createPeriodizationListResponse();
+    }
 
     @Test
     public void create_WithValidData_ReturnsPeriodization() throws Exception {
-        when(periodizationService.create(PERIODIZATION_REQUEST)).thenReturn(PERIODIZATION_RESPONSE);
+        when(periodizationService.create(periodizationRequest)).thenReturn(periodizationResponse);
 
         mockMvc.perform(post("/api/v1/periodizations")
-                        .content(objectMapper.writeValueAsString(PERIODIZATION_REQUEST))
+                        .content(objectMapper.writeValueAsString(periodizationRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(periodizationResponse)));
     }
 
     @ParameterizedTest
@@ -65,11 +78,11 @@ public class PeriodizationControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsPeriodization() throws Exception {
-        when(periodizationService.findById(1L)).thenReturn(PERIODIZATION_RESPONSE);
+        when(periodizationService.findById(1L)).thenReturn(periodizationResponse);
 
         mockMvc.perform(get("/api/v1/periodizations/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(periodizationResponse)));
     }
 
     @Test
@@ -94,15 +107,13 @@ public class PeriodizationControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsPeriodization() throws Exception {
-        UpdatePeriodizationDTO updatePeriodizationDTO = new UpdatePeriodizationDTO("Nome Periodizacao Atualizado", 10, 1L);
-        ResponsePeriodizationDTO responsePeriodizationDTO = new ResponsePeriodizationDTO(1L, "Nome Periodizacao Atualizado", 10, "2025-09-16T15:42:30", "2025-09-16T15:42:30", "2025-09-16T15:42:30");
-        when(periodizationService.update(1L, updatePeriodizationDTO)).thenReturn(responsePeriodizationDTO);
+        when(periodizationService.update(1L, updatePeriodizationRequest)).thenReturn(periodizationResponse);
 
         mockMvc.perform(put("/api/v1/periodizations/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatePeriodizationDTO)))
+                        .content(objectMapper.writeValueAsString(updatePeriodizationRequest)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(responsePeriodizationDTO)));
+                .andExpect(content().json(objectMapper.writeValueAsString(periodizationResponse)));
     }
 
     @ParameterizedTest
@@ -116,12 +127,11 @@ public class PeriodizationControllerTest {
 
     @Test
     public void update_WithUnexistingPeriodization_ReturnsNotFound() throws Exception {
-        UpdatePeriodizationDTO updatePeriodizationDTO = new UpdatePeriodizationDTO("Nome Periodizacao Atualizado", 10, 1L);
-        doThrow(RecordNotFoundException.class).when(periodizationService).update( 99L,updatePeriodizationDTO);
+        doThrow(RecordNotFoundException.class).when(periodizationService).update(99L, updatePeriodizationRequest);
 
         mockMvc.perform(put("/api/v1/periodizations/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatePeriodizationDTO)))
+                        .content(objectMapper.writeValueAsString(updatePeriodizationRequest)))
                 .andExpect(status().isNotFound());
     }
 
@@ -165,11 +175,11 @@ public class PeriodizationControllerTest {
 
     @Test
     public void list_IfThereRegistered_ReturnsPeriodizations() throws Exception {
-        when(periodizationService.list()).thenReturn(PERIODIZATION_LIST_RESPONSE);
+        when(periodizationService.list()).thenReturn(periodizationResponseList);
 
         mockMvc.perform(get("/api/v1/periodizations"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_LIST_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(periodizationResponseList)));
     }
 
     @Test
@@ -183,11 +193,11 @@ public class PeriodizationControllerTest {
 
     @Test
     public void getAllPeriodizationByIdUser_WithExistingUser_ReturnsPeriodizations() throws Exception {
-        when(periodizationService.getAllPeriodizationByUser(1L)).thenReturn(PERIODIZATION_LIST_RESPONSE);
+        when(periodizationService.getAllPeriodizationByUser(1L)).thenReturn(periodizationResponseList);
 
         mockMvc.perform(get("/api/v1/periodizations/user/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(PERIODIZATION_LIST_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(periodizationResponseList)));
     }
 
     @Test

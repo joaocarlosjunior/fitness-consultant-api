@@ -5,9 +5,11 @@ import br.com.fitnessconsultant.dto.training.RequestTrainingDTO;
 import br.com.fitnessconsultant.dto.training.RequestUpdateTrainingDTO;
 import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.factories.TrainingFactory;
 import br.com.fitnessconsultant.service.training.TrainingService;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -19,9 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.TrainingConstants.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,17 +43,29 @@ public class TrainingControllerTest {
     private UserRepository userRepository;
     @MockitoBean
     private TrainingService trainingService;
+    private RequestTrainingDTO trainingRequest;
+    private ResponseTrainingDTO trainingResponse;
+    private RequestUpdateTrainingDTO updateTrainingRequest;
+    private List<ResponseTrainingDTO> trainingResponseList;
+
+    @BeforeEach
+    void setUp() {
+        trainingRequest = TrainingFactory.createTrainingRequest();
+        trainingResponse = TrainingFactory.createTrainingResponse();
+        updateTrainingRequest = TrainingFactory.createUpdateTrainingRequest();
+        trainingResponseList = TrainingFactory.createTrainingResponseList();
+    }
 
     @Test
     public void create_WithValidData_ReturnsTraining() throws Exception {
-        when(trainingService.create(TRAINING_REQUEST)).thenReturn(RESPONSE_TRAINING);
+        when(trainingService.create(trainingRequest)).thenReturn(trainingResponse);
 
         mockMvc.perform(post("/api/v1/workouts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(TRAINING_REQUEST))
+                        .content(objectMapper.writeValueAsString(trainingRequest))
                 )
                 .andExpect(status().isCreated())
-                .andExpect(content().json(objectMapper.writeValueAsString(RESPONSE_TRAINING)));
+                .andExpect(content().json(objectMapper.writeValueAsString(trainingResponse)));
     }
 
     @ParameterizedTest
@@ -66,35 +80,30 @@ public class TrainingControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsUpdatedTraining() throws Exception {
-        RequestUpdateTrainingDTO requestUpdateTrainingDTO = new RequestUpdateTrainingDTO(1L, 1, "Nome treino atualizado");
-        ResponseTrainingDTO responseTrainingDTO = new ResponseTrainingDTO(1L, 1L, "A", "Nome treino atualizado", "2025-09-16T15:42:30", "2025-09-16T15:42:30");
-        when(trainingService.update(1L, requestUpdateTrainingDTO)).thenReturn(responseTrainingDTO);
+        when(trainingService.update(1L, updateTrainingRequest)).thenReturn(trainingResponse);
 
         mockMvc.perform(put("/api/v1/workouts/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestUpdateTrainingDTO)))
+                        .content(objectMapper.writeValueAsString(updateTrainingRequest)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(responseTrainingDTO)));
+                .andExpect(content().json(objectMapper.writeValueAsString(trainingResponse)));
     }
 
     @Test
     public void update_WithUnexistingId_ReturnsNotFound() throws Exception {
-        RequestUpdateTrainingDTO requestUpdateTrainingDTO = new RequestUpdateTrainingDTO(1L, 1, "Nome treino atualizado");
-        doThrow(RecordNotFoundException.class).when(trainingService).update(99L, requestUpdateTrainingDTO);
+        doThrow(RecordNotFoundException.class).when(trainingService).update(99L, updateTrainingRequest);
 
         mockMvc.perform(put("/api/v1/workouts/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestUpdateTrainingDTO)))
+                        .content(objectMapper.writeValueAsString(updateTrainingRequest)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void update_WithInvalidId_ReturnsBadRequest() throws Exception {
-        RequestUpdateTrainingDTO requestUpdateTrainingDTO = new RequestUpdateTrainingDTO(1L, 1, "Nome treino atualizado");
-
         mockMvc.perform(put("/api/v1/workouts/{id}", -1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestUpdateTrainingDTO)))
+                        .content(objectMapper.writeValueAsString(updateTrainingRequest)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -132,11 +141,11 @@ public class TrainingControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsTraining() throws Exception {
-        when(trainingService.findById(1L)).thenReturn(RESPONSE_TRAINING);
+        when(trainingService.findById(1L)).thenReturn(trainingResponse);
 
         mockMvc.perform(get("/api/v1/workouts/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(RESPONSE_TRAINING)));
+                .andExpect(content().json(objectMapper.writeValueAsString(trainingResponse)));
     }
 
     @Test
@@ -161,11 +170,11 @@ public class TrainingControllerTest {
 
     @Test
     public void getAllTrainingByIdPeriodization_WithExistingId_ReturnsTrainings() throws Exception {
-        when(trainingService.getAllTrainingByIdPeriodization(1L)).thenReturn(RESPONSE_TRAININGS);
+        when(trainingService.getAllTrainingByIdPeriodization(1L)).thenReturn(trainingResponseList);
 
         mockMvc.perform(get("/api/v1/workouts/periodization/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(RESPONSE_TRAININGS)));
+                .andExpect(content().json(objectMapper.writeValueAsString(trainingResponseList)));
     }
 
     @Test

@@ -1,12 +1,18 @@
 package br.com.fitnessconsultant.services;
 
+import br.com.fitnessconsultant.domain.entities.Periodization;
 import br.com.fitnessconsultant.domain.entities.Training;
 import br.com.fitnessconsultant.domain.repository.PeriodizationRepository;
 import br.com.fitnessconsultant.domain.repository.TrainingRepository;
+import br.com.fitnessconsultant.dto.training.RequestTrainingDTO;
+import br.com.fitnessconsultant.dto.training.RequestUpdateTrainingDTO;
 import br.com.fitnessconsultant.dto.training.ResponseTrainingDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.factories.PeriodizationFactory;
+import br.com.fitnessconsultant.factories.TrainingFactory;
 import br.com.fitnessconsultant.mappers.TrainingMapper;
 import br.com.fitnessconsultant.service.training.impl.TrainingServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,8 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.fitnessconsultant.common.PeriodizationConstants.PERIODIZATION;
-import static br.com.fitnessconsultant.common.TrainingConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -35,74 +39,92 @@ public class TrainingServiceTest {
     private PeriodizationRepository periodizationRepository;
     @Mock
     private TrainingMapper trainingMapper;
+    private Training training;
+    private RequestTrainingDTO trainingRequest;
+    private ResponseTrainingDTO trainingResponse;
+    private RequestUpdateTrainingDTO updateTrainingRequest;
+    private List<Training> trainings;
+    private List<ResponseTrainingDTO> trainingsResponse;
+    private Periodization periodization;
+
+    @BeforeEach
+    void setUp() {
+        training = TrainingFactory.createTraining();
+        trainingRequest = TrainingFactory.createTrainingRequest();
+        trainingResponse = TrainingFactory.createTrainingResponse();
+        updateTrainingRequest = TrainingFactory.createUpdateTrainingRequest();
+        trainings = TrainingFactory.createTrainingList();
+        trainingsResponse = TrainingFactory.createTrainingResponseList();
+        periodization = PeriodizationFactory.createPeriodization();
+    }
 
     @Test
     public void create_WithValidData_ReturnsTraining(){
-        when(periodizationRepository.findById(TRAINING_REQUEST.idPeriodization())).thenReturn(Optional.of(PERIODIZATION));
-        when(trainingMapper.toEntity(TRAINING_REQUEST, PERIODIZATION)).thenReturn(TRAINING);
-        when(trainingRepository.save(TRAINING)).thenReturn(TRAINING);
-        when(trainingMapper.toDto(TRAINING)).thenReturn(RESPONSE_TRAINING);
+        when(periodizationRepository.findById(trainingRequest.idPeriodization())).thenReturn(Optional.of(periodization));
+        when(trainingMapper.toEntity(trainingRequest, periodization)).thenReturn(training);
+        when(trainingRepository.save(training)).thenReturn(training);
+        when(trainingMapper.toDto(training)).thenReturn(trainingResponse);
 
-        ResponseTrainingDTO sut = trainingService.create(TRAINING_REQUEST);
+        ResponseTrainingDTO sut = trainingService.create(trainingRequest);
 
         assertThat(sut).isNotNull();
-        assertThat(sut).isEqualTo(RESPONSE_TRAINING);
-        verify(periodizationRepository).findById(TRAINING_REQUEST.idPeriodization());
-        verify(trainingMapper).toEntity(TRAINING_REQUEST, PERIODIZATION);
-        verify(trainingRepository).save(TRAINING);
-        verify(trainingMapper).toDto(TRAINING);
+        assertThat(sut).isEqualTo(trainingResponse);
+        verify(periodizationRepository).findById(trainingRequest.idPeriodization());
+        verify(trainingMapper).toEntity(trainingRequest, periodization);
+        verify(trainingRepository).save(training);
+        verify(trainingMapper).toDto(training);
     }
 
     @Test
     public void create_WithUnexistingPeriodizationID_ThrowsException(){
-        when(periodizationRepository.findById(TRAINING_REQUEST.idPeriodization())).thenReturn(Optional.empty());
+        when(periodizationRepository.findById(trainingRequest.idPeriodization())).thenReturn(Optional.empty());
 
-        assertThrowsExactly(RecordNotFoundException.class, () -> trainingService.create(TRAINING_REQUEST));
-        verify(periodizationRepository).findById(TRAINING_REQUEST.idPeriodization());
+        assertThrowsExactly(RecordNotFoundException.class, () -> trainingService.create(trainingRequest));
+        verify(periodizationRepository).findById(trainingRequest.idPeriodization());
     }
 
     @Test
     public void update_WithValidData_ReturnsTraining(){
-        when(trainingRepository.findById(1L)).thenReturn(Optional.of(TRAINING));
-        when(periodizationRepository.findById(REQUEST_UPDATE_TRAINING.idPeriodization())).thenReturn(Optional.of(PERIODIZATION));
-        when(trainingRepository.save(TRAINING)).thenReturn(TRAINING);
-        when(trainingMapper.toDto(TRAINING)).thenReturn(RESPONSE_TRAINING);
+        when(trainingRepository.findById(1L)).thenReturn(Optional.of(training));
+        when(periodizationRepository.findById(updateTrainingRequest.idPeriodization())).thenReturn(Optional.of(periodization));
+        when(trainingRepository.save(training)).thenReturn(training);
+        when(trainingMapper.toDto(training)).thenReturn(trainingResponse);
 
-        ResponseTrainingDTO sut = trainingService.update(1L, REQUEST_UPDATE_TRAINING);
+        ResponseTrainingDTO sut = trainingService.update(1L, updateTrainingRequest);
 
         assertThat(sut).isNotNull();
-        assertThat(sut).isEqualTo(RESPONSE_TRAINING);
-        verify(trainingRepository).findById(REQUEST_UPDATE_TRAINING.idPeriodization());
-        verify(periodizationRepository).findById(REQUEST_UPDATE_TRAINING.idPeriodization());
-        verify(trainingRepository).save(TRAINING);
-        verify(trainingMapper).toDto(TRAINING);
+        assertThat(sut).isEqualTo(trainingResponse);
+        verify(trainingRepository).findById(updateTrainingRequest.idPeriodization());
+        verify(periodizationRepository).findById(updateTrainingRequest.idPeriodization());
+        verify(trainingRepository).save(training);
+        verify(trainingMapper).toDto(training);
     }
 
     @Test
     public void update_WithUnexistingTrainingID_ThrowsException(){
         when(trainingRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrowsExactly(RecordNotFoundException.class, () -> trainingService.update(1L, REQUEST_UPDATE_TRAINING));
-        verify(trainingRepository).findById(REQUEST_UPDATE_TRAINING.idPeriodization());
+        assertThrowsExactly(RecordNotFoundException.class, () -> trainingService.update(1L, updateTrainingRequest));
+        verify(trainingRepository).findById(updateTrainingRequest.idPeriodization());
     }
 
     @Test
     public void update_WithUnexistingPeriodizationID_ThrowsException(){
-        when(trainingRepository.findById(1L)).thenReturn(Optional.of(TRAINING));
-        when(periodizationRepository.findById(REQUEST_UPDATE_TRAINING.idPeriodization())).thenReturn(Optional.empty());
+        when(trainingRepository.findById(1L)).thenReturn(Optional.of(training));
+        when(periodizationRepository.findById(updateTrainingRequest.idPeriodization())).thenReturn(Optional.empty());
 
-        assertThrowsExactly(RecordNotFoundException.class, () -> trainingService.update(1L, REQUEST_UPDATE_TRAINING));
-        verify(trainingRepository).findById(REQUEST_UPDATE_TRAINING.idPeriodization());
-        verify(periodizationRepository).findById(REQUEST_UPDATE_TRAINING.idPeriodization());
+        assertThrowsExactly(RecordNotFoundException.class, () -> trainingService.update(1L, updateTrainingRequest));
+        verify(trainingRepository).findById(updateTrainingRequest.idPeriodization());
+        verify(periodizationRepository).findById(updateTrainingRequest.idPeriodization());
     }
 
     @Test
     public void delete_WithExistingTrainingID_DoesNotThrowException(){
-        when(trainingRepository.findById(1L)).thenReturn(Optional.of(TRAINING));
+        when(trainingRepository.findById(1L)).thenReturn(Optional.of(training));
 
         assertThatCode(() -> trainingService.delete(1L)).doesNotThrowAnyException();
         verify(trainingRepository).findById(1L);
-        verify(trainingRepository).delete(TRAINING);
+        verify(trainingRepository).delete(training);
     }
 
     @Test
@@ -115,15 +137,15 @@ public class TrainingServiceTest {
 
     @Test
     public void findById_WithExistingTrainingID_ReturnsTraining(){
-        when(trainingRepository.findById(1L)).thenReturn(Optional.of(TRAINING));
-        when(trainingMapper.toDto(TRAINING)).thenReturn(RESPONSE_TRAINING);
+        when(trainingRepository.findById(1L)).thenReturn(Optional.of(training));
+        when(trainingMapper.toDto(training)).thenReturn(trainingResponse);
 
         ResponseTrainingDTO sut = trainingService.findById(1L);
 
         assertThat(sut).isNotNull();
-        assertThat(sut).isEqualTo(RESPONSE_TRAINING);
+        assertThat(sut).isEqualTo(trainingResponse);
         verify(trainingRepository).findById(1L);
-        verify(trainingMapper).toDto(TRAINING);
+        verify(trainingMapper).toDto(training);
     }
 
     @Test
@@ -136,14 +158,14 @@ public class TrainingServiceTest {
 
     @Test
     public void getAllTrainingByIdPeriodization_WhenHaveTrainingsForPeriodizationID_ReturnsTraining(){
-        when(periodizationRepository.findById(1L)).thenReturn(Optional.of(PERIODIZATION));
-        when(trainingRepository.getAllTrainingByIdPeriodization(1L)).thenReturn(TRAININGS);
+        when(periodizationRepository.findById(1L)).thenReturn(Optional.of(periodization));
+        when(trainingRepository.getAllTrainingByIdPeriodization(1L)).thenReturn(trainings);
         when(trainingMapper.toDto(any(Training.class))).thenAnswer(
                 invocation -> {
                     Training training = invocation.getArgument(0, Training.class);
                     return ResponseTrainingDTO.builder()
                             .idTraining(training.getId())
-                            .idPeriodization(PERIODIZATION.getId())
+                            .idPeriodization(periodization.getId())
                             .trainingName(training.getTrainingName())
                             .trainingType(training.getTrainingName())
                             .createdAt(training.getCreatedAt().toString())
@@ -155,7 +177,7 @@ public class TrainingServiceTest {
         List<ResponseTrainingDTO> sut = trainingService.getAllTrainingByIdPeriodization(1L);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.size()).isEqualTo(RESPONSE_TRAININGS.size());
+        assertThat(sut.size()).isEqualTo(trainingsResponse.size());
         assertThat(sut).extracting("idTraining").containsExactly(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
         verify(periodizationRepository).findById(1L);
         verify(trainingRepository).getAllTrainingByIdPeriodization(1L);

@@ -4,10 +4,12 @@ import br.com.fitnessconsultant.domain.repository.UserRepository;
 import br.com.fitnessconsultant.dto.auth.RequestLoginUserDTO;
 import br.com.fitnessconsultant.dto.auth.ResponseJwtTokenDTO;
 import br.com.fitnessconsultant.dto.user.RequestUserDTO;
+import br.com.fitnessconsultant.factories.UserFactory;
 import br.com.fitnessconsultant.service.auth.AuthService;
 import br.com.fitnessconsultant.service.user.UserService;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.UserConstants.NEW_USER_REQUEST;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,13 +45,22 @@ public class AuthControllerTest {
     @MockitoBean
     private UserService userService;
 
+    private RequestUserDTO requestUser;
+    private RequestLoginUserDTO requestLoginUser;
+
+    @BeforeEach
+    void setUp() {
+        requestUser = UserFactory.createUserRequest();
+        requestLoginUser = UserFactory.createLoginUserRequest();
+    }
+
     @Test
     public void createUser_WithValidData_ReturnsCreated() throws Exception {
-        doNothing().when(userService).create(NEW_USER_REQUEST);
+        doNothing().when(userService).create(requestUser);
 
         mockMvc.perform(
                 post("/api/v1/auth/signup")
-                        .content(objectMapper.writeValueAsString(NEW_USER_REQUEST))
+                        .content(objectMapper.writeValueAsString(requestUser))
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andExpect(status().isCreated());
@@ -84,14 +94,12 @@ public class AuthControllerTest {
     @Test
     public void authenticate_WithValidData_ReturnsJwtToken() throws Exception {
         ResponseJwtTokenDTO tokenExample = new ResponseJwtTokenDTO("tokenexemplo");
-        when(authService.authenticate(new RequestLoginUserDTO("email_usuario@email.com", "password")))
+        when(authService.authenticate(requestLoginUser))
                 .thenReturn(tokenExample);
-
-        RequestLoginUserDTO requestLoginUserDTO = new RequestLoginUserDTO("email_usuario@email.com", "password");
 
         mockMvc.perform(
                         post("/api/v1/auth/login")
-                                .content(objectMapper.writeValueAsString(requestLoginUserDTO))
+                                .content(objectMapper.writeValueAsString(requestLoginUser))
                                 .contentType(MediaType.APPLICATION_JSON)
 
                 ).andExpect(status().isOk())
@@ -120,12 +128,11 @@ public class AuthControllerTest {
 
     @Test
     public void authenticate_WithUserInvalid_ReturnsForbidden() throws Exception {
-        RequestLoginUserDTO requestLoginUserDTO = new RequestLoginUserDTO("email_usuario@email.com", "password");
-        doThrow(BadCredentialsException.class).when(authService).authenticate(requestLoginUserDTO);
+        doThrow(BadCredentialsException.class).when(authService).authenticate(requestLoginUser);
 
         mockMvc.perform(
                 post("/api/v1/auth/login")
-                        .content(objectMapper.writeValueAsString(requestLoginUserDTO))
+                        .content(objectMapper.writeValueAsString(requestLoginUser))
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andExpect(status().isForbidden());

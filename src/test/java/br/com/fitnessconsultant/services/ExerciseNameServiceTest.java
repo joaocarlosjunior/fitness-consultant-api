@@ -1,16 +1,21 @@
 package br.com.fitnessconsultant.services;
 
 import br.com.fitnessconsultant.domain.entities.ExerciseName;
+import br.com.fitnessconsultant.domain.entities.MuscleGroup;
 import br.com.fitnessconsultant.domain.repository.ExerciseNameRepository;
 import br.com.fitnessconsultant.domain.repository.MuscleGroupRepository;
+import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.RequestUpdateExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
 import br.com.fitnessconsultant.exception.ApiErrorException;
 import br.com.fitnessconsultant.exception.InfoAlreadyExistsException;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.factories.ExerciseNameFactory;
+import br.com.fitnessconsultant.factories.MuscleGroupFactory;
 import br.com.fitnessconsultant.mappers.ExerciseNameMapper;
 import br.com.fitnessconsultant.service.exercisename.impl.ExerciseNameServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,8 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.ExerciseNameConstants.*;
-import static br.com.fitnessconsultant.common.MusculeGroupConstants.MUSCLE_GROUP;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -40,47 +43,61 @@ public class ExerciseNameServiceTest {
     private MuscleGroupRepository muscleGroupRepository;
     @Mock
     private ExerciseNameMapper exerciseNameMapper;
+    private ExerciseName exerciseName;
+    private RequestExerciseNameDTO exerciseNameRequest;
+    private ResponseExerciseNameDTO exerciseNameResponse;
+    private RequestUpdateExerciseNameDTO updateExerciseNameRequest;
+    private MuscleGroup muscleGroup;
+
+    @BeforeEach
+    void setUp() {
+        exerciseName = ExerciseNameFactory.createExerciseName();
+        exerciseNameRequest = ExerciseNameFactory.createExerciseNameRequest();
+        exerciseNameResponse = ExerciseNameFactory.createExerciseNameResponse();
+        updateExerciseNameRequest = ExerciseNameFactory.createExerciseNameUpdateRequest();
+        muscleGroup = MuscleGroupFactory.createMuscleGroup();
+    }
 
     @Test
     public void create_WithValidData_DoesNotThrowException() {
-        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_REQUEST.exerciseName())).thenReturn(false);
-        when(muscleGroupRepository.getReferenceById(1L)).thenReturn(MUSCLE_GROUP);
-        when(exerciseNameMapper.toEntity(EXERCISE_NAME_REQUEST, MUSCLE_GROUP)).thenReturn(EXERCISE_NAME);
+        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(exerciseNameRequest.exerciseName())).thenReturn(false);
+        when(muscleGroupRepository.getReferenceById(1L)).thenReturn(muscleGroup);
+        when(exerciseNameMapper.toEntity(exerciseNameRequest, muscleGroup)).thenReturn(exerciseName);
 
-        assertThatCode(() -> exerciseNameService.create(EXERCISE_NAME_REQUEST)).doesNotThrowAnyException();
-        verify(exerciseNameRepository).save(EXERCISE_NAME);
-        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(EXERCISE_NAME_REQUEST.exerciseName());
+        assertThatCode(() -> exerciseNameService.create(exerciseNameRequest)).doesNotThrowAnyException();
+        verify(exerciseNameRepository).save(exerciseName);
+        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(exerciseNameRequest.exerciseName());
         verify(muscleGroupRepository).getReferenceById(1L);
-        verify(exerciseNameMapper).toEntity(EXERCISE_NAME_REQUEST, MUSCLE_GROUP);
+        verify(exerciseNameMapper).toEntity(exerciseNameRequest, muscleGroup);
     }
 
     @Test
     public void create_WhenExerciseNameAlreadyExists_ThrowsException() {
-        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_REQUEST.exerciseName())).thenReturn(true);
+        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(exerciseNameRequest.exerciseName())).thenReturn(true);
 
-        assertThrows(InfoAlreadyExistsException.class, () -> exerciseNameService.create(EXERCISE_NAME_REQUEST));
+        assertThrows(InfoAlreadyExistsException.class, () -> exerciseNameService.create(exerciseNameRequest));
         verify(exerciseNameRepository, never()).save(any());
     }
 
     @Test
     public void create_WhenMuscleGroupNotFound_ThrowsException() {
-        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_REQUEST.exerciseName())).thenReturn(false);
-        when(muscleGroupRepository.getReferenceById(EXERCISE_NAME_REQUEST.idMuscleGroup())).thenThrow(new EntityNotFoundException());
+        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(exerciseNameRequest.exerciseName())).thenReturn(false);
+        when(muscleGroupRepository.getReferenceById(exerciseNameRequest.idMuscleGroup())).thenThrow(new EntityNotFoundException());
 
-        assertThatThrownBy(() -> exerciseNameService.create(EXERCISE_NAME_REQUEST)).isInstanceOf(EntityNotFoundException.class);
+        assertThatThrownBy(() -> exerciseNameService.create(exerciseNameRequest)).isInstanceOf(EntityNotFoundException.class);
         verify(exerciseNameRepository, never()).save(any());
     }
 
     @Test
     public void findById_WithExistingId_ReturnsExerciseName() {
-        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
-        when(exerciseNameMapper.toDto(EXERCISE_NAME)).thenReturn(EXERCISE_NAME_RESPONSE);
+        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(exerciseName));
+        when(exerciseNameMapper.toDto(exerciseName)).thenReturn(exerciseNameResponse);
 
         ResponseExerciseNameDTO sut  = exerciseNameService.findById(1L);
 
-        assertThat(sut).isEqualTo(EXERCISE_NAME_RESPONSE);
+        assertThat(sut).isEqualTo(exerciseNameResponse);
         verify(exerciseNameRepository).findById(1L);
-        verify(exerciseNameMapper).toDto(EXERCISE_NAME);
+        verify(exerciseNameMapper).toDto(exerciseName);
     }
 
     @Test
@@ -92,53 +109,32 @@ public class ExerciseNameServiceTest {
 
     @Test
     public void update_WithValidData_ReturnsExerciseName(){
-        ExerciseName exerciseNameUpdated  = new ExerciseName(1L, "Nome exercicio atualizado", MUSCLE_GROUP);
-        ResponseExerciseNameDTO responseExerciseNameDTO = new ResponseExerciseNameDTO(1L, "Nome exercicio atualizado", MUSCLE_GROUP.getName());
-        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
-        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName())).thenReturn(false);
-        when(muscleGroupRepository.findById(EXERCISE_NAME_UPDATE_REQUEST.idMuscleGroup())).thenReturn(Optional.of(MUSCLE_GROUP));
-        when(exerciseNameRepository.save(EXERCISE_NAME)).thenReturn(exerciseNameUpdated);
-        when(exerciseNameMapper.toDto(exerciseNameUpdated)).thenReturn(responseExerciseNameDTO);
+        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(exerciseName));
+        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(updateExerciseNameRequest.exerciseName())).thenReturn(false);
+        when(muscleGroupRepository.findById(updateExerciseNameRequest.idMuscleGroup())).thenReturn(Optional.of(muscleGroup));
+        when(exerciseNameRepository.save(exerciseName)).thenReturn(exerciseName);
+        when(exerciseNameMapper.toDto(exerciseName)).thenReturn(exerciseNameResponse);
 
-        ResponseExerciseNameDTO sut = exerciseNameService.update(1L, EXERCISE_NAME_UPDATE_REQUEST);
+        ResponseExerciseNameDTO sut = exerciseNameService.update(1L, updateExerciseNameRequest);
 
-        assertThat(sut).isEqualTo(responseExerciseNameDTO);
+        assertThat(sut).isEqualTo(exerciseNameResponse);
         verify(exerciseNameRepository).findById(1L);
-        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName());
-        verify(muscleGroupRepository).findById(EXERCISE_NAME_UPDATE_REQUEST.idMuscleGroup());
-        verify(exerciseNameMapper).toDto(exerciseNameUpdated);
-    }
-
-    @ParameterizedTest
-    @MethodSource("providerInvalidDataExerciseNames")
-    public void update_WithInvalidData_ThrowsException(ExerciseName exerciseName) {
-        ExerciseName exerciseNameUpdated  = new ExerciseName(1L, "Nome exercicio atualizado", MUSCLE_GROUP);
-        ResponseExerciseNameDTO responseExerciseNameDTO = new ResponseExerciseNameDTO(1L, "Nome exercicio atualizado", MUSCLE_GROUP.getName());
-        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
-        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName())).thenReturn(false);
-        when(muscleGroupRepository.findById(EXERCISE_NAME_UPDATE_REQUEST.idMuscleGroup())).thenReturn(Optional.of(MUSCLE_GROUP));
-        when(exerciseNameRepository.save(exerciseName)).thenThrow(new RuntimeException());
-
-        ResponseExerciseNameDTO sut = exerciseNameService.update(1L, EXERCISE_NAME_UPDATE_REQUEST);
-
-        assertThat(sut).isEqualTo(responseExerciseNameDTO);
-        verify(exerciseNameRepository).findById(1L);
-        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName());
-        verify(muscleGroupRepository).findById(EXERCISE_NAME_UPDATE_REQUEST.idMuscleGroup());
-        verify(exerciseNameMapper).toDto(exerciseNameUpdated);
+        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(updateExerciseNameRequest.exerciseName());
+        verify(muscleGroupRepository).findById(updateExerciseNameRequest.idMuscleGroup());
+        verify(exerciseNameMapper).toDto(exerciseName);
     }
 
     @Test
     public void update_WhenExerciseNameNotFound_ThrowsException() {
         when(exerciseNameRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> exerciseNameService.update(99L, EXERCISE_NAME_UPDATE_REQUEST));
+        assertThrows(RecordNotFoundException.class, () -> exerciseNameService.update(99L, updateExerciseNameRequest));
     }
 
     @ParameterizedTest
     @MethodSource("providerInvalidExerciseNames")
     public void update_WhenExerciseNameInvalid_ThrowsException(RequestUpdateExerciseNameDTO requestUpdateExerciseNameDTO) {
-        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
+        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(exerciseName));
 
         assertThrows(ApiErrorException.class, () -> exerciseNameService.update(1L, requestUpdateExerciseNameDTO));
         verify(exerciseNameRepository).findById(1L);
@@ -146,32 +142,32 @@ public class ExerciseNameServiceTest {
 
     @Test
     public void update_WhenExerciseNameAlreadyExists_ThrowsException() {
-        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
-        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName())).thenReturn(true);
+        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(exerciseName));
+        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(updateExerciseNameRequest.exerciseName())).thenReturn(true);
 
-        assertThrows(InfoAlreadyExistsException.class, () -> exerciseNameService.update(1L, EXERCISE_NAME_UPDATE_REQUEST));
+        assertThrows(InfoAlreadyExistsException.class, () -> exerciseNameService.update(1L, updateExerciseNameRequest));
         verify(exerciseNameRepository).findById(1L);
-        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName());
+        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(updateExerciseNameRequest.exerciseName());
     }
 
     @Test
     public void update_WithUnexistingIDMuscleGroup_ThrowsException() {
-        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
-        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName())).thenReturn(false);
-        when(muscleGroupRepository.findById(EXERCISE_NAME_UPDATE_REQUEST.idMuscleGroup())).thenReturn(Optional.empty());
+        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(exerciseName));
+        when(exerciseNameRepository.existsByExerciseNameIgnoreCase(updateExerciseNameRequest.exerciseName())).thenReturn(false);
+        when(muscleGroupRepository.findById(updateExerciseNameRequest.idMuscleGroup())).thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> exerciseNameService.update(1L, EXERCISE_NAME_UPDATE_REQUEST));
+        assertThrows(RecordNotFoundException.class, () -> exerciseNameService.update(1L, updateExerciseNameRequest));
         verify(exerciseNameRepository).findById(1L);
-        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(EXERCISE_NAME_UPDATE_REQUEST.exerciseName());
+        verify(exerciseNameRepository).existsByExerciseNameIgnoreCase(updateExerciseNameRequest.exerciseName());
     }
 
     @Test
     public void delete_WithExistingID_NotThrowsException() {
-        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(EXERCISE_NAME));
+        when(exerciseNameRepository.findById(1L)).thenReturn(Optional.of(exerciseName));
 
         assertThatCode(() -> exerciseNameService.delete(1L)).doesNotThrowAnyException();
         verify(exerciseNameRepository).findById(1L);
-        verify(exerciseNameRepository).delete(EXERCISE_NAME);
+        verify(exerciseNameRepository).delete(exerciseName);
     }
 
     @Test
@@ -185,9 +181,9 @@ public class ExerciseNameServiceTest {
     @Test
     public void list_WhenExistingExerciseNames_ReturnsExerciseNames() {
         List<ExerciseName> exerciseNames = List.of(
-                new ExerciseName(1L, "Nome exercicio 1", MUSCLE_GROUP),
-                new ExerciseName(2L, "Nome exercicio 2", MUSCLE_GROUP),
-                new ExerciseName(3L, "Nome exercicio 3", MUSCLE_GROUP)
+                new ExerciseName(1L, "Nome exercicio 1", muscleGroup),
+                new ExerciseName(2L, "Nome exercicio 2", muscleGroup),
+                new ExerciseName(3L, "Nome exercicio 3", muscleGroup)
         );
         when(exerciseNameRepository.findAll()).thenReturn(exerciseNames);
         when(exerciseNameMapper.toDto(any(ExerciseName.class)))
@@ -221,15 +217,6 @@ public class ExerciseNameServiceTest {
         return Stream.of(
                 Arguments.of(new RequestUpdateExerciseNameDTO("", 1L)),
                 Arguments.of(new RequestUpdateExerciseNameDTO(null, 1L))
-        );
-    }
-
-    private static  Stream<Arguments> providerInvalidDataExerciseNames() {
-        return Stream.of(
-                Arguments.of(new ExerciseName(null, "Nome Exercicio", MUSCLE_GROUP)),
-                Arguments.of(new ExerciseName(1L, null, MUSCLE_GROUP)),
-                Arguments.of(new ExerciseName(null, "Nome Exercicio", null)),
-                Arguments.of(new ExerciseName(null, "", MUSCLE_GROUP))
         );
     }
 

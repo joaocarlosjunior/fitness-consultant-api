@@ -3,10 +3,13 @@ package br.com.fitnessconsultant.controller;
 import br.com.fitnessconsultant.domain.repository.UserRepository;
 import br.com.fitnessconsultant.dto.exercisename.RequestExerciseNameDTO;
 import br.com.fitnessconsultant.dto.exercisename.RequestUpdateExerciseNameDTO;
+import br.com.fitnessconsultant.dto.exercisename.ResponseExerciseNameDTO;
 import br.com.fitnessconsultant.exception.RecordNotFoundException;
+import br.com.fitnessconsultant.factories.ExerciseNameFactory;
 import br.com.fitnessconsultant.service.exercisename.ExerciseNameService;
 import br.com.fitnessconsultant.utils.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static br.com.fitnessconsultant.common.ExerciseNameConstants.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,13 +41,25 @@ public class ExerciseNameControllerTest {
     private JwtTokenUtils jwtTokenUtils;
     @MockitoBean
     private ExerciseNameService exerciseNameService;
+    private RequestExerciseNameDTO exerciseNameRequest;
+    private ResponseExerciseNameDTO exerciseNameResponse;
+    private RequestUpdateExerciseNameDTO updateExerciseNameRequest;
+    private List<ResponseExerciseNameDTO> exerciseNameResponseList;
+
+    @BeforeEach
+    void setUp() {
+        exerciseNameRequest = ExerciseNameFactory.createExerciseNameRequest();
+        exerciseNameResponse = ExerciseNameFactory.createExerciseNameResponse();
+        updateExerciseNameRequest = ExerciseNameFactory.createExerciseNameUpdateRequest();
+        exerciseNameResponseList = ExerciseNameFactory.createExerciseNameList();
+    }
 
     @Test
     public void create_WithValidData_ReturnsCreated() throws Exception {
-        doNothing().when(exerciseNameService).create(EXERCISE_NAME_REQUEST);
+        doNothing().when(exerciseNameService).create(exerciseNameRequest);
 
         mockMvc.perform(post("/api/v1/exercise-name")
-                        .content(objectMapper.writeValueAsString(EXERCISE_NAME_REQUEST))
+                        .content(objectMapper.writeValueAsString(exerciseNameRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated());
@@ -65,11 +79,11 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void findById_WithExistingId_ReturnsExerciseName() throws Exception {
-        when(exerciseNameService.findById(EXERCISE_NAME_RESPONSE.getIdExerciseName())).thenReturn(EXERCISE_NAME_RESPONSE);
+        when(exerciseNameService.findById(exerciseNameResponse.getIdExerciseName())).thenReturn(exerciseNameResponse);
 
-        mockMvc.perform(get("/api/v1/exercise-name/{id}", EXERCISE_NAME_RESPONSE.getIdExerciseName()))
+        mockMvc.perform(get("/api/v1/exercise-name/{id}", exerciseNameResponse.getIdExerciseName()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(EXERCISE_NAME_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(exerciseNameResponse)));
     }
 
     @Test
@@ -94,15 +108,14 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void update_WithValidData_ReturnsExerciseName() throws Exception {
-        RequestUpdateExerciseNameDTO updateExerciseNameDTO = new RequestUpdateExerciseNameDTO("Nome Exercicio", 1L);
-        when(exerciseNameService.update(1L, updateExerciseNameDTO)).thenReturn(EXERCISE_NAME_RESPONSE);
+        when(exerciseNameService.update(1L, updateExerciseNameRequest)).thenReturn(exerciseNameResponse);
 
         mockMvc.perform(put("/api/v1/exercise-name/{id}", 1L)
-                        .content(objectMapper.writeValueAsString(updateExerciseNameDTO))
+                        .content(objectMapper.writeValueAsString(updateExerciseNameRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(EXERCISE_NAME_RESPONSE)));
+                .andExpect(content().json(objectMapper.writeValueAsString(exerciseNameResponse)));
     }
 
     @ParameterizedTest
@@ -117,11 +130,10 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void update_WithUnexistingId_ReturnsNotFound() throws Exception {
-        RequestUpdateExerciseNameDTO updateExerciseNameDTO = new RequestUpdateExerciseNameDTO("Nome Exercicio", 1L);
-        doThrow(RecordNotFoundException.class).when(exerciseNameService).update(1L, updateExerciseNameDTO);
+        doThrow(RecordNotFoundException.class).when(exerciseNameService).update(1L, updateExerciseNameRequest);
 
         mockMvc.perform(put("/api/v1/exercise-name/{id}", 1L)
-                        .content(objectMapper.writeValueAsString(updateExerciseNameDTO))
+                        .content(objectMapper.writeValueAsString(updateExerciseNameRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound());
@@ -129,10 +141,8 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void update_WithInvalidId_ReturnsBadRequest() throws Exception {
-        RequestUpdateExerciseNameDTO updateExerciseNameDTO = new RequestUpdateExerciseNameDTO("Nome Exercicio", 1L);
-
         mockMvc.perform(put("/api/v1/exercise-name/{id}", -1L)
-                        .content(objectMapper.writeValueAsString(updateExerciseNameDTO))
+                        .content(objectMapper.writeValueAsString(updateExerciseNameRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest());
@@ -174,11 +184,11 @@ public class ExerciseNameControllerTest {
 
     @Test
     public void list_IfThereRegistered_ReturnsExerciseNames() throws Exception {
-        when(exerciseNameService.list()).thenReturn(EXERCISE_NAME_LIST);
+        when(exerciseNameService.list()).thenReturn(exerciseNameResponseList);
 
         mockMvc.perform(get("/api/v1/exercise-name"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(EXERCISE_NAME_LIST)));
+                .andExpect(content().json(objectMapper.writeValueAsString(exerciseNameResponseList)));
     }
 
     @Test
@@ -192,7 +202,6 @@ public class ExerciseNameControllerTest {
 
     private static Stream<Arguments> providersInvalidUpdateExerciseNames() {
         return Stream.of(
-
                 Arguments.of(new RequestUpdateExerciseNameDTO("", 1L)),
                 Arguments.of(new RequestUpdateExerciseNameDTO("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghsijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv", 1L)),
                 Arguments.of(new RequestUpdateExerciseNameDTO("Teste", -1L))
